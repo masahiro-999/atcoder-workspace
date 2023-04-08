@@ -51,5 +51,18 @@
                 "in_3.txt"
             ]            
         },
+        {
+            "name": "Python < in_4.txt",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${fileDirname}",
+            "args": [
+                "<",
+                "in_4.txt"
+            ]            
+        },
     ]
 }
