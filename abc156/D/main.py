@@ -1,7 +1,17 @@
-# https://qiita.com/wotsushi/items/c936838df992b706084c
-# abc298 D
-# abc156 D
-# で使った
+import sys
+from collections import deque, Counter
+import math
+sys.setrecursionlimit(5 * 10 ** 5)
+# from pypyjit import set_param
+# set_param('max_unroll_recursion=-1')
+input = lambda: sys.stdin.readline().rstrip()
+ii = lambda: int(input())
+mi = lambda: map(int, input().split())
+li = lambda: list(mi())
+inf = 2 ** 63 - 1
+
+
+MOD = 1000000007
 
 class ModInt:
     def __init__(self, x):
@@ -67,3 +77,30 @@ class ModInt:
             ModInt(pow(other.x, self.x, MOD)) if isinstance(other, ModInt) else
             ModInt(pow(other, self.x, MOD))
         )
+
+def comb(n, m):
+    ret = ModInt(1)
+    for i in range(m):
+        ret *= n -i
+
+    for i in range(m,1,-1):
+        ret /= i
+
+    return ret
+
+def solve(n: int, a: int, b: int):
+    
+    all = ModInt(2)**n
+
+    nca = comb(n, a)
+    ncb = comb(n, b)
+
+    ans = all -1 - nca - ncb
+    print(ans)
+
+def main():
+    n,a,b = mi()  # type: int
+    solve(n, a, b)
+    return
+
+main()
