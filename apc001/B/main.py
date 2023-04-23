@@ -1,5 +1,6 @@
 import sys
-from collections import deque, Counter
+from collections import deque, Counter, defaultdict
+from itertools import product
 sys.setrecursionlimit(5 * 10 ** 5)
 # from pypyjit import set_param
 # set_param('max_unroll_recursion=-1')
@@ -14,19 +15,15 @@ YES = "Yes"
 NO = "No"
 
 def solve(N: int, a: "List[int]", b: "List[int]"):
-    n = sum(b) - sum(a)
-    c1 = 0
-    c2 = 0
+    ak = 0
+    bk = 0
     for a1,b1 in zip(a,b):
-        if a1 > b1:
-            c1 += a1-b1
+        if b1 < a1:
+            bk += a1-b1
         elif a1 < b1:
-            c2 += (b1-a1)//2
-    if n >= c1+c2:
-        print(YES)
-    else:
-        print(NO)
-                
+            ak += (b1-a1)//2
+    ans = YES if bk <= ak else NO
+    print(ans)
 
 def main():
     N = ii()  # type: int
