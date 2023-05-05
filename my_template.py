@@ -1,6 +1,6 @@
 import sys
 from collections import deque, Counter, defaultdict
-from itertools import product
+from itertools import product, accumulate
 sys.setrecursionlimit(5 * 10 ** 5)
 # from pypyjit import set_param
 # set_param('max_unroll_recursion=-1')
