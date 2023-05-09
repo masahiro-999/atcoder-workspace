@@ -68,3 +68,20 @@ class ModInt:
             ModInt(pow(other.x, self.x, MOD)) if isinstance(other, ModInt) else
             ModInt(pow(other, self.x, MOD))
         )
+
+def prepare(n, MOD):
+    f = 1
+    factorials = [1]
+    for m in range(1, n + 1):
+        f *= m
+        f %= MOD
+        factorials.append(f)
+    inv = pow(f, MOD - 2, MOD)
+    invs = [1] * (n + 1)
+    invs[n] = inv
+    for m in range(n, 1, -1):
+        inv *= m
+        inv %= MOD
+        invs[m - 1] = inv
+ 
+    return factorials, invs
