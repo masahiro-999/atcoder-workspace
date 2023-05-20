@@ -1,6 +1,6 @@
 import sys
 from collections import deque, Counter, defaultdict
-from itertools import product, accumulate
+from itertools import product, accumulate, permutations
 sys.setrecursionlimit(5 * 10 ** 5)
 # from pypyjit import set_param
 # set_param('max_unroll_recursion=-1')
@@ -22,24 +22,18 @@ def cmp(s1,s2):
     return count == 1
     
 def solve(N: int, M: int, S: "List[str]"):
-    t = [[] for _ in range(N)]
-    for i in range(N-1):
-        for j in range(i+1, N):
-            if cmp(S[i], S[j]):
-                t[i].append(j)
-                t[j].append(i)
-    st = 0
-    count = 0
-    for i in range(N):
-        if len(t[i])  ==1:
-            st += 1
-        if len(t[i]) >0:
-            count += 1
-    if count ==N and st <=2:
-        print(YES)
-    else:
-        print(NO)
 
+    for p in permutations(range(N)):
+        ans = YES
+        for i in range(1,N):
+            i1 = p[i-1]
+            i2 = p[i]
+            if not cmp(S[i1],S[i2]):
+                ans = NO
+                break
+        if ans == YES:
+            break
+    print(ans)
 
 def main():
     N, M = mi()  # type: int
