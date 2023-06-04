@@ -46,10 +46,9 @@ self.declare_and_allocate_2d_seq = "{name} = [[{default}] * ({length_j}) for _ i
 
 # 入力関数
 [input_func]
-int = "ii()"
+int = "int(next(tokens))"
 float = "float(next(tokens))"
-str = "input()"
-seq = "li()"
+str = "next(tokens)"
 
 # 入力
 [input]

@@ -13,7 +13,7 @@ ii = lambda: int(input())
 mi = lambda: map(int, input().split())
 li = lambda: list(mi())
 inf = 2 ** 63 - 1
-
+tokens = (i for line in iter(input, "") for i in line.split())
 
 {% if mod %}
 MOD = {{ mod }}
@@ -27,7 +27,8 @@ NO = "{{ no_str }}"
 
 {% if prediction_success %}
 def solve({{ formal_arguments }}):
-
+{% else %}
+def solve():
 {% endif %}
 
 def main():
@@ -35,7 +36,7 @@ def main():
     {{input_part}}
     solve({{ actual_arguments }})
     {% else %}
-    // Failed to predict input format
+    solve()
     {% endif %}
     return
 
