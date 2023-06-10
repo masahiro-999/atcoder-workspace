@@ -17,6 +17,30 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 
 def solve(N: int, L: int, K: int, A: "List[int]"):
+    a = [A[0]] + [A[i+1] - A[i] for i in range(N-1)] + [L-A[-1]]
+
+    def find_n(x):
+        l = 0
+        n = 0
+        for i in range(len(a)):
+            l += a[i]
+            if l >=x :
+                n += 1
+                l = 0   
+        if l >= x:
+            n += 1
+        return n
+    
+    lo = 1
+    hi = L+1
+    while (hi-lo>1):
+        mid = (lo+hi)//2
+        n = find_n(mid)
+        if n >= K+1:
+            lo = mid
+        else:
+            hi = mid
+    print(lo)
 
 def main():
     N = int(next(tokens))  # type: int
