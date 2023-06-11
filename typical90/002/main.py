@@ -17,6 +17,24 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 
 def solve(N: int):
+    def is_OK(s):
+        c = 0
+        for i in s:
+            if i == "0":
+                c+= 1
+            else:
+                c-= 1
+            if c <0:
+                return False
+        return c==0
+    def to_display(s):
+        return s.replace("0","(").replace("1",")")
+
+    for i in range(1<<N):
+        s = format(i,f"0{N}b")
+        if is_OK(s):
+            print(to_display(s))
+
 
 def main():
     N = int(next(tokens))  # type: int
