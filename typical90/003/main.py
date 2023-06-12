@@ -17,29 +17,29 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 
 def solve(N: int, A: "List[int]", B: "List[int]"):
-    def dfs(n,d,prev):
-        if g[n]:
-            ret = []
-            for n_next in g[n]:
-                if n_next == prev:
-                    continue
-                ret.append(dfs(n_next, d+1,n))
-            if not ret:
-                return (n,d)
-            ret.sort(key = lambda a:a[1])
-            return ret[-1]
-        else:
-            return (n,d)
+    def bfs(g, start):
+        dist = [-1]*(N+1)
+        que = deque([start])
+        dist[start] = 0
+        while que:
+            i = que.popleft()
+            d = dist[i]
+            for j in g[i]:
+                if dist[j]==-1:
+                    dist[j] = d+1
+                    que.append(j)
+        return dist
 
     g = defaultdict(list)
     for a,b in zip(A,B):
         g[a].append(b)
         g[b].append(a)
     
-    s = A[0]
-    (n1,_) = dfs(s, 0, None)
-    (n2,d) = dfs(n1, 0, None)
-    print(d+1)
+    d = bfs(g,A[0])
+    n1 = d.index(max(d))
+    d = bfs(g, n1)
+    ans = max(d)+1
+    print(ans)
 
 def main():
     N = int(next(tokens))  # type: int
