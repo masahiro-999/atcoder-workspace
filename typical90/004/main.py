@@ -17,6 +17,19 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 
 def solve(H: int, W: int, A: "List[List[int]]"):
+    def sumh(x):
+        return sum([A[x][i] for i in range(W)])
+
+    def sumv(x):
+        return sum([A[i][x] for i in range(H)])
+
+    sumh_list = [sumh(i) for i in range(H)]
+    sumv_list = [sumv(j) for j in range(W)]
+    for i in range(H):
+        line = []
+        for j in range(W):
+            line.append(sumh_list[i]+sumv_list[j]-A[i][j])
+        print(*line)
 
 def main():
     H = int(next(tokens))  # type: int
