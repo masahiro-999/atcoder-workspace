@@ -18,6 +18,17 @@ tokens = (i for line in iter(input, "") for i in line.split())
 MOD = 1000000007
 
 def solve(N: int, B: int, K: int, c: "List[int]"):
+    dp = [[0]*B for _ in range(N)]
+    for c1 in c:
+        dp[0][c1%B] += 1 
+    for i in range(1,N):
+        for j in range(B):
+            for c1 in c:
+                next = (j*10+c1)%B
+                dp[i][next] += dp[i-1][j]
+                dp[i][next] %= MOD
+    count = dp[N-1][0]
+    print(count)
 
 def main():
     N = int(next(tokens))  # type: int
