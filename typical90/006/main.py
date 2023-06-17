@@ -17,6 +17,26 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 
 def solve(N: int, K: int, S: str):
+    d = [[inf]*26 for _ in range(N)]
+    for i in range(N-1, -1 , -1):
+        if i !=N-1:
+            d[i] = d[i+1][:]
+        c =ord(S[i])-ord("a")
+        d[i][c] = i
+
+    def find_min(i,j):
+        for c in range(26):
+            if d[i][c] <=j:
+                return (d[i][c],c)
+
+    sp = 0
+    ans = ""
+    while len(ans) < K:
+        ep = N-K+len(ans)
+        (p, c) = find_min(sp, ep)
+        ans += chr(c+ord("a"))
+        sp = p+1
+    print(ans)
 
 def main():
     N = int(next(tokens))  # type: int
