@@ -17,6 +17,20 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 
 def solve(N: int, C: "List[int]", P: "List[int]", Q: int, L: "List[int]", R: "List[int]"):
+    c1 = [P[i] if C[i]==1 else 0 for i in range(N)]
+    c2 = [P[i] if C[i]==2 else 0 for i in range(N)]
+
+    a1 = list(accumulate(c1))
+    a2 = list(accumulate(c2))
+
+    def get_ans(l,r,a):
+        if l == 0:
+            s = 0
+        else:
+            s = a[l-1]
+        return a[r] - s
+    for l,r in zip(L,R):
+        print(get_ans(l-1,r-1,a1), get_ans(l-1,r-1,a2))
 
 def main():
     N = int(next(tokens))  # type: int
