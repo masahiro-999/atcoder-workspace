@@ -16,18 +16,28 @@ inf = 2 ** 63 - 1
 tokens = (i for line in iter(input, "") for i in line.split())
 
 
-def solve(N: int, D: "List[int]", C: "List[int]", S: "List[int]"):
-
+def solve(N: int, dcs):
+    dcs.sort(key=lambda x:x[0])
+    max_d = dcs[-1][0]
+    dp = [[0]*(max_d+1) for _ in range(N+1)]
+    # dp[i][j] 仕事iまで　jは仕事の合計日数
+    for i in range(1,N+1):
+        d,c,s = dcs[i-1]
+        for j in range(1,max_d+1):
+            if c > j or j > d:
+                # 仕事がはいらない
+                dp[i][j] = dp[i-1][j]
+            else:
+                dp[i][j] = max(dp[i-1][j], dp[i-1][j-c]+s)
+    ans = max(dp[N])
+    print(ans)
+  
 def main():
     N = int(next(tokens))  # type: int
-    D = [int()] * (N)  # type: "List[int]"
-    C = [int()] * (N)  # type: "List[int]"
-    S = [int()] * (N)  # type: "List[int]"
+    dcs = [int()] * (N)  # type: "List[int]"
     for i in range(N):
-        D[i] = int(next(tokens))
-        C[i] = int(next(tokens))
-        S[i] = int(next(tokens))
-    solve(N, D, C, S)
+        dcs[i] = (int(next(tokens)), int(next(tokens)), int(next(tokens)))
+    solve(N, dcs)
     return
 
 main()
