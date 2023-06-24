@@ -22,12 +22,8 @@ def solve(N: int, M: int, A: "List[int]", B: "List[int]", C: "List[int]"):
         q = [(0,s)]
         t[s] = 0
         heapify(q)
-        visited = defaultdict(bool)
         while q:
             (d,p) = heappop(q)
-            if visited[p] == True:
-                continue
-            visited[p] = True
             for next_p,c in u[p]:
                 if t[next_p] > d + c:
                     # 新しいパスの方が近い
