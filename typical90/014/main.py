@@ -17,6 +17,10 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 
 def solve(N: int, A: "List[int]", B: "List[int]"):
+    A.sort()
+    B.sort()
+    ans = sum([abs(a-b) for a,b in zip(A,B)])
+    print(ans)
 
 def main():
     N = int(next(tokens))  # type: int
