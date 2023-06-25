@@ -17,6 +17,15 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 
 def solve(N: int, A: int, B: int, C: int):
+    ans = inf
+    max_a = min(9999,N//A)
+    for a in range(max_a+1):
+        max_b =min(9999-a,(N-a*A)//B)
+        for b in range(max_b+1):
+            num_c = N-a*A-b*B
+            if num_c % C ==0:
+                ans = min(ans, a+b+num_c//C)
+    print(ans)
 
 def main():
     N = int(next(tokens))  # type: int
