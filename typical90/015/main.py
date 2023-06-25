@@ -99,20 +99,17 @@ def prepare(n, MOD):
  
     return factorials, invs
 
+factorials, invs = prepare(100000,MOD)
+
 def choose(n,a):
-    ret = ModInt(1)
-    for i in range(n,n-a, -1):
-        ret *= i
-    for i in range(1,a+1):
-        ret /= i
-    return ret
+    return (factorials[n] * (invs[n-a] * invs[a])) % MOD
 
 def solve(N: int):
     for k in range(1,N+1):
         ans = ModInt(0)
         for a in range(1,N+1):
             x = N-(k-1)*(a-1)
-            if x <=0:
+            if x <=0 or x < a:
                 break
             ans += choose(x,a)
         print(ans)
