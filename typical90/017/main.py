@@ -17,7 +17,21 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 
 def solve(N: int, M: int, L: "List[int]", R: "List[int]"):
+    def is_cross(l1, r1, l2, r2):
+        if l1 in [l2,r2] or r1 in [l2,r2]:
+            return False
+        if l1 > r1:
+            l1,r1 = r1,l1
+        if l2 > r2:
+            l2,r2 = r2,l2
+        return (l1 < l2 < r1)  != (l1 < r2 < r1) 
 
+    ans = 0
+    for i in range(M-1):
+        for j in range(i+1,M):
+            if is_cross(L[i],R[i],L[j],R[j]):
+                ans += 1
+    print(ans)
 def main():
     N = int(next(tokens))  # type: int
     M = int(next(tokens))  # type: int
