@@ -17,7 +17,20 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 
 def solve(T: int, L: int, X: int, Y: int, Q: int, E: "List[int]"):
+    def pos_e(t):
+        s = 2/T*t*pi
+        z = -cos(s)*(L/2)+L/2
+        y = -sin(s)*(L/2)
+        return(y,z)
 
+    def ans(y,z):
+        return atan2(z,sqrt((Y-y)**2+X**2))/pi*180
+
+    for e in E:
+        y,z = pos_e(e)
+        s = ans(y,z)
+        print(s)
+        
 def main():
     T = int(next(tokens))  # type: int
     L = int(next(tokens))  # type: int
