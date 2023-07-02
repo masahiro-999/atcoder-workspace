@@ -18,6 +18,17 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 def solve(N: int, A: "List[int]"):
 
+    a = A[:]
+    sum_d = 0
+    while a:
+        d = [abs(a[i]-a[i+1]) for i in range(len(a)-1)]
+        min_d = min(d)
+        sum_d += min_d
+        min_i = d.index(min_d)
+        a = a[:min_i] + a[min_i+2:]
+
+    print(sum_d)
+
 def main():
     N = int(next(tokens))  # type: int
     A = [int(next(tokens)) for _ in range(2 * N)]  # type: "List[int]"
