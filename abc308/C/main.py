@@ -2,7 +2,7 @@ import sys, re
 from math import ceil, floor, sqrt, pi, factorial, gcd,sin,cos,tan,asin,acos,atan2,exp,log,log10
 from collections import deque, Counter, defaultdict
 from itertools import product, accumulate
-from functools import reduce,lru_cache
+from functools import reduce,lru_cache,cmp_to_key 
 from bisect import bisect
 from heapq import heapify, heappop, heappush
 sys.setrecursionlimit(5 * 10 ** 5)
@@ -15,12 +15,20 @@ li = lambda: list(mi())
 inf = 2 ** 63 - 1
 tokens = (i for line in iter(input, "") for i in line.split())
 
+def cmp(x,y):
+    xi,xa,xb = x
+    yi,ya,yb = y
+    d = (ya+yb)*xa - (xa+xb)*ya
+    if d == 0:
+        return xi-yi
+    else:
+        return -d 
 
 def solve(N: int, A: "List[int]", B: "List[int]"):
-    r = [(i,a*1000000000000000000000000000//(a+b)) for i,a,b in zip(range(N),A,B)]
+    r = [(i,a,b) for i,a,b in zip(range(N),A,B)]
     # print(r)
-    r.sort(key=lambda x: (x[1],-x[0]), reverse=True)
-    ans = [i+1 for (i,_) in r]
+    r1 = sorted(r, key=cmp_to_key(cmp))
+    ans = [i+1 for (i,_,_) in r1]
     print(*ans)
 
 def main():
