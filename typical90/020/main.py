@@ -19,6 +19,10 @@ YES = "Yes"
 NO = "No"
 
 def solve(a: int, b: int, c: int):
+    if a < c**b:
+        print(YES)
+    else:
+        print(NO)
 
 def main():
     a = int(next(tokens))  # type: int
