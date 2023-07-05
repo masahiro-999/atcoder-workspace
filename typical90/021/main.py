@@ -15,8 +15,53 @@ li = lambda: list(mi())
 inf = 2 ** 63 - 1
 tokens = (i for line in iter(input, "") for i in line.split())
 
+def find_max_arg(list):
+    max_val = max(list)
+    if max_val == -1:
+        return -1
+    return list.index(max_val)
 
 def solve(N: int, M: int, A: "List[int]", B: "List[int]"):
+    def get_dfs_path(t, g, path, i):
+        path.add(i)
+        visited[i] = 1
+        for n in g[i]:
+            if n not in path and visited[n] == 0:
+                get_dfs_path(t, g, path, n)
+
+    def dfs(s):
+        visited[s] = 1
+        for n in g[s]:
+            if visited[n] == 0:
+                dfs(n)
+        order.append(s)
+
+    g = defaultdict(list)
+    g_rev = defaultdict(list)
+    for a,b in zip(A,B):
+        a -= 1
+        b -= 1
+        g[a].append(b)
+        g_rev[b].append(a)
+
+    visited = [0] * N
+    order = []
+    t = [-1] * N
+    for i in range(N):
+        if visited[i] == 0:
+            dfs(i)
+
+    visited = [0] * N
+    ans = 0
+    for i in reversed(order):
+        if visited[i] != 0:
+            continue
+        path = set()
+        get_dfs_path(t, g_rev, path, i)
+        l = len(path)
+        ans += l*(l-1)//2
+
+    print(ans)
 
 def main():
     N = int(next(tokens))  # type: int
