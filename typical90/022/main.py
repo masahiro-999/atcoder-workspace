@@ -15,8 +15,15 @@ li = lambda: list(mi())
 inf = 2 ** 63 - 1
 tokens = (i for line in iter(input, "") for i in line.split())
 
-
 def solve(A: int, B: int, C: int):
+    value = [A, B, C]
+    gcd_val = reduce(gcd, value)
+
+    ans = 0
+    for a in value:
+        ans += (a // gcd_val)-1
+
+    print(ans)
 
 def main():
     A = int(next(tokens))  # type: int
