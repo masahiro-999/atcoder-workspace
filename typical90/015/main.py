@@ -1,8 +1,21 @@
-# https://qiita.com/wotsushi/items/c936838df992b706084c
-# abc298 D
-# abc156 D
-# abc145 D
-# で使った
+import sys, re
+from math import ceil, floor, sqrt, pi, factorial, gcd,sin,cos,tan,asin,acos,atan2,exp,log,log10
+from collections import deque, Counter, defaultdict
+from itertools import product, accumulate
+from functools import reduce,lru_cache
+from bisect import bisect
+from heapq import heapify, heappop, heappush
+sys.setrecursionlimit(5 * 10 ** 5)
+# from pypyjit import set_param
+# set_param('max_unroll_recursion=-1')
+input = lambda: sys.stdin.readline().rstrip()
+ii = lambda: int(input())
+mi = lambda: map(int, input().split())
+li = lambda: list(mi())
+inf = 2 ** 63 - 1
+tokens = (i for line in iter(input, "") for i in line.split())
+
+MOD = 1000000007
 
 class ModInt:
     def __init__(self, x):
@@ -90,3 +103,20 @@ factorials, invs = prepare(100000,MOD)
 
 def choose(n,a):
     return (factorials[n] * (invs[n-a] * invs[a])) % MOD
+
+def solve(N: int):
+    for k in range(1,N+1):
+        ans = ModInt(0)
+        for a in range(1,N+1):
+            x = N-(k-1)*(a-1)
+            if x <=0 or x < a:
+                break
+            ans += choose(x,a)
+        print(ans)
+
+def main():
+    N = int(next(tokens))  # type: int
+    solve(N)
+    return
+
+main()
