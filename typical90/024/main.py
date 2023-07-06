@@ -19,6 +19,11 @@ YES = "Yes"
 NO = "No"
 
 def solve(N: int, K: int, A: "List[int]", B: "List[int]"):
+    d = sum([abs(a-b) for a,b in zip(A,B)])
+    if K >= d and (K-d)%2 == 0:
+        print(YES)
+    else:
+        print(NO)
 
 def main():
     N = int(next(tokens))  # type: int
