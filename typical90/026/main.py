@@ -18,6 +18,35 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 def solve(N: int, A: "List[int]", B: "List[int]"):
 
+    def bfs(start, ans1, ans2):
+        dist = [-1]*N
+        que = deque([start])
+        dist[start] = 0
+        while que:
+            i = que.popleft()
+            d = dist[i]
+            if d % 2 == 0:
+                ans1.append(i+1)
+            else:
+                ans2.append(i+1)
+            for j in g[i]:
+                if dist[j]==-1:
+                    dist[j] = d+1
+                    que.append(j)
+        return dist
+
+    ans1 = []
+    ans2 = []
+    g = defaultdict(list)
+    for a,b in zip(A,B):
+        a -= 1
+        b -= 1
+        g[a].append(b)
+        g[b].append(a)
+    bfs(A[0]-1, ans1, ans2)    
+    ans  = ans1 if len(ans1)> len(ans2) else ans2
+    print(*ans[:N//2])
+
 def main():
     N = int(next(tokens))  # type: int
     A = [int()] * (N - 1)  # type: "List[int]"
