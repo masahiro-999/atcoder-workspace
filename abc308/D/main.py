@@ -6,8 +6,11 @@ from functools import reduce,lru_cache
 from bisect import bisect
 from heapq import heapify, heappop, heappush
 sys.setrecursionlimit(5 * 10 ** 5)
-# from pypyjit import set_param
-# set_param('max_unroll_recursion=-1')
+try:
+    from pypyjit import set_param
+    set_param('max_unroll_recursion=-1')
+except ModuleNotFoundError:
+    pass
 input = lambda: sys.stdin.readline().rstrip()
 ii = lambda: int(input())
 mi = lambda: map(int, input().split())
@@ -24,24 +27,23 @@ def solve(H: int, W: int, S: "List[str]"):
     s = ["s","n","u","k","e"]
     visited = [[0]*W for _ in range(H)]
 
-    def bfs(i,j,d):
-        q = deque()
-        q.append((i,j))
-        d = [[-1]*W for _ in range(H)]
-        d[i][j] = 0
-        while q:
-            i,j = q.popleft()
-            for (di,dj) in [(1,0),(-1,0),(0,1),(0,-1)]:
-                ni = i + di
-                nj = j + dj
-                if 0<= ni < H and 0<= nj <W and S[ni][nj] == s[(d[i][j]+1)%5] and d[ni][nj] == -1:
-                    d[ni][nj] = d[i][j]+1
-                    q.append((ni, nj))
-        return d[H-1][W-1] != -1
+    def dfs(i,j,d):
+        # set_param('max_unroll_recursion=-1') を実行しないとTLEとなる。
+        # 以下のif文をdfsを呼び出す前に移動させれば、上記の対応は不要
+        if S[i][j] != s[d%5] or visited[i][j] != 0:
+            return False
+        if i == H-1 and j == W-1:
+            return True
+        visited[i][j] = 1
+        for di,dj in [(1,0),(-1,0),(0,1),(0,-1)]:
+            ni = i + di
+            nj = j + dj
+            if 0<= ni < H and 0 <= nj < W:
+                if dfs(ni, nj, d+1):
+                    return True
+        return False
 
-
-    
-    if bfs(0,0,0):
+    if dfs(0,0,0):
         print(YES)
     else:
         print(NO)
