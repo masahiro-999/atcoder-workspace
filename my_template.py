@@ -6,8 +6,11 @@ from functools import reduce,lru_cache
 from bisect import bisect
 from heapq import heapify, heappop, heappush
 sys.setrecursionlimit(5 * 10 ** 5)
-# from pypyjit import set_param
-# set_param('max_unroll_recursion=-1')
+try:
+    from pypyjit import set_param
+    set_param('max_unroll_recursion=-1')
+except ModuleNotFoundError:
+    pass
 input = lambda: sys.stdin.readline().rstrip()
 ii = lambda: int(input())
 mi = lambda: map(int, input().split())

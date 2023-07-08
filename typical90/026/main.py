@@ -6,8 +6,11 @@ from functools import reduce,lru_cache
 from bisect import bisect
 from heapq import heapify, heappop, heappush
 sys.setrecursionlimit(5 * 10 ** 5)
-# from pypyjit import set_param
-# set_param('max_unroll_recursion=-1')
+try:
+    from pypyjit import set_param
+    set_param('max_unroll_recursion=-1')
+except ModuleNotFoundError:
+    pass
 input = lambda: sys.stdin.readline().rstrip()
 ii = lambda: int(input())
 mi = lambda: map(int, input().split())
@@ -18,32 +21,27 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 def solve(N: int, A: "List[int]", B: "List[int]"):
 
-    def bfs(start, ans1, ans2):
-        dist = [-1]*N
-        que = deque([start])
-        dist[start] = 0
-        while que:
-            i = que.popleft()
-            d = dist[i]
-            if d % 2 == 0:
-                ans1.append(i+1)
-            else:
-                ans2.append(i+1)
-            for j in g[i]:
-                if dist[j]==-1:
-                    dist[j] = d+1
-                    que.append(j)
-        return dist
+    def dfs(p, cur):
+        nonlocal color, ans1, ans2
+        color[p] = cur
+        if cur == 0:
+            ans1.append(p+1)
+        else:
+            ans2.append(p+1)
+        for next in g[p]:
+            if color[next] == -1:
+                dfs(next, 1-cur)
 
     ans1 = []
     ans2 = []
+    color = [-1]*N
     g = defaultdict(list)
     for a,b in zip(A,B):
         a -= 1
         b -= 1
         g[a].append(b)
         g[b].append(a)
-    bfs(A[0]-1, ans1, ans2)    
+    dfs(A[0]-1, 0)        
     ans  = ans1 if len(ans1)> len(ans2) else ans2
     print(*ans[:N//2])
 
