@@ -17,6 +17,11 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 
 def solve(N: int, S: "List[str]"):
+    users = set()
+    for i,s in enumerate(S):
+        if s not in users:
+            print(i+1)
+            users.add(s)
 
 def main():
     N = int(next(tokens))  # type: int
