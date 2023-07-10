@@ -16,7 +16,27 @@ inf = 2 ** 63 - 1
 tokens = (i for line in iter(input, "") for i in line.split())
 
 
-def solve(N: int, lx: "List[int]", ly: "List[int]", rx: "List[int]", ry: "List[int]"):
+def solve(N: int, lx_list: "List[int]", ly_list: "List[int]", rx_list: "List[int]", ry_list: "List[int]"):
+    def get_v(d,i):
+        return [d[x][i] for x in range(1001)]
+
+    d = [[0]*1001 for _ in range(1001)]
+    for lx,ly,rx,ry in zip(lx_list, ly_list, rx_list, ry_list):
+        d[ly][lx] += 1
+        d[ly][rx] += -1
+        d[ry][lx] += -1
+        d[ry][rx] += 1
+
+    d1 = [list(accumulate(d[i])) for i in range(1001)]
+    d2 = [list(accumulate(get_v(d1,i))) for i in range(1001)]
+
+    c = Counter()
+    for i in range(1001):        
+        for j in range(1001):
+            c[d2[i][j]] += 1
+    for i in range(1, N+1):
+        print(c[i])        
+    
 
 def main():
     N = int(next(tokens))  # type: int
