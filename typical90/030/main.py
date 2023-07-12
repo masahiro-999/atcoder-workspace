@@ -17,6 +17,22 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 
 def solve(N: int, K: int):
+        
+    num_max = N
+    prime_count=[0]*(num_max+1)
+    for i in range(2, num_max+1):
+        if prime_count[i] != 0:
+            continue
+        prime_count[i] += 1
+        k = i*2
+        while k <= num_max:
+            prime_count[k] += 1
+            k += i
+    ans = 0
+    for i,val in enumerate(prime_count):
+        if val >= K:
+            ans += 1
+    print(ans)
 
 def main():
     N = int(next(tokens))  # type: int
