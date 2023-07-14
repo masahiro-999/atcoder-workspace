@@ -1,7 +1,7 @@
 import sys, re
 from math import ceil, floor, sqrt, pi, factorial, gcd,sin,cos,tan,asin,acos,atan2,exp,log,log10
 from collections import deque, Counter, defaultdict
-from itertools import product, accumulate
+from itertools import product, accumulate,permutations
 from functools import reduce,lru_cache
 from bisect import bisect
 from heapq import heapify, heappop, heappush
@@ -17,6 +17,36 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 
 def solve(N: int, A: "List[List[int]]", M: int, X: "List[int]", Y: "List[int]"):
+    def is_valid(l):
+        for i in range(len(l)-1):
+            p = l[i]
+            q = l[i+1]
+            try:
+                if q in t[p]:
+                    return False
+            except KeyError:
+                continue
+        return True
+    
+    def calc_time(i_list):
+        return sum(A[i][j] for i,j in zip(i_list,range(N)))
+
+    t = defaultdict(list)
+    for x,y in zip(X,Y):
+        x -= 1
+        y -= 1
+        t[x].append(y)
+        t[y].append(x)
+
+    ans = inf
+    for i_list in permutations(range(0,N), N):
+        if is_valid(i_list):
+            time = calc_time(i_list)
+            ans = min(ans, time)
+    if ans == inf:
+        print(-1)
+    else:
+        print(ans)
 
 def main():
     N = int(next(tokens))  # type: int
