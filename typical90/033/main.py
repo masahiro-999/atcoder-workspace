@@ -17,6 +17,13 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 
 def solve(H: int, W: int):
+    if H == 1:
+        ans = W
+    elif W == 1:
+        ans = H
+    else:
+        ans = ((H+1) // 2) * ((W+1)//2)
+    print(ans)
 
 def main():
     H = int(next(tokens))  # type: int
