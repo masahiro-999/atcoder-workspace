@@ -21,7 +21,7 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 def solve(N: int, M: int):
     if N > M//2:
-        ans = N
+        ans = M//2
     else:
         M += N*2
         ans = M//4
