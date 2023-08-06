@@ -1,0 +1,14 @@
+{
+ "code_filename": "main.py",
+ "judge": {
+  "judge_type": "normal"
+ },
+ "lang": "python",
+ "problem": {
+  "alphabet": "D",
+  "contest": {
+   "contest_id": "abc313"
+  },
+  "problem_id": "abc313_d"
+ },
+}
