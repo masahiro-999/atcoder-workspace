@@ -22,28 +22,43 @@ MOD = 5
 YES = "Yes"
 NO = "No"
 
-def solve(H: int, W: int, S: "List[str]"):
-    
-    s = ["s","n","u","k","e"]
-    visited = [[0]*W for _ in range(H)]
+from dataclasses import dataclass
 
-    def dfs(i,j,d):
-        # set_param('max_unroll_recursion=-1') を実行しないとTLEとなる。
-        # 以下のif文をdfsを呼び出す前に移動させれば、上記の対応は不要
-        if S[i][j] != s[d%5] or visited[i][j] != 0:
-            return False
-        if i == H-1 and j == W-1:
-            return True
-        visited[i][j] = 1
+@dataclass
+class Board:
+    H: int
+    W: int
+    S: list
+
+    def get_neighbor_pos(self, pos):
+        i,j = pos
         for di,dj in [(1,0),(-1,0),(0,1),(0,-1)]:
             ni = i + di
             nj = j + dj
-            if 0<= ni < H and 0 <= nj < W:
-                if dfs(ni, nj, d+1):
+            if 0<= ni < self.H and 0 <= nj < self.W:
+                yield (ni,nj)
+    def get(self, pos):
+        i,j = pos
+        return self.S[i][j]
+
+def solve(H: int, W: int, S: "List[str]"):
+    
+    s = ["s","n","u","k","e"]
+    visited = defaultdict(bool)
+
+    board = Board(H,W,S)
+
+    def dfs(pos,d):
+        if pos == (H-1,W-1):
+            return True
+        for next_pos in board.get_neighbor_pos(pos):
+            if not visited[next_pos] and board.get(next_pos) == s[(d+1)%5]:
+                visited[next_pos] = True
+                if dfs(next_pos, d+1):
                     return True
         return False
 
-    if dfs(0,0,0):
+    if dfs((0,0),0):
         print(YES)
     else:
         print(NO)
