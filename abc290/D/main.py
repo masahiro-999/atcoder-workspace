@@ -22,13 +22,17 @@ MOD = 4
 
 def solve(queue):
     for [n, d, k] in queue:
-        d = d % n
-        w = (n-1)//d+1
-        if w == 0:
-            w = 1
-        a = (k-1) // w
-        b = (k-1) % w
-        ans = a + d*b
+        if gcd(n,d) == 1:
+            ans = ((k-1)*d) % n
+        else:
+            d = d % n
+            if d == 0:
+                ans = k-1
+            else:
+                s = n // gcd(n,d)
+                a = ((k-1)*d) %n
+                b = (k-1) //s
+                ans = a + b
         print(ans)
 
 def main():
