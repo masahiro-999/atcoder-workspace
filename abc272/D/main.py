@@ -18,41 +18,44 @@ li = lambda: list(mi())
 inf = 2 ** 63 - 1
 tokens = (i for line in iter(input, "") for i in line.split())
 
+# floor_sqrt(n) = floor(sqrt(n))
+def floor_sqrt(n):
+    # Binary Search
+    left = 0
+    right = n
+    while left < right:
+        center = (left + right + 1) // 2
+        if center * center <= n:
+            left = center
+        else:
+            right = center - 1
+    return left
 
 def solve(N: int, M: int):
-    def add(p1,p2):
-         return (p1[0]+p2[0], p1[1]+p2[1])
-    def is_ok(p):
-        return 0<= p[0]<N and 0<=p[1]<N
-
     mx = int(sqrt(M))
     can_move = set()
     for i in range(0,mx+1):
-        for j in range(i,mx+1):
-            if i*i+j*j == M:
-                can_move.add((i,j))
-                can_move.add((i,-j))
-                can_move.add((-i,j))
-                can_move.add((-i,-j))
-                can_move.add((j,i))
-                can_move.add((j,-i))
-                can_move.add((-j,i))
-                can_move.add((-j,-i))
+        j = floor_sqrt(M - i*i)
+        if i*i+j*j == M:
+            can_move.add((i,j))
+            can_move.add((i,-j))
+            can_move.add((-i,j))
+            can_move.add((-i,-j))
 
-    d = defaultdict(lambda : -1)
-    d[(0,0)] = 0
+    d =[[-1]*N for _ in range(N)]
+    d[0][0] = 0
     q = deque()
     q.append((0,0))
     while q:
         pos = q.popleft()
         for dxdy in can_move:
-                pos_next = add(pos, dxdy)
-                if is_ok(pos_next) and d[pos_next] == -1:
+                pos_next = pos[0]+dxdy[0],pos[1]+dxdy[1] 
+                if 0<=pos_next[0]<N and 0<=pos_next[1]<N and d[pos_next[0]][pos_next[1]] == -1:
                      q.append(pos_next)
-                     d[pos_next] = d[pos]+1
+                     d[pos_next[0]][pos_next[1]] = d[pos[0]][pos[1]]+1
 
-    for i in range(N):
-        print(" ".join([str(d[(i,j)]) for j in range(N)]))
+    for i in d:
+        print(*i)
 
 def main():
     N = int(next(tokens))  # type: int
