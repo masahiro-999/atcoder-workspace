@@ -22,38 +22,32 @@ YES = "Yes"
 NO = "No"
 
 def solve(N: int, S: int, A: "List[int]", B: "List[int]"):
-    min_list = [min(a,b) for a,b in zip(A,B)]
-    c = [abs(a-b) for a,b in zip(A,B)]
-    sum_of_min = sum(min_list)
-    if sum_of_min > S or sum_of_min + sum(c) < S:
-        print(NO)
-        return 
-    target =  S - sum_of_min
-    if target == 0:
+
+    d = [[False]*(S+1) for _ in range(N+1)]
+    d[0][0] = True
+    for i,(a,b) in enumerate(zip(A,B)):
+        for j in range(S+1):
+            if d[i][j]:
+                if j+a <= S:
+                    d[i+1][j+a] = True
+                if j+b <= S:
+                    d[i+1][j+b] = True
+
+    if d[N][S]:
+        ans = []
+        s = S
+        for i,(a,b) in reversed(list(enumerate(zip(A,B)))):
+            if d[i][s-a]:
+                ans.append("H")
+                s -= a
+            else:
+                ans.append("T")
+                s -= b
+        ans = "".join(reversed(ans))
         print(YES)
-        print("H"*N)
-        return
-    d = [[[] for _ in range(target+1)] for _ in range(N)]
-    d[0][target - c[0]].append(0)
-    for i in range(1,N):
-        for j in reversed(range(0,target+1)):
-            if d[i][j] == []:
-                d[i][j] = d[i-1][j][:]
-            if j >= c[i] and d[i-1][j-c[i]] == []:
-                if d[i-1][j] != [] or j ==target:
-                    d[i][j-c[i]] = d[i-1][j][:]
-                    d[i][j-c[i]].append(i)
-    ans = set(d[N-1][0])
-    if not ans:
+        print(ans)
+    else:
         print(NO)
-        return
-    result = ["H" if (A[i]>B[i]) == (i in ans) else "T"  for i in range(N)]
-    ret = 0
-    for i,w in enumerate(result):
-        ret += A[i] if w == "H" else B[i]
-    print(YES)
-    print("".join(result))
-    # print(ret)
 
 def main():
     N = int(next(tokens))  # type: int
