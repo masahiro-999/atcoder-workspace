@@ -34,13 +34,9 @@ def solve(N,M,a):
         except IndexError:
             continue
         if table[a] != -1:
-            if table[a] != i:
-                q.append(i)
-                q.append(table[a])
-                del table[a]
-            else:
-                # 同じ色のボールが重なってる場合
-                break
+            q.append(i)
+            q.append(table[a])
+            del table[a]
         else:
             table[a] = i
 
