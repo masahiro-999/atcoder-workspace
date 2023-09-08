@@ -1,4 +1,4 @@
-from main import solve
+from abc228.D.main import solve
 
 import pytest
 

@@ -1,4 +1,4 @@
-from main import solve
+from abc229.D.main import solve
 
 import pytest
 from itertools import accumulate

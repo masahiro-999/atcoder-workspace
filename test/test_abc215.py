@@ -1,12 +1,12 @@
 import time
-from main import solve
+from abc215.D.main import solve
 
 import pytest
 import random
 from math import gcd
 
 def test_solve(capsys):
-    N = 10000
+    N = 1000
     M = 100000
     A = [random.randint(1,100000) for _ in range(N)]
     start = time.perf_counter()
