@@ -90,3 +90,14 @@ factorials, invs = prepare(100000,MOD)
 
 def choose(n,a):
     return (factorials[n] * (invs[n-a] * invs[a])) % MOD
+
+
+### Combination
+N = 100
+f = [None]*N
+v = 1
+for i in range(N):
+    f[i] = v
+    v *= (i+1)
+def cmb(n, r):
+    return (f[n] // f[r] // f[n-r])
