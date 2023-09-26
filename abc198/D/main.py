@@ -31,10 +31,16 @@ def solve(S: "List[str]"):
     def create_num(p, str):
         n = 0
         for s in str:
-            t,i = char_table[s]
+            i = char_table[s]
             n *= 10
-            n += p[t][i]
+            n += p[i]
         return n
+    def is_top_i_zero(p):
+        for i in top_i:
+            if p[i] == 0:
+                return True
+        return False
+
     # Sに含まれる文字種を数える
     char_set = set()
     for s in S:
@@ -44,27 +50,23 @@ def solve(S: "List[str]"):
         print("UNSOLVABLE")
         return
 
-    top_char = set([s[0] for s in S])
-    others_char = char_set - top_char
-    top_char_list =[s for s in top_char]
-    others_char_list = [s for s in others_char]
+    char_list =[s for s in char_set]
 
     char_table = {}
-    for i,c in enumerate(top_char_list):
-        char_table [c] = (0,i)
-    for i,c in enumerate(others_char_list):
-        char_table [c] = (1,i)
+    for i,c in enumerate(char_list):
+        char_table [c] = i
 
+    top_i = [char_table[s[0]] for s in S]
     # 全探索
-    for top_p in permutations(range(1,10),len(top_char)):
-        others_set = set(range(10))-set(top_p)
-        for others_p in permutations(others_set,len(others_char)):
-            n1,n2,n3 = check([top_p,others_p])
-            if n1 is not None:
-                print(n1)
-                print(n2)
-                print(n3)
-                return
+    for p in permutations(range(0,10),kind_of_char):
+        if is_top_i_zero(p):
+            continue
+        n1,n2,n3 = check(p)
+        if n1 is not None:
+            print(n1)
+            print(n2)
+            print(n3)
+            return
     print("UNSOLVABLE")
     return
         
