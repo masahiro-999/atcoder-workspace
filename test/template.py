@@ -1,5 +1,8 @@
+import os, sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 import time
-import sys, re
+import re
 from math import ceil, floor, sqrt, pi, factorial, gcd,sin,cos,tan,asin,acos,atan2,exp,log,log10
 from collections import deque, Counter, defaultdict
 from itertools import product, accumulate
