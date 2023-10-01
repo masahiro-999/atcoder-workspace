@@ -22,7 +22,7 @@ tokens = (i for line in iter(input, "") for i in line.split())
 def solve(N,K,P,A):
     # dp[p1,p2,..pk] コストの総和の最小値
     dp = defaultdict(lambda: inf)
-    dp["0"*K] = 0
+    dp[(0,)*K] = 0
     for i in range(N):
         c,a = A[i]
         ndp = defaultdict(lambda: inf)
@@ -32,25 +32,14 @@ def solve(N,K,P,A):
             # a,cを使う
             ok = False
             for j in range(K):
-                if int(k[j]) <P:
+                if k[j] <P:
                     ok = True
                     break
             if ok:
-                nk = [int(x) for x in k]
-                for j in range(K):
-                    nk[j] = min(P,nk[j]+a[j])
-                nk = "".join([str(x) for x in nk])
+                nk = tuple([min(P,x+y) for x,y in zip(k,a)])
                 ndp[nk] = min(ndp[nk], v+c)
         dp = ndp    
-    ans = inf
-    for k,v in dp.items():
-        ok = True
-        for j in range(K):
-            if int(k[j]) <P:
-                ok = False
-                break
-        if ok:
-            ans = min(ans,v)
+    ans = dp[(P,)*K]
     if ans == inf:
         print(-1)
     else:
