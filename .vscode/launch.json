@@ -64,5 +64,32 @@
                 "in_4.txt"
             ]            
         },
+        {
+            "name": "Python < in_5.txt",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${fileDirname}",
+            "args": [
+                "<",
+                "in_5.txt"
+            ]            
+        },
+        {
+            "name": "Python < in_6.txt",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${fileDirname}",
+            "args": [
+                "<",
+                "in_6.txt"
+            ]            
+        },
+
     ]
 }
