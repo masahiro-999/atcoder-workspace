@@ -18,6 +18,21 @@ li = lambda: list(mi())
 inf = 2 ** 63 - 1
 tokens = (i for line in iter(input, "") for i in line.split())
 
+def solve2(N: int, C: int, a: "List[int]", b: "List[int]", c: "List[int]"):
+    d = defaultdict(int)
+    for i,j,k in zip(a,b,c):
+        d[i] += k
+        d[j+1] -= k
+
+    prev = 0
+    ans = 0
+    sum_v = 0
+    for k,v in sorted(d.items()):
+        ans += min(sum_v,C)*(k-prev)
+        sum_v += v
+        prev = k
+
+    print(ans)
 
 def solve(N: int, C: int, a: "List[int]", b: "List[int]", c: "List[int]"):
     active=set()
@@ -54,7 +69,7 @@ def main():
         a[i] = int(next(tokens))
         b[i] = int(next(tokens))
         c[i] = int(next(tokens))
-    solve(N, C, a, b, c)
+    solve2(N, C, a, b, c)
     return
 
 main()
