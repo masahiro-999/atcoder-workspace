@@ -21,16 +21,13 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 def solve(N: int, A: "List[int]"):
     A.sort()
-    acc_head = [0]+list(accumulate(A))
-    acc_tail = [0]+list(accumulate(A[::-1]))
+    acc = [0]+list(accumulate(A))
     s = 0
     for i,a in enumerate(A):
         # iより前
         num_head = i
-        num_tail = N-1-i
-        s += a*num_head - acc_head[num_head]
-        s += acc_tail[num_tail] - a*num_tail
-    print(s//2)
+        s += a*num_head - acc[num_head]
+    print(s)
 
 def main():
     N = int(next(tokens))  # type: int
