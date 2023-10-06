@@ -1,7 +1,7 @@
 import sys, re
 from math import ceil, floor, sqrt, pi, factorial, gcd,sin,cos,tan,asin,acos,atan2,exp,log,log10
 from collections import deque, Counter, defaultdict
-from itertools import product, accumulate
+from itertools import product, accumulate,permutations,combinations
 from functools import reduce,lru_cache
 from bisect import bisect
 from heapq import heapify, heappop, heappush
