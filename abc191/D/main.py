@@ -19,6 +19,11 @@ inf = 2 ** 63 - 1
 tokens = (i for line in iter(input, "") for i in line.split())
 
 def f(cx,cy,r,x,y):
+    cx = round(cx * 10000)
+    cy = round(cy * 10000)
+    r *= 10000
+    x *= 10000
+    y *= 10000
     if r*r >= (x-cx)**2+(y-cy)**2:
         return 1
     return 0
@@ -26,12 +31,7 @@ def f(cx,cy,r,x,y):
 def count_dot_widin_r_at_x(cx,cy,R,x):
     up_y = find_y(cx,cy,R,x,1,int(R+1)+1)
     down_y = find_y(cx,cy,R,x,-1,int(-R-1)-1)
-    if up_y > 0 and down_y <0:
-        return up_y - down_y +1
-    elif up_y > 0:
-        return up_y + f(cx,cy,R,x,0)
-    else:
-        return -down_y + f(cx,cy,R,x,0)
+    return up_y - down_y + f(cx,cy,R,x,0)
 
 def find_y(cx,cy,R,x,start_l,start_r):
     l = start_l
