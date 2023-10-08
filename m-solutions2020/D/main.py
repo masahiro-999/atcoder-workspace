@@ -20,22 +20,10 @@ tokens = (i for line in iter(input, "") for i in line.split())
 
 
 def solve(N: int, A: "List[int]"):
-    d_list = []
-    is_going_up = A[0] < A[1]
-    bottom = -1
-    if is_going_up:
-        bottom = A[0]
-    for i in range(1,N):
-        if is_going_up and (i==N-1 or A[i] > A[i+1]):
-            d_list.append((bottom, A[i]))
-            is_going_up = False
-        if not is_going_up and (i==N-1 or A[i] < A[i+1]):
-            bottom = A[i]
-            is_going_up = True
-
     x = 1000
-    for bottom, top in d_list:
-        x += (x//bottom)*(top-bottom)
+    for a,b in zip(A[:-1],A[1:]):
+        if a<b:
+            x += (x//a)*(b-a)
     print(x)
 
 def main():
