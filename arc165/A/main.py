@@ -49,16 +49,8 @@ def solve(T, c_list):
         if x > 1:
             p_list.append((x,1))
 
-        s = 0
-        if len(p_list)<2:
-            return False
-        for p,n in p_list:
-            s += p*n
-        if s <= N:
-            return True
-        else:
-            return False
-        
+        return len(p_list)>1
+    
     for c in c_list:
         if check(c):
             print(YES)
