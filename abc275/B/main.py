@@ -94,14 +94,16 @@ try:
 except ModuleNotFoundError:
     pass
 
+MOD = 998244353
 
-N = II()  # type: int
+A,B,C,D,E,F = TII()  # type: int
 
-@lru_cache()
-def f(n):
-    if n == 0:
-        return 1
-    return f(n//2)+f(n//3)
+A %= MOD
+B %= MOD
+C %= MOD
+D %= MOD
+E %= MOD
+F %= MOD
 
-ans = f(N)
+ans = (A*B*C-D*E*F)%MOD
 print(ans)

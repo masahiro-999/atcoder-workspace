@@ -96,12 +96,10 @@ except ModuleNotFoundError:
 
 
 N = II()  # type: int
+H = LII()
 
-@lru_cache()
-def f(n):
-    if n == 0:
-        return 1
-    return f(n//2)+f(n//3)
+a = [(h,i+1) for i,h in enumerate(H)]
 
-ans = f(N)
+a.sort()
+ans = a[-1][1]
 print(ans)

@@ -95,13 +95,40 @@ except ModuleNotFoundError:
     pass
 
 
-N = II()  # type: int
+S = [I() for _ in range(9)]  # type: "List[str]"
 
-@lru_cache()
-def f(n):
-    if n == 0:
-        return 1
-    return f(n//2)+f(n//3)
+def mid(s,t):
+    return ((s[0]+t[0])//2,(s[1]+t[1])//2)
 
-ans = f(N)
-print(ans)
+def rot(s,c):
+    i= -(s[1]-c[1]) + c[0]
+    j= (s[0]-c[0]) + c[1]
+    return (i,j)
+
+def is_dot(s):
+    if s[0] % 2 == 1 or s[1] % 2 == 1:
+        return False
+    i = s[0]//2
+    j = s[1]//2
+    if not 0<=i<9:
+        return False
+    if not 0<=j<9:
+        return False
+    return S[i][j]=="#"
+
+ans = 0
+for s in product(range(0,18,2), range(0,18,2)):
+    if not is_dot(s):
+        continue
+    for t in product(range(0,18,2), range(0,18,2)):
+        if not is_dot(t):
+            continue
+        if s==t:
+            continue
+        c = mid(s,t)
+        d1 = rot(s,c)
+        d2 = rot(t,c)
+        if is_dot(d1) and is_dot(d2):
+            ans += 1
+            # print(s,t,d1,d2)
+print(ans//4)
