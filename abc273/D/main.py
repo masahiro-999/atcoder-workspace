@@ -1,85 +1,143 @@
-import sys, re
-from math import ceil, floor, sqrt, pi, factorial, gcd,sin,cos,tan,asin,acos,atan2,exp,log,log10
-from collections import deque, Counter, defaultdict
-from itertools import product, accumulate
-from functools import reduce,lru_cache
-from bisect import bisect_left
-from heapq import heapify, heappop, heappush
+from io import BytesIO, IOBase
+
+import sys
+import os
+
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
+from bisect import bisect, bisect_left, bisect_right
+from collections import Counter, defaultdict, deque
+from copy import deepcopy
+from functools import cmp_to_key, lru_cache, reduce
+from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
+from itertools import product, accumulate,permutations,combinations, count
+from operator import add, iand, ior, itemgetter, mul, xor
+from string import ascii_lowercase, ascii_uppercase, ascii_letters
+from typing import *
+
+BUFSIZE = 4096
+
+class FastIO(IOBase):
+    newlines = 0
+
+    def __init__(self, file):
+        self._fd = file.fileno()
+        self.buffer = BytesIO()
+        self.writable = "x" in file.mode or "r" not in file.mode
+        self.write = self.buffer.write if self.writable else None
+
+    def read(self):
+        while True:
+            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
+            if not b:
+                break
+            ptr = self.buffer.tell()
+            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
+        self.newlines = 0
+        return self.buffer.read()
+
+    def readline(self):
+        while self.newlines == 0:
+            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
+            self.newlines = b.count(b"\n") + (not b)
+            ptr = self.buffer.tell()
+            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
+        self.newlines -= 1
+        return self.buffer.readline()
+
+    def flush(self):
+        if self.writable:
+            os.write(self._fd, self.buffer.getvalue())
+            self.buffer.truncate(0), self.buffer.seek(0)
+
+class IOWrapper(IOBase):
+    def __init__(self, file):
+        self.buffer = FastIO(file)
+        self.flush = self.buffer.flush
+        self.writable = self.buffer.writable
+        self.write = lambda s: self.buffer.write(s.encode("ascii"))
+        self.read = lambda: self.buffer.read().decode("ascii")
+        self.readline = lambda: self.buffer.readline().decode("ascii")
+
+sys.stdin = IOWrapper(sys.stdin)
+sys.stdout = IOWrapper(sys.stdout)
+input = lambda: sys.stdin.readline().rstrip("\r\n")
+
+if True:
+    def I():
+        return input()
+
+    def II():
+        return int(input())
+
+    def MII():
+        return map(int, input().split())
+
+    def LI():
+        return list(input().split())
+
+    def TI():
+        return tuple(input().split())
+
+    def LII():
+        return list(map(int, input().split()))
+
+    def TII():
+        return tuple(map(int, input().split()))
+
+    def GMI():
+        return map(lambda x: int(x) - 1, input().split())
+
+    def LGMI():
+        return list(map(lambda x: int(x) - 1, input().split()))
+
 sys.setrecursionlimit(5 * 10 ** 5)
 try:
     from pypyjit import set_param
     set_param('max_unroll_recursion=-1')
 except ModuleNotFoundError:
     pass
-input = lambda: sys.stdin.readline().rstrip()
-ii = lambda: int(input())
-mi = lambda: map(int, input().split())
-li = lambda: list(mi())
-inf = 2 ** 63 - 1
-tokens = (i for line in iter(input, "") for i in line.split())
+
+def find_both_neighber(lst, x):
+    i = bisect_left(lst, x)
+    return lst[i-1], lst[i]
+
+# a = find_both_neighber([3,7],4,10)
+# print(a)
+
+H,W,rs,cs = TII()
+N = II()
+rc = [TII() for _ in range(N)]
+Q = II()
+dl = [TI() for _ in range(Q)]
+
+v_list = defaultdict(lambda: [-1,W])
+h_list = defaultdict(lambda: [-1,H])
+
+for r,c in rc:
+    r -= 1
+    c -= 1
+    v_list[r].append(c)
+    h_list[c].append(r)
+
+for r in v_list.keys():
+    v_list[r].sort()
+for c in h_list.keys():
+    h_list[c].sort()
 
 
-def solve(H,W,rs,cs,N,rc,Q,dl):
-    def limit_horizontal(r,c):
-        return limit_sub(r,c,r_list,W)
-
-    def limit_vertical(r,c):
-        return limit_sub(c,r,c_list,H)
-
-    def limit_sub(r,c,list,mx):
-        if list[r] == []:
-            return(1,mx)
-        i = bisect_left(list[r],c)
-        right = list[r][i]-1
-        left = list[r][i-1]+1
-        return(left, right)
-
-    r_list = defaultdict(list)
-    c_list = defaultdict(list)
-    for r,c in rc:
-        r_list[r].append(c)
-        c_list[c].append(r)
-    for k in r_list.keys():
-        r_list[k].append(0)
-        r_list[k].append(W+1)
-        r_list[k].sort()
-    for k in c_list.keys():
-        c_list[k].append(0)
-        c_list[k].append(H+1)
-        c_list[k].sort()
-
-    r = rs
-    c = cs
-    for d,l in dl:
+r,c = rs-1, cs-1
+for d,l in dl:
+    l = int(l)
+    if d in "UD":
+        kabe_l, kabe_r = find_both_neighber(h_list[c],r)
+        if d == "U":
+            r = max(kabe_l+1, r-l)
+        else:
+            r = min(kabe_r-1, r+l)
+    else:
+        kabe_l, kabe_r = find_both_neighber(v_list[r],c)
         if d == "L":
-            limit,_ = limit_horizontal(r,c)
-            c = max(c-l, limit)
-        elif d == "R":
-            _, limit = limit_horizontal(r,c)
-            c = min(c+l, limit)
-        elif d == "U":
-            limit,_ = limit_vertical(r,c)
-            r = max(r-l, limit)
-        elif d == "D":
-            _, limit = limit_vertical(r,c)
-            r = min(r+l, limit)
-        print(r,c)
-
-
-def main():
-    def get_dl():
-        [d,l] = input().split()
-        return (d, int(l))
-    H = int(next(tokens))  # type: int
-    W = int(next(tokens))  # type: int
-    rs = int(next(tokens))  # type: int
-    cs = int(next(tokens))  # type: int
-    N = int(next(tokens))  # type: int
-    rc = [li() for _ in range(N)]
-    Q = int(next(tokens))  # type: int
-    dl = [get_dl() for _ in range(Q)]
-
-    solve(H,W,rs,cs,N,rc,Q,dl)
-    return
-
-main()
+            c = max(kabe_l+1, c-l)
+        else:
+            c = min(kabe_r-1, c+l)
+    print(r+1,c+1)
