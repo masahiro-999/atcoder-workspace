@@ -3,7 +3,7 @@ from io import BytesIO, IOBase
 import sys
 import os
 
-from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10,isqrt
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
@@ -94,38 +94,20 @@ try:
 except ModuleNotFoundError:
     pass
 
+YES = "Yes"
+NO = "No"
 
-N,M = TII()  # type: int
+N,M = TII()
+X = [set(LII()[1:]) for _ in range(M)]
 
-sqrt_val = set()
-for i in range(0,isqrt(M)+1):
-    sqrt_val.add(i*i)
-
-# print(sqrt_val)
-ij = set()
-i = 0
-while 2*i*i <= M:
-    if M-i*i in sqrt_val:
-        j = isqrt(M-i*i)
-        ij.add((i,j))
-        ij.add((j,i))
-    i+= 1
-
-# print("ij",ij)
-dist = [[-1]*N for _ in range(N)]
-
-q = deque()
-q.append((0,0))
-dist[0][0]= 0
-while q:
-    i,j = q.popleft()
-    for di,dj in ij:
-        # print(f'ij={i},{j}, di,dj={di},{dj}')
-        for next_i, next_j in product([i+di,i-di],[j+dj,j-dj]):
-            # print(i,j,next_i, next_j)
-            if (0<=next_i<N and 0<=next_j<N) and dist[next_i][next_j] == -1:
-                dist[next_i][next_j] = dist[i][j]+1
-                q.append((next_i,next_j))
-
-for d in dist:
-    print(*d)
+ans = YES
+for i in range(1,N):
+    for j in range(i+1,N+1):
+        is_ok = False
+        for k in range(M):
+            if i in X[k] and j in X[k]:
+                is_ok = True
+                break
+        if is_ok == False:
+            ans = NO
+print(ans)
