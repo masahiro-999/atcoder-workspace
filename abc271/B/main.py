@@ -94,25 +94,10 @@ try:
 except ModuleNotFoundError:
     pass
 
-YES = "Yes"
-NO = "No"
+N,Q = TII()
 
-N,S = TII()  # type: int
+a = [TII() for _ in range(N)]
+st = [TII() for _ in range(Q)]
 
-ab = [TII() for _ in range(N)]
-
-dp = [[-1]*10001 for _ in range(N+1)]
-
-dp[0][0] = ""
-
-for i,(a,b) in enumerate(ab):
-    for j in range(10001):
-        if dp[i][j] != -1:
-            dp[i+1][j+a] = dp[i][j]+"H"
-            dp[i+1][j+b] = dp[i][j]+"T"
-if dp[N][S] != -1:
-    print(YES)
-    print(dp[N][S])
-else:
-    print(NO)
-
+for s,t in st:
+    print(a[s-1][t])

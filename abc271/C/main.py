@@ -94,25 +94,33 @@ try:
 except ModuleNotFoundError:
     pass
 
-YES = "Yes"
-NO = "No"
 
-N,S = TII()  # type: int
+N = II()  # type: int
+A = LII()
 
-ab = [TII() for _ in range(N)]
+a = list(set(A))
 
-dp = [[-1]*10001 for _ in range(N+1)]
+dup = N - len(a)
+a.sort()
+q = deque(a)
 
-dp[0][0] = ""
+dummy = 1000000001
+for _ in range(dup):
+    q.append(dummy)
 
-for i,(a,b) in enumerate(ab):
-    for j in range(10001):
-        if dp[i][j] != -1:
-            dp[i+1][j+a] = dp[i][j]+"H"
-            dp[i+1][j+b] = dp[i][j]+"T"
-if dp[N][S] != -1:
-    print(YES)
-    print(dp[N][S])
-else:
-    print(NO)
+cnt = 1
+while True:
+    # 一致するまで売り買いする
+    while len(q)>1 and q[0] != cnt:
+        q.pop()
+        q.pop()
+        cnt += 1
+    # 読める間進める
+    while len(q) > 0 and q[0] == cnt:
+        cnt += 1
+        q.popleft()
+    # 終了判定
+    if len(q) < 2:
+        break
 
+print(cnt-1)
