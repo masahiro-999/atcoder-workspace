@@ -102,20 +102,39 @@ D = [LII() for _ in range(N)]
 
 inf = 10**18
 
+# 密グラフのダイクストラ
+# プライオリティキューを用いず最小のパスをすべて操作して求める場合
+# https://qiita.com/convexineq/items/aca8dde73cc866aa362a
 def dijkstra(s,t,D):
-    q = [(0,s)]
+    done = [False]*N
     t[s] = 0
-    heapify(q)
-    while q:
-        (d,p) = heappop(q)
-        for next_p in range(N):
-            if next_p == p:
+    for _ in range(N):
+        # 未確定で最小のpを調べる
+        (d,p) = min([(d,p) for p,d in enumerate(t) if done[p]==False])
+        done[p] = True
+        # pの次の値を更新する
+        for i in range(N):
+            if done[i]:
                 continue
-            c = D[p][next_p]
-            if t[next_p] > d + c:
-                # 新しいパスの方が近い
-                t[next_p] = d + c
-                heappush(q, (t[next_p], next_p))
+            t[i] = min(t[i],d + D[p][i])
+
+# heapqueueを使う場合
+# def dijkstra(s,t,D):
+#     q = [(0,s)]
+#     t[s] = 0
+#     heapify(q)
+#     while q:
+#         (d,p) = heappop(q)
+#         if t[p] < d:
+#             continue
+#         for next_p in range(N):
+#             if next_p == p:
+#                 continue
+#             c = D[p][next_p]
+#             if t[next_p] > d + c:
+#                 # 新しいパスの方が近い
+#                 t[next_p] = d + c
+#                 heappush(q, (t[next_p], next_p))
 
 t1 = [inf]*N
 tn = [inf]*N
