@@ -94,45 +94,19 @@ try:
 except ModuleNotFoundError:
     pass
 
+MOD = 4
 
-def create_space_list(keta, num_space):
-    def gen(l,keta, num_space):
-        if keta == 0:
-            spacelist.append(l)
-            return
-        for i in range(num_space+1):
-            gen(l+[i],keta-1,num_space-i)
-    spacelist = []
-    gen([],keta,num_space)
-    return spacelist
+N = II()  # type: int
+P = LII()
 
-N,M = TII()  # type: int
+t = [0]*N
 
-S = [I() for _ in range(N)]
-T = set([I() for _ in range(M)])
+for i,p in enumerate(P):
+    diff = (p-i)%N
+    t[(diff+1)%N]+=1
+    t[diff]+=1
+    t[(diff-1)%N]+=1
 
-S.sort(key=lambda x: len(x))
+ans = max(t)
 
-# create_space_list([],3,2)
-# print(spacelist)
-# exit()
-
-ans = -1
-for p in permutations(S,N):
-    # print(list(p))
-    num_space = 16 - sum([len(x) for x in p])-(N-1)
-    if num_space < 0:
-        break
-    
-    for n_list in create_space_list(N-1, num_space):
-        X = ""
-        for a,b in zip(p, n_list):
-            X += a+"_"*(b+1)
-        X += p[-1]
-
-        if len(X) >= 3 and X not in T:
-            ans = X
-            print(ans)
-            exit()
-        
 print(ans)
