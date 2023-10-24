@@ -94,30 +94,25 @@ try:
 except ModuleNotFoundError:
     pass
 
-inf = 1<<60
 
-N,M = TII()  # type: int
+N,M = TII() 
 A = LII()
 
-def find_max(start):
-    # dp[i][ｊ] i番目までみたｊ個足した
+iA = [(i+1)*a for i,a in enumerate(A)]
+acc_iA = list(accumulate(iA,initial=0))
+acc_A = list(accumulate(A,initial=0))
 
-    dp = [[-inf]*(M+1) for _ in range(N+1)]
+# print(acc_iA)
+# print(acc_A)
+# exit()
+inf = 1<<60
+mx = -inf
+for j in range(N-M+1):
+    s = acc_iA[j+M] - acc_iA[j] - (j)*(acc_A[j+M] - acc_A[j])
+    mx = max(mx,s)
+    # print(j,s)
+print(mx)
 
-    dp[start-1][0] = 0 
-    for i in range(start,N+1):
-        for j in range(M+1):
-            dp[i][j] = max(dp[i][j], dp[i-1][j])
-            
-            if j+1 <= M:
-                dp[i][j+1] = max(dp[i][j+1], dp[i-1][j]+(j+1)*A[i-1])
-            else:
-                break
-    return dp[N][M]
 
-# ans = -inf
-# for i in range(N-M+1):
-#     ans = max(ans, find_max(i+1))
-# print(ans)
-
-print(find_max(1))
+# [0, 5, 13, 10, 42]
+# [0, 5, 9, 8, 16]
