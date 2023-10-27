@@ -95,28 +95,7 @@ except ModuleNotFoundError:
     pass
 
 
-N = II()  # type: int
-txa = [LII() for _ in range(N)]
+S = I()  # type: str
 
-# dp[i][j] i番目までみた。高橋君の場所がjの時の合計値
-b = defaultdict(int)
-mx_t = 0
-for t,x,a in txa:
-    b[(t,x)] =a
-    mx_t = max(mx_t,t)
-
-dp = [[-1]*5 for _ in range(mx_t+1)]
-dp[0][0] = 0
-for t in range(1,mx_t+1):
-    for j in range(5):
-        if j == 0:
-            p = max(dp[t-1][j],dp[t-1][j+1])
-        elif j == 4:
-            p = max(dp[t-1][j-1],dp[t-1][j])
-        else:
-            p = max(dp[t-1][j-1],dp[t-1][j],dp[t-1][j+1])
-        if p != -1:
-            dp[t][j] = p +b[(t,j)]
-# print(dp)
-ans = max(dp[mx_t])
-print(ans)
+x = len(S)//2
+print(S[x])

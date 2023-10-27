@@ -96,27 +96,15 @@ except ModuleNotFoundError:
 
 
 N = II()  # type: int
-txa = [LII() for _ in range(N)]
 
-# dp[i][j] i番目までみた。高橋君の場所がjの時の合計値
-b = defaultdict(int)
-mx_t = 0
-for t,x,a in txa:
-    b[(t,x)] =a
-    mx_t = max(mx_t,t)
+def f(n):
+    if n == 1:
+        return 3.5
+    else:
+        f1 = f(n-1)
+        n_list = [i for i in range(1,7) if i >f1]
+        p = (6-len(n_list))/6
+        q = 1-p
+        return p*f1 + q*sum(n_list)/len(n_list)
 
-dp = [[-1]*5 for _ in range(mx_t+1)]
-dp[0][0] = 0
-for t in range(1,mx_t+1):
-    for j in range(5):
-        if j == 0:
-            p = max(dp[t-1][j],dp[t-1][j+1])
-        elif j == 4:
-            p = max(dp[t-1][j-1],dp[t-1][j])
-        else:
-            p = max(dp[t-1][j-1],dp[t-1][j],dp[t-1][j+1])
-        if p != -1:
-            dp[t][j] = p +b[(t,j)]
-# print(dp)
-ans = max(dp[mx_t])
-print(ans)
+print(f(N))
