@@ -94,43 +94,28 @@ try:
 except ModuleNotFoundError:
     pass
 
-YES = "Yes"
-NO = "No"
 
-N,P,Q,R = TII()  # type: int
 
-A = LII()
+H,W = TII()
 
-acc_a = list(accumulate(A,initial=0))
-def find_sum_n(n):
-    ret = {}
-    s = 0
-    t = 0
-    while t <=N:
-        sum_st= acc_a[t]-acc_a[s]
-        if sum_st >n:
-            s += 1
-        elif sum_st < n:
-            t += 1
-        else:
-            ret[s+1] = t
-            t += 1
-    return ret
+g = [I() for _ in range(H)]
 
-# print(find_sum_n(5))
+visited = defaultdict(bool)
 
-X = find_sum_n(P)
-Y = find_sum_n(Q)
-Z = find_sum_n(R)
+dir_table = {"U":(-1,0),"D":(1,0),"L":(0,-1),"R":(0,1)}
 
-ans = NO
-for x0,x1 in X.items():
-    try:
-        y1 = Y[x1+1]
-        z1 = Z[y1+1]
-    except KeyError:
-        continue
-    ans = YES
-    break
+i,j = 0,0
+while True:
+    dir  = g[i][j]
+    di,dj = dir_table[dir]
+    i,j = i+di, j+dj
+    if i <0 or i >=H or j <0 or j>=W:
+        ans = (i-di+1,j-dj+1)
+        break
+    if visited[(i,j)]:
+        ans = (-1,)
+        break
+    visited[(i,j)] = True
 
-print(ans)
+print(*ans)
+

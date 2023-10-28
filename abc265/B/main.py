@@ -97,40 +97,23 @@ except ModuleNotFoundError:
 YES = "Yes"
 NO = "No"
 
-N,P,Q,R = TII()  # type: int
-
+N,M,T = TII()  # type: int
 A = LII()
+xy = [TII() for _ in range(M)]
 
-acc_a = list(accumulate(A,initial=0))
-def find_sum_n(n):
-    ret = {}
-    s = 0
-    t = 0
-    while t <=N:
-        sum_st= acc_a[t]-acc_a[s]
-        if sum_st >n:
-            s += 1
-        elif sum_st < n:
-            t += 1
-        else:
-            ret[s+1] = t
-            t += 1
-    return ret
+bonus = defaultdict(int)
+for x,y in xy:
+    bonus[x] = y
 
-# print(find_sum_n(5))
-
-X = find_sum_n(P)
-Y = find_sum_n(Q)
-Z = find_sum_n(R)
-
+t = T
 ans = NO
-for x0,x1 in X.items():
-    try:
-        y1 = Y[x1+1]
-        z1 = Z[y1+1]
-    except KeyError:
-        continue
+for i,a in enumerate(A):
+    t = t - a + bonus[i+1]
+    if t <=0:
+        break
+if t > 0:
     ans = YES
-    break
+else:
+    ans = NO
 
 print(ans)
