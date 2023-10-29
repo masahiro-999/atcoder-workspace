@@ -94,16 +94,114 @@ try:
 except ModuleNotFoundError:
     pass
 
+#abc157_dで使用した
 
-S = I()
+class UnionFind():
+    def __init__(self, n):
+        self.n = n
+        self.parents = [-1] * n
 
-A = "atcoder"
+    def find(self, x):
+        if self.parents[x] < 0:
+            return x
+        else:
+            self.parents[x] = self.find(self.parents[x])
+            return self.parents[x]
 
-not_used = [1]*len(S)
+    def union(self, x, y):
+        x = self.find(x)
+        y = self.find(y)
 
-ans = 0
-for a in A:
-    i = S.index(a)
-    not_used[i] = 0
-    ans += sum(not_used[:i+1])
-print(ans)
+        if x == y:
+            return
+
+        if self.parents[x] > self.parents[y]:
+            x, y = y, x
+
+        self.parents[x] += self.parents[y]
+        self.parents[y] = x
+
+    def size(self, x):
+        return -self.parents[self.find(x)]
+
+    def same(self, x, y):
+        return self.find(x) == self.find(y)
+
+    def members(self, x):
+        root = self.find(x)
+        return [i for i in range(self.n) if self.find(i) == root]
+
+    def roots(self):
+        return [i for i, x in enumerate(self.parents) if x < 0]
+
+    def group_count(self):
+        return len(self.roots())
+
+    def all_group_members(self):
+        group_members = defaultdict(list)
+        for member in range(self.n):
+            group_members[self.find(member)].append(member)
+        return group_members
+
+    def __str__(self):
+        return '\n'.join(f'{r}: {m}' for r, m in self.all_group_members().items())
+
+
+N,M,E = TII()
+
+uv = [TII() for _ in range(E)]
+Q = II()
+x = [II() for _ in range(Q)]
+
+set_x = set(x)
+uv_not_in_x = [uv for i,uv in enumerate(uv) if i+1 not in set_x]
+uv_in_x = [uv[i-1] for i in x[::-1]]
+
+# print(uv_not_in_x)
+# print(uv_in_x)
+
+no_powerd = [1]*N + [0]*M
+
+cnt = N
+ans = [N]
+g = UnionFind(N+M)
+for i,(u,v) in enumerate(uv_not_in_x +uv_in_x):
+    u -= 1
+    v -= 1
+    root_u = g.find(u)
+    root_v = g.find(v)
+    diff = 0
+    if root_u != root_v:
+        if no_powerd[root_u] == 0 or no_powerd[root_v] == 0:
+            diff = max(no_powerd[root_u],no_powerd[root_v])
+        g.union(u,v)
+        new_root = g.find(u)
+        no_powerd[new_root] = no_powerd[root_u] + no_powerd[root_v] - diff
+        cnt -= diff 
+    ans.append(cnt)
+    # print(u+1,v+1,cnt)
+
+ans = ans[::-1][1:Q+1]
+
+ans = [N-x for x in ans]
+print(*ans, sep="\n")
+
+# 1 2 3
+# 4 6 9
+# 9 8 10
+
+# 6 4 8
+# 3 5 10
+# 5 2 9
+# 8 3 6
+# 0 1 8
+# 2 4 10
+# 7 1 7
+
+# 6
+# 3
+# 5
+# 8
+# 10
+# 2
+# 7

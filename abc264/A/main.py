@@ -95,15 +95,6 @@ except ModuleNotFoundError:
     pass
 
 
-S = I()
+L,R = TII()
 
-A = "atcoder"
-
-not_used = [1]*len(S)
-
-ans = 0
-for a in A:
-    i = S.index(a)
-    not_used[i] = 0
-    ans += sum(not_used[:i+1])
-print(ans)
+print("atcoder"[L-1:R])

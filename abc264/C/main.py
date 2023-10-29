@@ -94,16 +94,22 @@ try:
 except ModuleNotFoundError:
     pass
 
+YES = "Yes"
+NO = "No"
 
-S = I()
 
-A = "atcoder"
+H1,W1 = TII()
+A = [LII() for _ in range(H1)]
+H2,W2 = TII()
+B = [LII() for _ in range(H2)]
 
-not_used = [1]*len(S)
-
-ans = 0
-for a in A:
-    i = S.index(a)
-    not_used[i] = 0
-    ans += sum(not_used[:i+1])
+for i_list, j_list in product(combinations(range(H1),H2),combinations(range(W1),W2)):
+    # print(i_list,j_list)
+    ans = YES
+    for (bi,ai),(bj,aj) in product(enumerate(i_list),enumerate(j_list)):
+        if A[ai][aj] != B[bi][bj]:
+            ans = NO
+            break
+    if ans == YES:
+        break
 print(ans)

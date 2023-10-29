@@ -95,15 +95,16 @@ except ModuleNotFoundError:
     pass
 
 
-S = I()
+R,C = TII()
 
-A = "atcoder"
+if R > 8:
+    R = 8-(R-8)
+if C > 8:
+    C = 8-(C-8)
 
-not_used = [1]*len(S)
+if R<C:
+    R,C = C,R
 
-ans = 0
-for a in A:
-    i = S.index(a)
-    not_used[i] = 0
-    ans += sum(not_used[:i+1])
+ans = "black" if C % 2 == 1 else "white"
+
 print(ans)
