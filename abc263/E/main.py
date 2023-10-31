@@ -94,27 +94,121 @@ try:
 except ModuleNotFoundError:
     pass
 
-inf = 10*18
+MOD = 998244353
 
-N,L,R = TII()  # type: int
+# https://qiita.com/wotsushi/items/c936838df992b706084c
+# abc298 D
+# abc156 D
+# abc145 D
+# で使った
+
+class ModInt:
+    def __init__(self, x):
+        self.x = x % MOD
+
+    def __str__(self):
+        return str(self.x)
+
+    __repr__ = __str__
+
+    def __add__(self, other):
+        return (
+            ModInt(self.x + other.x) if isinstance(other, ModInt) else
+            ModInt(self.x + other)
+        )
+
+    def __sub__(self, other):
+        return (
+            ModInt(self.x - other.x) if isinstance(other, ModInt) else
+            ModInt(self.x - other)
+        )
+
+    def __mul__(self, other):
+        return (
+            ModInt(self.x * other.x) if isinstance(other, ModInt) else
+            ModInt(self.x * other)
+        )
+
+    def __truediv__(self, other):
+        return (
+            ModInt(
+                self.x * pow(other.x, MOD - 2, MOD)
+            ) if isinstance(other, ModInt) else
+            ModInt(self.x * pow(other, MOD - 2, MOD))
+        )
+
+    def __pow__(self, other):
+        return (
+            ModInt(pow(self.x, other.x, MOD)) if isinstance(other, ModInt) else
+            ModInt(pow(self.x, other, MOD))
+        )
+
+    __radd__ = __add__
+
+    def __rsub__(self, other):
+        return (
+            ModInt(other.x - self.x) if isinstance(other, ModInt) else
+            ModInt(other - self.x)
+        )
+
+    __rmul__ = __mul__
+
+    def __rtruediv__(self, other):
+        return (
+            ModInt(
+                other.x * pow(self.x, MOD - 2, MOD)
+            ) if isinstance(other, ModInt) else
+            ModInt(other * pow(self.x, MOD - 2, MOD))
+        )
+
+    def __rpow__(self, other):
+        return (
+            ModInt(pow(other.x, self.x, MOD)) if isinstance(other, ModInt) else
+            ModInt(pow(other, self.x, MOD))
+        )
+
+def prepare(n, MOD):
+    f = 1
+    factorials = [1]
+    for m in range(1, n + 1):
+        f *= m
+        f %= MOD
+        factorials.append(f)
+    inv = pow(f, MOD - 2, MOD)
+    invs = [1] * (n + 1)
+    invs[n] = inv
+    for m in range(n, 1, -1):
+        inv *= m
+        inv %= MOD
+        invs[m - 1] = inv
+ 
+    return factorials, invs
+
+factorials, invs = prepare(100000,MOD)
+
+def choose(n,a):
+    return (factorials[n] * (invs[n-a] * invs[a])) % MOD
+
+
+
+N = II()  # type: int
 A = LII()
-A1 = [a-L for a in A]
-A2 = [a-R for a in A[::-1]]
-acc_A1 = list(accumulate(A1,initial=0))
-acc_A2 = list(accumulate(A2,initial=0))
-acc_A2_mx = []
-mx = -inf
-for a in acc_A2:
-    mx = max(mx,a)
-    acc_A2_mx.append(mx)
-acc_A2_mx = acc_A2_mx[::-1]
 
-# print(acc_A1)
-# print(acc_A2_mx)
+e = [0]*(N)
+# acc_e[N] は常に0
+acc_e = [0]*(N+1)
 
-d = -10**18
-for i in range(N+1):
-    d = max(d, acc_A1[i]+acc_A2_mx[i])
+e[N-1] = 0
 
-ans = sum(A) -d
+def get_sum(i,w):
+    return acc_e[i] - acc_e[min(N,i+w)]
+
+sum_e = 0
+for i in range(N-2,-1,-1):
+    w = ModInt(A[i]+1)
+    e[i] = (get_sum(i+1,A[i])+w)/A[i]
+    sum_e += e[i]
+    acc_e[i] = sum_e
+
+ans = e[0]
 print(ans)

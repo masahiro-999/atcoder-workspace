@@ -94,27 +94,8 @@ try:
 except ModuleNotFoundError:
     pass
 
-inf = 10*18
 
-N,L,R = TII()  # type: int
-A = LII()
-A1 = [a-L for a in A]
-A2 = [a-R for a in A[::-1]]
-acc_A1 = list(accumulate(A1,initial=0))
-acc_A2 = list(accumulate(A2,initial=0))
-acc_A2_mx = []
-mx = -inf
-for a in acc_A2:
-    mx = max(mx,a)
-    acc_A2_mx.append(mx)
-acc_A2_mx = acc_A2_mx[::-1]
+N,M = TII()  # type: int
 
-# print(acc_A1)
-# print(acc_A2_mx)
-
-d = -10**18
-for i in range(N+1):
-    d = max(d, acc_A1[i]+acc_A2_mx[i])
-
-ans = sum(A) -d
-print(ans)
+for x in combinations(range(1,M+1),N):
+    print(*x)
