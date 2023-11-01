@@ -94,21 +94,70 @@ try:
 except ModuleNotFoundError:
     pass
 
+class SegTree:
+    def __init__(self,init_val,segfunc,ide_ele):
+        n = len(init_val)
+        self.segfunc = segfunc
+        self.ide_ele = ide_ele
+        self.num = 1<<(n-1).bit_length()
+        self.tree = [ide_ele]*2*self.num
+        for i in range(n):
+            self.tree[self.num+i] = init_val[i]
+        for i in range(self.num-1,0,-1):
+            self.tree[i] = self.segfunc(self.tree[2*i],self.tree[2*i+1])
+    def add(self,k,x):
+        k += self.num
+        self.tree[k] += x
+        while k>1:
+            self.tree[k>>1] = self.segfunc(self.tree[k],self.tree[k^1])
+            k >>= 1
+    def update(self,k,x):
+        k += self.num
+        self.tree[k] = x
+        while k>1:
+            self.tree[k>>1] = self.segfunc(self.tree[k],self.tree[k^1])
+            k >>= 1
+    def query(self,l,r):
+        res = self.ide_ele
+        l += self.num
+        r += self.num
+        while l<r:
+            if l&1:
+                res = self.segfunc(res,self.tree[l])
+                l += 1
+            if r&1:
+                res = self.segfunc(res,self.tree[r-1])
+            l >>= 1
+            r >>= 1
+        return res
 
-N,M = TII()  # type: int
-X = LII()
-cy = Counter()
-for c,y in [LII() for _ in range(M)]:
-    cy[c] = y
-# d[i][j]　コイントスi番目、jカウンター地
 
-dp =[[-1]*(N+1) for _ in range(N+1)]
-dp[0][0] = 0
-for i in range(1,N+1):
-    dp[i][0] = max(dp[i-1])
-    for j in range(N+1):
-        if dp[i-1][j-1] != -1:
-            dp[i][j] = max(dp[i][j],dp[i-1][j-1]+X[i-1]+cy[j])
+N,C = TII()  # type: int
+TA = [TII() for _ in range(N)]
 
-ans = max(dp[N])
-print(ans)
+def create_result(C):
+    ret = []
+    c = C
+    for t,a in TA:
+        if t == 1:
+            c &= a
+        elif t == 2:
+            c |= a
+        else:
+            c ^= a
+        ret.append(c)
+    return ret
+
+zero = create_result(0)
+one = create_result((1<<30)-1)
+
+c = C
+for i in range(N):
+    ans = 0
+    for j in range(30):
+        if c &(1<<j):
+            ans |= one[i] &(1<<j)
+        else:
+            ans |= zero[i] &(1<<j)
+    print(ans)
+    c = ans

@@ -95,20 +95,21 @@ except ModuleNotFoundError:
     pass
 
 
-N,M = TII()  # type: int
-X = LII()
-cy = Counter()
-for c,y in [LII() for _ in range(M)]:
-    cy[c] = y
-# d[i][j]　コイントスi番目、jカウンター地
+N = II()  # type: int
+A = [I() for _ in range(N)]
 
-dp =[[-1]*(N+1) for _ in range(N+1)]
-dp[0][0] = 0
-for i in range(1,N+1):
-    dp[i][0] = max(dp[i-1])
-    for j in range(N+1):
-        if dp[i-1][j-1] != -1:
-            dp[i][j] = max(dp[i][j],dp[i-1][j-1]+X[i-1]+cy[j])
+ans = "correct"
 
-ans = max(dp[N])
+for i,j in product(range(N),range(N)):
+    if i == j:
+        continue
+    if A[i][j] == "W" and A[j][i] == "L":
+        continue 
+    if A[i][j] == "L" and A[j][i] == "W":
+        continue 
+    if A[i][j] == "D" and A[j][i] == "D":
+        continue 
+    ans = "incorrect"
+    break
+
 print(ans)
