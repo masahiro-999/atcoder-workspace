@@ -94,20 +94,37 @@ try:
 except ModuleNotFoundError:
     pass
 
+MOD = 1
 
-N,X = TII()
+N,Q,X = TII()
+W = LII()
+K = [II() for _ in range(Q)]
 
-ab = [TII() for _ in range(N)]
-b = [b for _,b in ab]
-# print(b)
-acc_ab = list(accumulate([a+b for a,b in ab]))
-# print(acc_ab)
-ans = 1<<60
-for i in range(N):
-    t = acc_ab[i]+(X-(i+1))*b[i]
-    # print(t)
-    if (X-i+1) <0:
+w_sum= sum(W)
+offset_n = X // w_sum * N
+X = X % w_sum
+
+w_acc = list(accumulate(W+W, initial=0))
+
+s = 0
+cnt = []
+visited = defaultdict(lambda : -1)
+while True:
+    # print(s)
+    target = w_acc[s]+X
+    i = bisect_left(w_acc,target)-1
+    cnt.append(i-s+1)
+    visited[s]=len(cnt)-1
+    s = (i+1)%N
+    if visited[s] != -1:
+        start_of_loop = visited[s]
         break
-    ans = min(ans, t)
 
-print(ans)
+loop_size = len(cnt) - start_of_loop
+for k in K:
+    k -= 1
+    if k > start_of_loop:
+        k1 = (k - start_of_loop) % loop_size 
+        k = start_of_loop + k1
+    ans = offset_n +cnt[k]
+    print(ans)

@@ -95,19 +95,15 @@ except ModuleNotFoundError:
     pass
 
 
-N,X = TII()
 
-ab = [TII() for _ in range(N)]
-b = [b for _,b in ab]
-# print(b)
-acc_ab = list(accumulate([a+b for a,b in ab]))
-# print(acc_ab)
-ans = 1<<60
-for i in range(N):
-    t = acc_ab[i]+(X-(i+1))*b[i]
-    # print(t)
-    if (X-i+1) <0:
-        break
-    ans = min(ans, t)
+N,Q = TII()
+S = I()
+q = [TII() for _ in range(Q)]
 
-print(ans)
+L = len(S)
+offset = 0
+for cmd, x in q:
+    if cmd == 1:
+        offset = (offset-x)%L
+    else:
+        print(S[(offset+x-1)%L])
