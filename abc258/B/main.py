@@ -104,11 +104,11 @@ for i,j in product(range(N),range(N)):
     for di,dj in product([-1,0,1],[-1,0,1]):
         if di==0 and dj==0:
             continue
-    str =""
-    for k in range(N):
-        str+=A[i][j]
-        i=(i+di)%N
-        j=(j+dj)%N
-    ans = max(ans, int(str))
+        str =""
+        for k in range(N):
+            str+=A[i][j]
+            i=(i+di)%N
+            j=(j+dj)%N
+        ans = max(ans, int(str))
 
 print(ans)
