@@ -94,102 +94,42 @@ try:
 except ModuleNotFoundError:
     pass
 
-#abc157_dで使用した
 
-class UnionFind():
-    def __init__(self, n):
-        self.n = n
-        self.parents = [-1] * n
 
-    def find(self, x):
-        if self.parents[x] < 0:
-            return x
-        else:
-            self.parents[x] = self.find(self.parents[x])
-            return self.parents[x]
+N = II()
+P = []
+for _ in range(N):
+    m = II()
+    P.append([LII() for _ in range(m)])
 
-    def union(self, x, y):
-        x = self.find(x)
-        y = self.find(y)
+lcm = defaultdict(int)
+for i in range(N):
+    for p,e in P[i]:
+        lcm[p] = max(lcm[p],e)
 
-        if x == y:
-            return
+p_list_len = len(lcm.keys())
+p_list = list(lcm.keys())
 
-        if self.parents[x] > self.parents[y]:
-            x, y = y, x
+t = defaultdict(list)
+cnt = {}
 
-        self.parents[x] += self.parents[y]
-        self.parents[y] = x
+for i in range(N):
+    for p,e in P[i]:
+        t[p].append(e)
+for p in p_list:
+    cnt[p] = Counter(t[p])
 
-    def size(self, x):
-        return -self.parents[self.find(x)]
+ans_set = set()
 
-    def same(self, x, y):
-        return self.find(x) == self.find(y)
+for i in range(N):
+    r = []
+    for p,e in P[i]:
+        if e == lcm[p] and cnt[p][lcm[p]] == 1:
+            r.append(p)
+    r.sort()
+    ans_set.add(tuple(r))
 
-    def members(self, x):
-        root = self.find(x)
-        return [i for i in range(self.n) if self.find(i) == root]
-
-    def roots(self):
-        return [i for i, x in enumerate(self.parents) if x < 0]
-
-    def group_count(self):
-        return len(self.roots())
-
-    def all_group_members(self):
-        group_members = defaultdict(list)
-        for member in range(self.n):
-            group_members[self.find(member)].append(member)
-        return group_members
-
-    def __str__(self):
-        return '\n'.join(f'{r}: {m}' for r, m in self.all_group_members().items())
-
-YES = "Yes"
-NO = "No"
-
-N = II()  # type: int
-
-sx,sy,tx,ty = TII()
-
-xyr = [TII() for _ in range(N)]
-
-u = UnionFind(N)
-
-def is_connect(i,j):
-    x1,y1,r1 = xyr[i]
-    x2,y2,r2 = xyr[j]
-    distans =  (x1-x2)**2+(y1-y2)**2
-    if (r1+r2)**2 < distans:
-        return False
-    if (r1-r2)**2 > distans:
-        return False
-    return True
-
-def find_d(x1,y1):
-    for i,(x,y,r) in enumerate(xyr):
-        if r*r == (x1-x)**2+(y1-y)**2:
-            return i
-    return None
-
-for i,j in combinations(range(N),2):
-    # print (i,j)
-    x1,y1,r1 = xyr[i]
-    x2,y2,r2 = xyr[j]
-    distans =  (x1-x2)**2+(y1-y2)**2
-    if (r1+r2)**2 < distans:
-        continue
-    if (r1-r2)**2 > distans:
-        continue
-    u.union(i,j)
-
-s = find_d(sx,sy)
-t = find_d(tx,ty)
-
-if u.find(s)==u.find(t):
-    ans = YES
-else:
-    ans = NO
+# print(ans_set)
+ans = len(ans_set)
 
 print(ans)
