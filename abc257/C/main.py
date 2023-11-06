@@ -96,44 +96,38 @@ except ModuleNotFoundError:
 
 
 N = II()  # type: int
-xyp = [LII() for _ in range(N)]
+S = I()  # type: str
+W = LII()
 
-def bfs(start,S):
-    visited = [False]*N
-    q = deque()
-    q.append(start)
-    visited[start] = True
-    cnt = N-1
-    while q:
-        i = q.popleft()
-        x,y,p = xyp[i]
-        for next_i in range(N):
-            if visited[next_i]:
-                continue
-            x1,y1,_ = xyp[next_i]
-            if S*p >= abs(x1-x)+abs(y1-y):
-                q.append(next_i)
-                visited[next_i] = True
-                cnt -= 1
-    return all(visited)
+w_c = [w for i,w in enumerate(W) if S[i]=="0"]
+w_a = [w for i,w in enumerate(W) if S[i]=="1"]
 
-def check(S):
-    for i in range(N):
-        if bfs(i,S):
-            return True
-    return False
+w_c.sort()
+w_a.sort()
 
-# print(check(0))
-# print(check(10))
-# print(check(1000000000))
-l = 0
-r = 4000000000
-while r-l > 1:
-    mid = (r+l)//2
-    if check(mid):
-        r = mid
-    else:
-        l = mid
+w_c = deque(w_c)
+w_a = deque(w_a)
 
-ans = r
-print(ans)
+adult_total = len(w_a)
+child_total = len(w_c)
+
+ok_a = adult_total
+ok_c = 0
+
+# print(w_c)
+# print(w_a)
+mx = ok_a + ok_c
+while w_c:
+    c = w_c.popleft()
+    x = c+1
+    ok_c += 1
+    while w_c and w_c[0] < x:
+        w_c.popleft()
+        ok_c += 1
+    while w_a and w_a[0] < x:
+        w_a.popleft()
+        ok_a -= 1
+    r = ok_a +ok_c
+    mx = max(mx,r)
+
+print(mx)
