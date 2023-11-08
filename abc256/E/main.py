@@ -96,20 +96,45 @@ except ModuleNotFoundError:
 
 
 N = II()  # type: int
-lr = [LII() for _ in range(N)]
+X = LGMI()
+C = LII()
 
-table=[0]*(2*100000+1)
+# g = defaultdict(list)
+# for i,x in enumerate(X):
+#     g[i]=x
 
-for l,r in lr:
-    table[l]+= 1
-    table[r]-= 1
+done = set()
+def get_min_c_in_loop(p):
+    i = p
+    ret = 1<<60
+    while True:
+        ret = min(ret,C[i])
+        i = X[i]
+        if i == p:
+            break
+    return ret
 
-acc_table = list(accumulate(table))
+def check(i):
+    global done
+    visited = set()
+    visited.add(i)
+    while True:
+        i = X[i]
+        if i in done:
+            ret = 0
+            break
+        if i in visited:
+            ret = get_min_c_in_loop(i)
+            break
+        visited.add(i)
 
-ans = []
-for i in range(1,2*100000+1):
-    if acc_table[i-1]==0 and acc_table[i] >0:
-        s = i
-    elif acc_table[i-1]>0 and acc_table[i] ==0:
-        t = i
-        print(s,t)
+    done |= visited
+    return ret
+
+ans = 0
+for i in range(N):
+    if i in done:
+        continue
+    ans += check(i)
+
+print(ans)
