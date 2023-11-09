@@ -95,15 +95,24 @@ except ModuleNotFoundError:
     pass
 
 
-N,Q = TII()
-A = LII()
-X = [II() for _ in range(Q)]
+X,A,D,N = TII()
 
-A.sort()
+if D < 0:
+    X,A,D,N = -X,-A,-D,N
 
-acc_A = list(accumulate(A,initial=0))
+min_a = A
+max_a = A+D*(N-1)
 
-for x in X:
-    i = bisect_left(A,x)
-    ans = x*i - acc_A[i] + acc_A[N]-acc_A[i] - x*(N-i)
-    print(ans)
+if D <0:
+    min_a, max_a = max_a, min_a
+
+if X <=min_a:
+    ans = min_a -X
+elif X >=max_a:
+    ans = X-max_a
+else:
+    ans = (A -X) % D
+    if ans > D-ans:
+        ans = D-ans
+
+print(ans)

@@ -95,15 +95,8 @@ except ModuleNotFoundError:
     pass
 
 
-N,Q = TII()
-A = LII()
-X = [II() for _ in range(Q)]
+R,C = TII()  # type: int
+A = [LII() for _ in range(2)]
 
-A.sort()
 
-acc_A = list(accumulate(A,initial=0))
-
-for x in X:
-    i = bisect_left(A,x)
-    ans = x*i - acc_A[i] + acc_A[N]-acc_A[i] - x*(N-i)
-    print(ans)
+print(A[R-1][C-1])

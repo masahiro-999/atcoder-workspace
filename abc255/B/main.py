@@ -95,15 +95,25 @@ except ModuleNotFoundError:
     pass
 
 
-N,Q = TII()
+N,K = TII()
 A = LII()
-X = [II() for _ in range(Q)]
+xy = [LII() for _ in range(N)]
 
-A.sort()
+min_dist = [0]*N
 
-acc_A = list(accumulate(A,initial=0))
+def dist(i,j):
+    x1,y1 = xy[i]
+    x2,y2 = xy[j]
+    return (x1-x2)**2+(y1-y2)**2
 
-for x in X:
-    i = bisect_left(A,x)
-    ans = x*i - acc_A[i] + acc_A[N]-acc_A[i] - x*(N-i)
-    print(ans)
+inf = 1<<60
+
+for i in range(N):
+    mi = inf
+    for a in A:
+        mi = min(mi, dist(i,a-1))
+    min_dist[i] = mi
+
+ans = sqrt(max(min_dist))
+
+print(ans)
