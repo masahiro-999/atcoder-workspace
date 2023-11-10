@@ -89,6 +89,10 @@ def prepare(n, MOD):
 factorials, invs = prepare(100000,MOD)
 
 def choose(n,a):
+    if a == 0:
+        return 1
+    if n<a or a <0:
+        return 0
     return (factorials[n] * (invs[n-a] * invs[a])) % MOD
 
 
