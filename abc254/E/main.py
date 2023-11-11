@@ -3,7 +3,7 @@ from io import BytesIO, IOBase
 import sys
 import os
 
-from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10,comb,isqrt
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
@@ -94,39 +94,40 @@ try:
 except ModuleNotFoundError:
     pass
 
-def get_prime_list(num_max):
-    prime_table=[1]*(num_max+1)
-    prime_table[0] = 0
-    prime_table[1] = 0
-    for i in range(2, num_max+1):
-        k = i*2
-        while k <= num_max:
-            prime_table[k] = 0
-            k += i
-    return [i for i in range(2,num_max+1) if prime_table[i]]
 
+N,M = TII()
+ab = [LII() for _ in range(M)]
+Q = II()
+xk = [LII() for _ in range(Q)]
 
-N = II()  # type: int
+g = defaultdict(list)
+for a,b in ab:
+    g[a].append(b)
+    g[b].append(a)
 
-prime_table = get_prime_list(isqrt(N))
+@lru_cache()
+def f(n,k):
+    if k == 0:
+        return n
+    ret = n
+    for next_n in g[n]:
+        ret += f(next_n,k-1)-n
+    return ret
 
-prime_remain=[]
-for i in range(1,N+1):
-    cnt = 0
-    x = 1
-    for p in prime_table:
-        while i % p == 0:
-            i = i // p
-            cnt += 1
-        if cnt %2 == 1:
-            x *= p
-    if i > 1:
-        x *= i
-    prime_remain.append(x)
+def sum_n_within_k(n,k):
+    visited = set()
+    q = deque()
+    q.append((n,k))
+    visited.add(n)
+    while q:
+        n,k = q.popleft()
+        if k == 0:
+            break
+        for nxt in g[n]:
+            if nxt not in visited:
+                visited.add(nxt)
+                q.append((nxt,k-1))
+    return sum(visited)
 
-c = Counter(prime_remain)
-# print(c)
-ans = 0
-for n in c.values():
-    ans += n*n
-print(ans)
+for x,k in xk:
+    print(sum_n_within_k(x,k))
