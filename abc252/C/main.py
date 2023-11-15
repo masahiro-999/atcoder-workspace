@@ -3,7 +3,7 @@ from io import BytesIO, IOBase
 import sys
 import os
 
-from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10,comb
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
@@ -94,18 +94,31 @@ try:
 except ModuleNotFoundError:
     pass
 
+MOD = 10
 
 N = II()  # type: int
-A = LII()
+S = [I() for _ in range(N)]  # type: "List[str]"
 
-cnt = Counter(A)
+def find_pos_of(x):
+    cnt = Counter()
+    for i in range(N):
+        cnt[S[i].index(str(x))] += 1
 
-c = list(cnt.values())
+    return cnt
 
-ans = comb(N,3)
-for x in cnt.values():
-    if x >= 2:
-        ans -= comb(x,2)*(N-x)
-    if x >=3:
-        ans -= comb(x,3)
+def calc_time(cnt):
+    max_turn = max(list(cnt.values()))
+    k_list = []
+    for k,v in cnt.items():
+        if v == max_turn:
+            k_list.append(k)
+
+    ret = (max_turn-1)*10+max(k_list)
+    return ret
+
+ans = 10**18
+for i in range(10):
+    cnt = find_pos_of(i)
+    ans = min(ans, calc_time(cnt))
+
 print(ans)

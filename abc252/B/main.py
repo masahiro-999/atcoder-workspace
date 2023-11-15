@@ -3,7 +3,7 @@ from io import BytesIO, IOBase
 import sys
 import os
 
-from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10,comb
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
@@ -94,18 +94,20 @@ try:
 except ModuleNotFoundError:
     pass
 
+YES = "Yes"
+NO = "No"
 
-N = II()  # type: int
+N,K = TII()
 A = LII()
+B = LII()
 
-cnt = Counter(A)
+max_a = max(A)
 
-c = list(cnt.values())
+a = [i+1 for i,a in enumerate(A) if a == max_a]
 
-ans = comb(N,3)
-for x in cnt.values():
-    if x >= 2:
-        ans -= comb(x,2)*(N-x)
-    if x >=3:
-        ans -= comb(x,3)
+ans = NO
+for x in a:
+    if x in B:
+        ans =YES
+        break
 print(ans)
