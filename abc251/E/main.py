@@ -95,17 +95,20 @@ except ModuleNotFoundError:
     pass
 
 
-W = II()  # type: int
+N = II()  # type: int
+A= LII()
+inf = 10**18
 
-ans = []
-for i in range(1,100):
-    ans.append(i)
+dp = [[[inf]*2 for _ in range(2)] for _ in range(N+1)]
 
-for i in range(100,10000,100):
-    ans.append(i)
+dp[0][0][0] = 0
+dp[0][1][1] = 0
 
-for i in range(10000,1010000,10000):
-    ans.append(i)
+for i in range(1,N+1):
+    for j,k in product(range(2),range(2)):
+        if j == 1:
+           dp[i][0][k] = min(dp[i][j][k], dp[i-1][j][k]) 
+        dp[i][1][k] = min(dp[i][j][k], dp[i-1][0][k]+A[i-1], dp[i-1][1][k]+A[i-1])
 
-print(len(ans))
-print(*ans)
+ans = min(dp[N][1][1],dp[N][0][0])
+print(ans)

@@ -95,17 +95,17 @@ except ModuleNotFoundError:
     pass
 
 
-W = II()  # type: int
+N = II()  # type: int
+ST = [LI() for _ in range(N)]
 
-ans = []
-for i in range(1,100):
-    ans.append(i)
+ts = []
+exist = set()
+for i,(s,t) in enumerate(ST):
+    if s not in exist:
+        exist.add(s)
+        ts.append((-int(t),i,s))
 
-for i in range(100,10000,100):
-    ans.append(i)
+ts.sort()
+ans = ts[0][1]+1
 
-for i in range(10000,1010000,10000):
-    ans.append(i)
-
-print(len(ans))
-print(*ans)
+print(ans)

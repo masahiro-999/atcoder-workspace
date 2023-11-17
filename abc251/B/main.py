@@ -95,17 +95,17 @@ except ModuleNotFoundError:
     pass
 
 
-W = II()  # type: int
+N,W = TII()
+A = LII()
 
-ans = []
-for i in range(1,100):
-    ans.append(i)
+A.append(0)
+A.append(0)
 
-for i in range(100,10000,100):
-    ans.append(i)
-
-for i in range(10000,1010000,10000):
-    ans.append(i)
+ans = set()
+for p in combinations(A,3):
+    n = sum(p)
+    if n <= W:
+        ans.add(n)
 
 print(len(ans))
-print(*ans)
+

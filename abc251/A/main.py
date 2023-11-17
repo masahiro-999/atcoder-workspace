@@ -95,17 +95,6 @@ except ModuleNotFoundError:
     pass
 
 
-W = II()  # type: int
+S = I()  # type: str
 
-ans = []
-for i in range(1,100):
-    ans.append(i)
-
-for i in range(100,10000,100):
-    ans.append(i)
-
-for i in range(10000,1010000,10000):
-    ans.append(i)
-
-print(len(ans))
-print(*ans)
+print((S*6)[:6])
