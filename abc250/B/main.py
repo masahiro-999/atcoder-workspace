@@ -3,7 +3,7 @@ from io import BytesIO, IOBase
 import sys
 import os
 
-from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10,isqrt
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
@@ -95,28 +95,30 @@ except ModuleNotFoundError:
     pass
 
 
-N = II()  # type: int
+N,A,B = TII()
 
-def get_prime_list(num_max):
-    prime_table=[1]*(num_max+1)
-    prime_table[0] = 0
-    prime_table[1] = 0
-    for i in range(2, num_max+1):
-        k = i*2
-        while k <= num_max:
-            prime_table[k] = 0
-            k += i
-    return [i for i in range(2,num_max+1) if prime_table[i]]
+def create_line(b,n,l):
+    s = ""
+    for i in range(N):
+        if i % 2 == l % 2:
+            s+= "."*b
+        else:
+            s+= "#"*b
+    return s
 
-prime_table = get_prime_list(1000000)
+for i in range(N):
+    for j in range(A):
+        print(create_line(B,N,i))
 
-ans = 0
-for q in prime_table:
-    q3 = q**3
-    if 2*q3 > N:
-        break
-    p= min(q-1,N//q3)
-    n = bisect_right(prime_table, p)
-    ans += n 
-
-print(ans)
+# ..##..##
+# ..##..##
+# ..##..##
+# ##..##..
+# ##..##..
+# ##..##..
+# ..##..##
+# ..##..##
+# ..##..##
+# ##..##..
+# ##..##..
+# ##..##..

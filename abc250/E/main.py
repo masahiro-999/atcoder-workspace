@@ -3,7 +3,7 @@ from io import BytesIO, IOBase
 import sys
 import os
 
-from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10,isqrt
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
@@ -94,29 +94,44 @@ try:
 except ModuleNotFoundError:
     pass
 
+YES = "Yes"
+NO = "No"
 
-N = II()  # type: int
+N = II()
+A = LII()
+B = LII()
+Q = II()
+xy = [LII() for _ in range(Q)]
 
-def get_prime_list(num_max):
-    prime_table=[1]*(num_max+1)
-    prime_table[0] = 0
-    prime_table[1] = 0
-    for i in range(2, num_max+1):
-        k = i*2
-        while k <= num_max:
-            prime_table[k] = 0
-            k += i
-    return [i for i in range(2,num_max+1) if prime_table[i]]
+def create_index(A):
+    a_index =defaultdict(lambda : N)
+    # aに値ｘが始めて現れるインデクス
+    for i,a in enumerate(A):
+        if a_index[a] == N:
+            a_index[a] = i
+    return a_index
 
-prime_table = get_prime_list(1000000)
 
-ans = 0
-for q in prime_table:
-    q3 = q**3
-    if 2*q3 > N:
-        break
-    p= min(q-1,N//q3)
-    n = bisect_right(prime_table, p)
-    ans += n 
+def create_judgetable(A,B):
+    b_index = create_index(B)
 
-print(ans)
+    ret = []
+    mx = -1
+    for a in A:
+        mx = max(mx,b_index[a])
+        ret.append(mx)
+    return ret
+
+judge_b = create_judgetable(A,B)
+judge_a = create_judgetable(B,A)
+
+# print(judge_a)
+# print(judge_b)
+
+for x,y in xy:
+    x -= 1
+    y -= 1
+    if judge_b[x] <= y and judge_a[y] <= x:
+        print(YES)
+    else:
+        print(NO)
