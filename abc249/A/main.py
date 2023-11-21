@@ -94,44 +94,21 @@ try:
 except ModuleNotFoundError:
     pass
 
-def get_prime_list(num_max):
-    prime_table=[1]*(num_max+1)
-    prime_table[0] = 0
-    prime_table[1] = 0
-    for i in range(2, num_max+1):
-        k = i*2
-        while k <= num_max:
-            prime_table[k] = 0
-            k += i
-    return [i for i in range(2,num_max+1) if prime_table[i]]
 
+A,B,C,D,E,F,X = TII()
 
-N = II()  # type: int
-A = LII()
+def get_l(A,B,C,X):
+    n = X // (A+C)
+    m = X % (A+C)
+    return n * A*B + B*min(m,A)
 
-set_A = set(A)
-cnt_A = Counter(A)
-prime_table = get_prime_list(200000)
+lt = get_l(A,B,C,X)
+la = get_l(D,E,F,X)
 
-ans = 0
-for a in A:
-    aa = a
-    cnt = Counter()
-    for p in prime_table:
-        if a % p == 0:
-            while a % p == 0:
-                a = a // p
-                cnt[p] += 1
-        if a < p:
-            break
-    # print(aa, cnt)
-    primes = list(cnt.keys())
-    nn_list = [range(n+1) for n in cnt.values()]
-    for nn in product(*nn_list):
-        # print(nn)
-        x1 = 1
-        for p,n in zip(primes, nn):
-            x1 = x1 * p**n
-        x2 = aa//x1
-        ans += cnt_A[x1] * cnt_A[x2]
-print(ans)
+# print(lt,la)
+if lt > la:
+    print("Takahashi")
+elif lt < la:
+    print("Aoki")
+else:
+    print("Draw")

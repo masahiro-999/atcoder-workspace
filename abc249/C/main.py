@@ -94,44 +94,20 @@ try:
 except ModuleNotFoundError:
     pass
 
-def get_prime_list(num_max):
-    prime_table=[1]*(num_max+1)
-    prime_table[0] = 0
-    prime_table[1] = 0
-    for i in range(2, num_max+1):
-        k = i*2
-        while k <= num_max:
-            prime_table[k] = 0
-            k += i
-    return [i for i in range(2,num_max+1) if prime_table[i]]
 
-
-N = II()  # type: int
-A = LII()
-
-set_A = set(A)
-cnt_A = Counter(A)
-prime_table = get_prime_list(200000)
+N,K = TII()
+S = [I() for _ in range(N)]
 
 ans = 0
-for a in A:
-    aa = a
-    cnt = Counter()
-    for p in prime_table:
-        if a % p == 0:
-            while a % p == 0:
-                a = a // p
-                cnt[p] += 1
-        if a < p:
-            break
-    # print(aa, cnt)
-    primes = list(cnt.keys())
-    nn_list = [range(n+1) for n in cnt.values()]
-    for nn in product(*nn_list):
-        # print(nn)
-        x1 = 1
-        for p,n in zip(primes, nn):
-            x1 = x1 * p**n
-        x2 = aa//x1
-        ans += cnt_A[x1] * cnt_A[x2]
-print(ans)
+for x in product(range(2),repeat=N):
+    join_s = "".join([s for i,s in enumerate(S) if x[i]==1 ])
+    cnt = Counter(join_s)
+    n = 0
+    for v in cnt.values():
+        if v == K:
+            n += 1
+    ans = max(ans, n) 
+
+print(ans)   
+
+
