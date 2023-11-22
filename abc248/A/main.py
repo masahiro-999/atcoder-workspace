@@ -94,22 +94,10 @@ try:
 except ModuleNotFoundError:
     pass
 
-N = II()
-A = LII()
-Q = II()
-q_list = [LII() for _ in range(Q)]
 
-t = defaultdict(list)
-for i,a in enumerate(A):
-    t[a].append(i+1)
+S = I()  # type: str
 
-for k in t.keys():
-    t[k].append(0)
-    t[k].sort()
-
-for l,r,x in q_list:
-    a_list = t[x]
-    pos_l = bisect_left(a_list,l)    
-    pos_r = bisect_right(a_list,r)    
-    print(pos_r-pos_l)
-
+for i in range(10):
+    if str(i) not in S:
+        print(i)
+        break

@@ -3,7 +3,7 @@ from io import BytesIO, IOBase
 import sys
 import os
 
-from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10,comb
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
@@ -94,22 +94,19 @@ try:
 except ModuleNotFoundError:
     pass
 
-N = II()
-A = LII()
-Q = II()
-q_list = [LII() for _ in range(Q)]
+MOD = 998244353
 
-t = defaultdict(list)
-for i,a in enumerate(A):
-    t[a].append(i+1)
+N,M,K = TII()
 
-for k in t.keys():
-    t[k].append(0)
-    t[k].sort()
+dp = [[0]*(K+1) for _ in range(N)]
+for i in range(1,min(M,K)+1):
+    dp[0][i] = 1
 
-for l,r,x in q_list:
-    a_list = t[x]
-    pos_l = bisect_left(a_list,l)    
-    pos_r = bisect_right(a_list,r)    
-    print(pos_r-pos_l)
+for i in range(1,N):
+    for j in range(1,M+1):
+        for k in range(K+1):
+            if 0 <= k+j<=K:
+                dp[i][k+j] = (dp[i][k+j] + dp[i-1][k]) %MOD
 
+ans = sum(dp[N-1][1:1+K]) % MOD
+print(ans)
