@@ -94,28 +94,26 @@ try:
 except ModuleNotFoundError:
     pass
 
+YES = "Yes"
+NO = "No"
 
+N = II()  # type: int
+st = [LI() for _ in range(N)]
+s = [s for s,t in st]
+t = [t for s,t in st]
 
-Q = II()
+is_s_uniq = [True]*N
+is_t_uniq = [True]*N
 
-queue = deque()
+for i,j in permutations(range(N),2):
+    if s[i] == s[j] or s[i] == t[j]:
+        is_s_uniq[i] = False
 
-last_x = 0
-last_n = 0
-for _ in range(Q):
-    q = LII()
-    if q[0] == 1:
-        x,c = q[1:]
-        queue.append((x,c))
-    else:
-        c = q[1]
-        sm = 0
-        while c > 0:
-            if last_n == 0:
-                last_x,last_n = queue.popleft()
-            # print(queue,c,last_x,last_n)
-            move = min(last_n,c)
-            sm += last_x * (move)
-            last_n -= move
-            c -= move
-        print(sm)
+    if t[i] == s[j] or t[i] == t[j]:
+        is_t_uniq[i] = False
+ans = YES
+for a,b in zip(is_s_uniq,is_t_uniq):
+    if a == False and b == False:
+        ans = NO
+        break
+print(ans)

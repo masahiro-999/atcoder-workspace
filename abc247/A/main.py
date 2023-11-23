@@ -95,27 +95,6 @@ except ModuleNotFoundError:
     pass
 
 
+S = I()  # type: str
 
-Q = II()
-
-queue = deque()
-
-last_x = 0
-last_n = 0
-for _ in range(Q):
-    q = LII()
-    if q[0] == 1:
-        x,c = q[1:]
-        queue.append((x,c))
-    else:
-        c = q[1]
-        sm = 0
-        while c > 0:
-            if last_n == 0:
-                last_x,last_n = queue.popleft()
-            # print(queue,c,last_x,last_n)
-            move = min(last_n,c)
-            sm += last_x * (move)
-            last_n -= move
-            c -= move
-        print(sm)
+print("0"+S[:-1])

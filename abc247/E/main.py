@@ -3,7 +3,7 @@ from io import BytesIO, IOBase
 import sys
 import os
 
-from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10,comb
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
@@ -95,27 +95,49 @@ except ModuleNotFoundError:
     pass
 
 
+N,X,Y = TII()
+A = LII()
+A += [X+1]
 
-Q = II()
+split_A = []
+s = 0
+for i,a in enumerate(A):
+    if a > X or a < Y:
+        if i - s > 0:
+            split_A.append(A[s:i])
+        s = i+1
 
-queue = deque()
+# print(split_A)
 
-last_x = 0
-last_n = 0
-for _ in range(Q):
-    q = LII()
-    if q[0] == 1:
-        x,c = q[1:]
-        queue.append((x,c))
-    else:
-        c = q[1]
-        sm = 0
-        while c > 0:
-            if last_n == 0:
-                last_x,last_n = queue.popleft()
-            # print(queue,c,last_x,last_n)
-            move = min(last_n,c)
-            sm += last_x * (move)
-            last_n -= move
-            c -= move
-        print(sm)
+def create_table(A,X):
+    t = [0]*len(A)
+    pos = 0
+    for i,a in enumerate(A[::-1]):
+        t[len(A)-1-i] = pos
+        if a == X:
+            pos = i+1
+    return t
+
+def get_ans(A,X,Y):
+    N = len(A)
+    if X==Y:
+        return N*(N+1)//2
+    max_table = create_table(A,X)
+    min_table = create_table(A,Y)
+    # print(max_table)
+    # print(min_table)
+    ret = 0
+    for i in range(N):
+        if A[i] == X:
+            ret += min_table[i]
+        elif A[i] == Y:
+            ret += max_table[i]
+        else:
+            ret += min(min_table[i],max_table[i])
+    return ret
+
+ans = 0
+for a in split_A:
+    ans += get_ans(a,X,Y)
+
+print(ans)

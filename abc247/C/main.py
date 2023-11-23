@@ -95,27 +95,12 @@ except ModuleNotFoundError:
     pass
 
 
+N = II()  # type: int
 
-Q = II()
+def f(n):
+    if n == 1:
+        return [1]
+    x = f(n-1)
+    return x +[n]+x
 
-queue = deque()
-
-last_x = 0
-last_n = 0
-for _ in range(Q):
-    q = LII()
-    if q[0] == 1:
-        x,c = q[1:]
-        queue.append((x,c))
-    else:
-        c = q[1]
-        sm = 0
-        while c > 0:
-            if last_n == 0:
-                last_x,last_n = queue.popleft()
-            # print(queue,c,last_x,last_n)
-            move = min(last_n,c)
-            sm += last_x * (move)
-            last_n -= move
-            c -= move
-        print(sm)
+print(*f(N))
