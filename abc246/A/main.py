@@ -94,22 +94,20 @@ try:
 except ModuleNotFoundError:
     pass
 
+xy =[TII() for _ in range(3)]
 
-N = II()  # type: int
+x = [x for x,y in xy]
+y = [y for x,y in xy]
 
-if N == 0:
-    ans = 0
-else:
-    ans = 1<<60
-    for a in range(1000000+1):
-        l = 0
-        r = 1000000
-        while r-l > 1:
-            b = (r+l)//2
-            if N <= a**3+a*a*b+a*b*b+b**3:
-                r = b
-            else:
-                l = b
-        ans = min(ans, a**3+a*a*r+a*r*r+r**3)
-        # print(a,r,a**3+a*a*r+a*r*r+r**3)
-print(ans)
+
+cnt_x = Counter(x)
+cnt_y = Counter(y)
+
+for k,v in cnt_x.items():
+    if v == 1:
+        ans_x = k
+for k,v in cnt_y.items():
+    if v == 1:
+        ans_y = k
+
+print(ans_x, ans_y)

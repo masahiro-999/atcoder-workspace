@@ -95,21 +95,7 @@ except ModuleNotFoundError:
     pass
 
 
-N = II()  # type: int
+A,B = TII()
 
-if N == 0:
-    ans = 0
-else:
-    ans = 1<<60
-    for a in range(1000000+1):
-        l = 0
-        r = 1000000
-        while r-l > 1:
-            b = (r+l)//2
-            if N <= a**3+a*a*b+a*b*b+b**3:
-                r = b
-            else:
-                l = b
-        ans = min(ans, a**3+a*a*r+a*r*r+r**3)
-        # print(a,r,a**3+a*a*r+a*r*r+r**3)
-print(ans)
+t = sqrt(1/(A*A+B*B))
+print(t*A,t*B)

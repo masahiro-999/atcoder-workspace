@@ -95,21 +95,19 @@ except ModuleNotFoundError:
     pass
 
 
-N = II()  # type: int
+N,K,X  = TII()
+A = LII()
+rem_A = [a % X for a in A]
+rem_A.sort(reverse=True)
 
-if N == 0:
-    ans = 0
-else:
-    ans = 1<<60
-    for a in range(1000000+1):
-        l = 0
-        r = 1000000
-        while r-l > 1:
-            b = (r+l)//2
-            if N <= a**3+a*a*b+a*b*b+b**3:
-                r = b
-            else:
-                l = b
-        ans = min(ans, a**3+a*a*r+a*r*r+r**3)
-        # print(a,r,a**3+a*a*r+a*r*r+r**3)
+n = 0
+for a in A:
+    n += a//X
+
+d = min(n,K)
+n -= d
+K -= d
+
+ans = n*X + sum(rem_A[K:])
+
 print(ans)
