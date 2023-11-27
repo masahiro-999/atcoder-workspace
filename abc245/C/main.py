@@ -13,7 +13,6 @@ from itertools import product, accumulate,permutations,combinations, count
 from operator import add, iand, ior, itemgetter, mul, xor
 from string import ascii_lowercase, ascii_uppercase, ascii_letters
 from typing import *
-from sortedcontainers import SortedSet, SortedList, SortedDict
 
 BUFSIZE = 4096
 
@@ -95,16 +94,29 @@ try:
 except ModuleNotFoundError:
     pass
 
-{% if mod %}
-MOD = {{ mod }}
-{% endif %}
-{% if yes_str %}
-YES = "{{ yes_str }}"
-{% endif %}
-{% if no_str %}
-NO = "{{ no_str }}"
-{% endif %}
+YES = "Yes"
+NO = "No"
 
-{% if prediction_success %}
-{{input_part}}
-{% endif %}
+N,K = TII()
+A = LII()
+B = LII()
+
+ab = [[a,b] for a,b in zip(A,B)]
+
+# dp[i][j] i番目でJ=0の時A,1の時Aを選んだ
+
+dp = [[0]*2 for _ in range(N)]
+dp[0][0] = 1
+dp[0][1] = 1
+
+for i in range(1,N):
+    for j in range(2):
+        if dp[i-1][0] and abs(ab[i][j]-ab[i-1][0])<=K:
+            dp[i][j] = 1
+        if dp[i-1][1] and abs(ab[i][j]-ab[i-1][1])<=K:
+            dp[i][j] = 1
+
+if dp[N-1][0]==1 or dp[N-1][1]==1:
+    print(YES)
+else:
+    print(NO)

@@ -13,7 +13,6 @@ from itertools import product, accumulate,permutations,combinations, count
 from operator import add, iand, ior, itemgetter, mul, xor
 from string import ascii_lowercase, ascii_uppercase, ascii_letters
 from typing import *
-from sortedcontainers import SortedSet, SortedList, SortedDict
 
 BUFSIZE = 4096
 
@@ -95,16 +94,32 @@ try:
 except ModuleNotFoundError:
     pass
 
-{% if mod %}
-MOD = {{ mod }}
-{% endif %}
-{% if yes_str %}
-YES = "{{ yes_str }}"
-{% endif %}
-{% if no_str %}
-NO = "{{ no_str }}"
-{% endif %}
+from sortedcontainers import SortedSet, SortedList, SortedDict
 
-{% if prediction_success %}
-{{input_part}}
-{% endif %}
+YES = "Yes"
+NO = "No"
+
+N,M = TII()
+A = LII()
+B = LII()
+C= LII()
+D = LII()
+
+ab = [(a,b,0) for a,b in zip(A,B)]
+cd = [(c,d,1) for c,d in zip(C,D)]
+abcd = ab+cd
+abcd.sort(reverse=True)
+
+sl = SortedList()
+
+ans = YES
+for x,y,t in abcd:
+    if t == 0:
+        i = sl.bisect_left(y)
+        if i >= len(sl):
+            ans = NO
+            break
+        sl.pop(i)
+    else:
+        sl.add(y)
+print(ans)

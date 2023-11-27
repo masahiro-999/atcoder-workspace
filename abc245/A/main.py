@@ -13,7 +13,6 @@ from itertools import product, accumulate,permutations,combinations, count
 from operator import add, iand, ior, itemgetter, mul, xor
 from string import ascii_lowercase, ascii_uppercase, ascii_letters
 from typing import *
-from sortedcontainers import SortedSet, SortedList, SortedDict
 
 BUFSIZE = 4096
 
@@ -95,16 +94,10 @@ try:
 except ModuleNotFoundError:
     pass
 
-{% if mod %}
-MOD = {{ mod }}
-{% endif %}
-{% if yes_str %}
-YES = "{{ yes_str }}"
-{% endif %}
-{% if no_str %}
-NO = "{{ no_str }}"
-{% endif %}
 
-{% if prediction_success %}
-{{input_part}}
-{% endif %}
+A,B,C,D = TII()
+
+if A>C or (A==C and B>D):
+    print("Aoki")
+else:
+    print("Takahashi")

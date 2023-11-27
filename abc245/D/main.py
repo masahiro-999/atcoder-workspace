@@ -1,11 +1,91 @@
-import sys, re
-from math import ceil, floor, sqrt, pi, factorial, gcd,sin,cos,tan,asin,acos,atan2,exp,log,log10
-from collections import deque, Counter, defaultdict
-from itertools import product, accumulate
-from functools import reduce,lru_cache
-from bisect import bisect
-from heapq import heapify, heappop, heappush
-from random import randrange
+from io import BytesIO, IOBase
+
+import sys
+import os
+
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
+from bisect import bisect, bisect_left, bisect_right
+from collections import Counter, defaultdict, deque
+from copy import deepcopy
+from functools import cmp_to_key, lru_cache, reduce
+from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
+from itertools import product, accumulate,permutations,combinations, count
+from operator import add, iand, ior, itemgetter, mul, xor
+from string import ascii_lowercase, ascii_uppercase, ascii_letters
+from typing import *
+
+BUFSIZE = 4096
+
+class FastIO(IOBase):
+    newlines = 0
+
+    def __init__(self, file):
+        self._fd = file.fileno()
+        self.buffer = BytesIO()
+        self.writable = "x" in file.mode or "r" not in file.mode
+        self.write = self.buffer.write if self.writable else None
+
+    def read(self):
+        while True:
+            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
+            if not b:
+                break
+            ptr = self.buffer.tell()
+            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
+        self.newlines = 0
+        return self.buffer.read()
+
+    def readline(self):
+        while self.newlines == 0:
+            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
+            self.newlines = b.count(b"\n") + (not b)
+            ptr = self.buffer.tell()
+            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
+        self.newlines -= 1
+        return self.buffer.readline()
+
+    def flush(self):
+        if self.writable:
+            os.write(self._fd, self.buffer.getvalue())
+            self.buffer.truncate(0), self.buffer.seek(0)
+
+class IOWrapper(IOBase):
+    def __init__(self, file):
+        self.buffer = FastIO(file)
+        self.flush = self.buffer.flush
+        self.writable = self.buffer.writable
+        self.write = lambda s: self.buffer.write(s.encode("ascii"))
+        self.read = lambda: self.buffer.read().decode("ascii")
+        self.readline = lambda: self.buffer.readline().decode("ascii")
+
+sys.stdin = IOWrapper(sys.stdin)
+sys.stdout = IOWrapper(sys.stdout)
+input = lambda: sys.stdin.readline().rstrip("\r\n")
+
+if True:
+    def I():
+        return input()
+
+    def II():
+        return int(input())
+
+    def MII():
+        return map(int, input().split())
+
+    def LI():
+        return list(input().split())
+
+    def LII():
+        return list(map(int, input().split()))
+
+    def TII():
+        return tuple(map(int, input().split()))
+
+    def GMI():
+        return map(lambda x: int(x) - 1, input().split())
+
+    def LGMI():
+        return list(map(lambda x: int(x) - 1, input().split()))
 
 sys.setrecursionlimit(5 * 10 ** 5)
 try:
@@ -13,73 +93,20 @@ try:
     set_param('max_unroll_recursion=-1')
 except ModuleNotFoundError:
     pass
-input = lambda: sys.stdin.readline().rstrip()
-ii = lambda: int(input())
-mi = lambda: map(int, input().split())
-li = lambda: list(mi())
-inf = 2 ** 63 - 1
-tokens = (i for line in iter(input, "") for i in line.split())
-
-valuemax = 10
-def create_sample(n,m):
-    a = [randrange(-valuemax,valuemax+1) for _ in range(n+1)]
-    a[n] = randrange(1,valuemax)
-    if randrange(0,2) == 0:
-        a[n] = -a[n]
-    b = [randrange(-valuemax,valuemax+1) for _ in range(m+1)]
-    b[m] = randrange(1,valuemax)
-    if randrange(0,2) == 0:
-        b[m] = -b[m]
-
-    c = [0]*(n+m+1)
-    for i in range(n+1):
-        for j in range(m+1):
-            c[i+j] += a[i]*b[j]
-    
-    f = open("in_3.txt", "w")
-    f.write(f'{n} {m}\n')
-    f.write(" ".join(map(str,a))+"\n")
-    f.write(" ".join(map(str,c))+"\n")
-    f.close()
-    f = open("out_3.txt", "w")
-    f.write(" ".join(map(str,b))+"\n")
-    
-def solve(N: int, M: int, A: "List[int]", C: "List[int]"):
-    def get_ab(n):
-        for i in range(N+1):
-            if 0 <= n-i <= M:    
-                yield(i, n-i)
-
-    def get_b(n):
-        ab_list = list(get_ab(n))
-        a_list = [a for a,b in get_ab(n)]
-        b_list = [b for a,b in get_ab(n)]
-        min_b = min(b_list)
-        ab_min_b = [(a,b) for a,b in ab_list if b == min_b]
-        ab_not_min_b = [(a,b) for a,b in ab_list if b != min_b]
-
-        ret = C[n] 
-        for a,b in ab_not_min_b:
-            ret -= A[a]*B[b]
-        ret //= A[ab_min_b[0][0]]        
-        return ret
-
-    B = [0]*(M+1)
-    for i in range(M+1):
-        b = get_b(N+M-i)
-        B[M-i] = b
 
 
-    print(*B)
+N,M = TII()
+A = LII()
+C = LII()
 
-    
-def main():
-    N = int(next(tokens))  # type: int
-    M = int(next(tokens))  # type: int
-    A = [int(next(tokens)) for _ in range(N + 1)]  # type: "List[int]"
-    C = [int(next(tokens)) for _ in range(N + M + 1)]  # type: "List[int]"
-    solve(N, M, A, C)
-    return
+B = [0]*(M+1)
 
-# create_sample(2,3)
-main()
+B[M] = C[N+M]//A[N]
+for i in range(1,M+1):
+    sm = 0
+    for j in range(i):
+        if M-j >=0 and N-i+j >= 0:
+            sm += A[N-i+j]*B[M-j] 
+    B[M-i] = (C[N+M-i]-sm)//A[N]
+
+print(*B)
