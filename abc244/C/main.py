@@ -95,23 +95,17 @@ try:
 except ModuleNotFoundError:
     pass
 
-YES = "Yes"
-NO = "No"
+def put(s):
+    print(s, flush=True)
+    return II()
 
-S = LI()
-T = LI()
+N = II()
+not_used = set(range(1,2*N+2))
 
-table = {}
-for s,i in zip(S,range(1,4)):
-    table[s] = i
+while True:
+    i = not_used.pop()
+    i = put(i)
+    if i == 0:
+        break
+    not_used.remove(i)
 
-result  = []
-for t in T:
-    result.append(table[t])
-# print(table)
-# print(result)
-OK_LIST=[(1,2,3),(2,3,1),(3,1,2)]
-if (*result,) in OK_LIST:
-    print(YES)
-else:
-    print(NO)

@@ -95,23 +95,8 @@ try:
 except ModuleNotFoundError:
     pass
 
-YES = "Yes"
-NO = "No"
 
-S = LI()
-T = LI()
+N = II()  # type: int
+S = I()  # type: str
 
-table = {}
-for s,i in zip(S,range(1,4)):
-    table[s] = i
-
-result  = []
-for t in T:
-    result.append(table[t])
-# print(table)
-# print(result)
-OK_LIST=[(1,2,3),(2,3,1),(3,1,2)]
-if (*result,) in OK_LIST:
-    print(YES)
-else:
-    print(NO)
+print(S[-1])

@@ -95,23 +95,20 @@ try:
 except ModuleNotFoundError:
     pass
 
-YES = "Yes"
-NO = "No"
 
-S = LI()
-T = LI()
+N = II()  # type: int
+T = I()  # type: str
 
-table = {}
-for s,i in zip(S,range(1,4)):
-    table[s] = i
+dir_t = [(1,0),(0,-1),(-1,0),(0,1)]
+dir = 0
 
-result  = []
+x=0
+y=0
 for t in T:
-    result.append(table[t])
-# print(table)
-# print(result)
-OK_LIST=[(1,2,3),(2,3,1),(3,1,2)]
-if (*result,) in OK_LIST:
-    print(YES)
-else:
-    print(NO)
+    if t == "S":
+        x += dir_t[dir][0]
+        y += dir_t[dir][1]
+    else:
+        dir = (dir +1)%4
+
+print(x,y)
