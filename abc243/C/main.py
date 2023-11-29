@@ -95,27 +95,24 @@ try:
 except ModuleNotFoundError:
     pass
 
+YES = "Yes"
+NO = "No"
 
-N,X = TII()
+N = II()  # type: int
+xy = [LII() for _ in range(N)]
 S = I()
 
-q = deque()
+max_l = defaultdict(lambda : -1)
 
-for s in S:
-    if s == "U":
-        if q and q[len(q)-1]!="U" :
-            q.pop()
-        else:
-            q.append(s)
-    else:
-        q.append(s)
+for i,(x,y) in enumerate(xy):
+    if S[i]=="L":
+        max_l[y] = max(max_l[y], x)
 
-for s in q:
-    if s == "U":
-        X = X//2
-    else:
-        X = X<<1
-        if s == "R":
-            X += 1
+ans = NO
+for i,(x,y) in enumerate(xy):
+    if S[i]=="R":
+        if x < max_l[y]:
+            ans = YES
+            break
 
-print(X)
+print(ans)

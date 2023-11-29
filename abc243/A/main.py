@@ -96,26 +96,12 @@ except ModuleNotFoundError:
     pass
 
 
-N,X = TII()
-S = I()
+V,A,B,C = TII()
 
-q = deque()
-
-for s in S:
-    if s == "U":
-        if q and q[len(q)-1]!="U" :
-            q.pop()
-        else:
-            q.append(s)
-    else:
-        q.append(s)
-
-for s in q:
-    if s == "U":
-        X = X//2
-    else:
-        X = X<<1
-        if s == "R":
-            X += 1
-
-print(X)
+r = V % (A+B+C)
+if r < A:
+    print ("F")
+elif r < A+B:
+    print("M")
+else:
+    print("T")

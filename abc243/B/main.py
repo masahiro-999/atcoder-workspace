@@ -96,26 +96,18 @@ except ModuleNotFoundError:
     pass
 
 
-N,X = TII()
-S = I()
+N = II()  # type: int
+A = LII()
+B = LII()
 
-q = deque()
+cnt = 0
+for a,b in zip(A,B):
+    if a==b:
+        cnt += 1
 
-for s in S:
-    if s == "U":
-        if q and q[len(q)-1]!="U" :
-            q.pop()
-        else:
-            q.append(s)
-    else:
-        q.append(s)
+set_a = set(A)
+set_b = set(B)
+set_c = set_a & set_b
 
-for s in q:
-    if s == "U":
-        X = X//2
-    else:
-        X = X<<1
-        if s == "R":
-            X += 1
-
-print(X)
+print(cnt)
+print(len(set_c)-cnt)
