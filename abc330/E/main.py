@@ -101,29 +101,26 @@ N,Q = TII()
 A = LII()
 ix = [LII() for _ in range(Q)]
 
-set_A = set(A)
+cnt_a = Counter()
+for a in A:
+    if a <=N:
+        cnt_a[a]+=1
 
-# hack_01.txt hack_02.txtがTLEになる
-# s = SortedSet(range(0,N+1))
-# for a in set_A:
-#     s.discard(a)
-
-s = []
-set_A = set(A)
+s = SortedSet()
 for i in range(0,N+1):
-    if i not in set_A:
-        s.append(i)
-s = SortedSet(s)
-
-cnt_a = Counter(A)
+    if cnt_a[i] == 0:
+        s.add(i)
 
 for i,x in ix:
     i -= 1
     if A[i]!=x:
-        cnt_a[A[i]] -= 1
-        if cnt_a[A[i]] == 0:
-            s.add(A[i])
+        if A[i] <= N:
+            cnt_a[A[i]] -= 1
+            if cnt_a[A[i]] == 0:
+                s.add(A[i])
         A[i] = x
-        cnt_a[x] += 1
-        s.discard(x)
+        if x <= N:
+            cnt_a[x] += 1
+            if cnt_a[x] == 1:
+                s.remove(x)
     print(s[0])
