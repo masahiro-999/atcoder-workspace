@@ -95,13 +95,31 @@ try:
 except ModuleNotFoundError:
     pass
 
+
+N,M = TII()
+abc = [LII() for _ in range(M)]
+
+g = defaultdict(list)
+edge_table = {}
 inf = 1<<60
-{% if mod %}
-MOD = {{ mod }}
-{% endif %}
-{% if yes_str %}
-YES = "{{ yes_str }}"
-{% endif %}
-{% if no_str %}
-NO = "{{ no_str }}"
-{% endif %}
+d = [[inf]*N for _ in range(N)]
+
+for i,(a,b,c) in enumerate(abc):
+    a -= 1
+    b -= 1
+    d[a][b] = c
+    d[b][a] = c
+
+for k,i,j in product(range(N),range(N),range(N)):
+    d[i][j] = min(d[i][j],d[i][k]+d[k][j])
+
+ans = 0
+for a,b,c in abc:
+    a -= 1
+    b -= 1
+    for i in range(N):
+        if d[a][i]+d[i][b] <= c:
+            ans += 1
+            break
+
+print(ans)
