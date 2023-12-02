@@ -96,27 +96,21 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
+MOD = 998244353
 
-S = I()
-Q = II()
-tk = [LII() for _ in range(Q)]
+T = II()
 
-chr_a = ord("A")
+for _ in range(T):
+    N = II()
+    S = I()
+    s = [ord(s)-ord("A") for s in S]
+    half_len = N//2
+    mid = N % 2
 
-def count_bit(n):
-    cnt = 0
-    while n > 0:
-        if n & 1:
-            cnt += 1
-        n >>=1
-    return cnt
-s = [ord(s) - chr_a  for s in S]
-for t,k in tk:
-    k -= 1
-    cycle = k >> t
-    if t <= 60:
-        k = k % (1<<t)
-    cnt = count_bit(k)
-    n = t +cnt
-    ans = chr(chr_a+(s[cycle]+n)%3)
+    ans = 0
+    for i in range(half_len+mid):
+        ans += s[i] * pow(26,half_len+mid-i-1,MOD)
+    if S[:half_len]+S[half_len:half_len+mid]+S[:half_len][::-1] <= S:
+        ans += 1
+    ans = ans % MOD
     print(ans)

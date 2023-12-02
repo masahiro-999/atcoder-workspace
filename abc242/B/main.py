@@ -98,25 +98,9 @@ except ModuleNotFoundError:
 inf = 1<<60
 
 S = I()
-Q = II()
-tk = [LII() for _ in range(Q)]
 
-chr_a = ord("A")
+s = [s for s in S]
+s.sort()
 
-def count_bit(n):
-    cnt = 0
-    while n > 0:
-        if n & 1:
-            cnt += 1
-        n >>=1
-    return cnt
-s = [ord(s) - chr_a  for s in S]
-for t,k in tk:
-    k -= 1
-    cycle = k >> t
-    if t <= 60:
-        k = k % (1<<t)
-    cnt = count_bit(k)
-    n = t +cnt
-    ans = chr(chr_a+(s[cycle]+n)%3)
-    print(ans)
+ans = "".join(s)
+print(ans)
