@@ -98,26 +98,8 @@ except ModuleNotFoundError:
 inf = 1<<60
 
 N = II()
-A = LII()
+a = LII()
 
-q = deque()
-
-cnt = 1
-q.append((A[0],1))
-print(len(q))
-for a in A[1:]:
-    if q:
-        b,n = q[-1]
-    else:
-        b = -1
-        n = 0
-    cnt += 1
-    if b == a:
-        if n+1 == a:
-            q.pop()
-            cnt -= a
-        else:
-            q[-1] = (a,n+1)
-    else:
-        q.append((a,1)) 
-    print(cnt)
+cnt = Counter(a)
+ans = len(cnt.keys())
+print(ans)

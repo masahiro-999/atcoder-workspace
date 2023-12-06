@@ -96,28 +96,20 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
+YES = "Yes"
+NO = "No"
 
-N = II()
-A = LII()
+N,X = TII()
+ab = [LII() for _ in range(N)]
 
-q = deque()
+prev = set([0])
 
-cnt = 1
-q.append((A[0],1))
-print(len(q))
-for a in A[1:]:
-    if q:
-        b,n = q[-1]
-    else:
-        b = -1
-        n = 0
-    cnt += 1
-    if b == a:
-        if n+1 == a:
-            q.pop()
-            cnt -= a
-        else:
-            q[-1] = (a,n+1)
-    else:
-        q.append((a,1)) 
-    print(cnt)
+for a,b in ab:
+    next = set()
+    for s in prev:
+        next.add(s+a)
+        next.add(s+b)
+    prev = next
+
+ans = YES if X in next else NO
+print(ans)
