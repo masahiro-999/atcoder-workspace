@@ -97,30 +97,32 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-def get_prime_list(num_max):
-    prime_table=[1]*(num_max+1)
-    prime_table[0] = 0
-    prime_table[1] = 0
-    for i in range(2, num_max+1):
-        k = i*2
-        while k <= num_max:
-            prime_table[k] = 0
-            k += i
-    return [i for i in range(2,num_max+1) if prime_table[i]]
+N,Q = TII()
+X = LII()
+ab = [TII() for _ in range(N-1)]
+vk = [TII() for _ in range(Q)]
 
-prime_set= set(get_prime_list(1000))
-A,B,C,D = LII()
+g = defaultdict(list)
 
-# print(get_prime_list(1000))
-ans = "Aoki"
-for i in range(A,B+1):
-    win = True
-    for j in range(C,D+1):
-        if i+j in prime_set:
-            win=False
-            break
-    if win:
-        # print(i)
-        ans = "Takahashi"
-        break
-print(ans)
+for a,b in ab:
+    a -= 1
+    b -= 1
+    g[a].append(b)
+    g[b].append(a)
+
+max20 = [None]*N
+
+def get_max20(n):
+    ret =[X[n]]
+    max20[n]=-1
+    for next in g[n]:
+        if max20[next] == None:
+            max20[next] = get_max20(next)
+            ret += max20[next]
+    ret.sort(reverse=True)
+    return ret[:20]
+
+max20[0]=get_max20(0)
+
+for v,k in vk:
+    print(max20[v-1][k-1])

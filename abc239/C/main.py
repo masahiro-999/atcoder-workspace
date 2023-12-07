@@ -96,31 +96,26 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
+YES = "Yes"
+NO = "No"
 
-def get_prime_list(num_max):
-    prime_table=[1]*(num_max+1)
-    prime_table[0] = 0
-    prime_table[1] = 0
-    for i in range(2, num_max+1):
-        k = i*2
-        while k <= num_max:
-            prime_table[k] = 0
-            k += i
-    return [i for i in range(2,num_max+1) if prime_table[i]]
+dxdy =[
+    (1,2),(2,1),
+    (-1,2),(-2,1),
+    (1,-2),(2,-1),
+    (-1,-2),(-2,-1),
+]
 
-prime_set= set(get_prime_list(1000))
-A,B,C,D = LII()
 
-# print(get_prime_list(1000))
-ans = "Aoki"
-for i in range(A,B+1):
-    win = True
-    for j in range(C,D+1):
-        if i+j in prime_set:
-            win=False
-            break
-    if win:
-        # print(i)
-        ans = "Takahashi"
-        break
+def next(x,y):
+    next = set()
+    for dx,dy in dxdy:
+        next.add((x+dx,y+dy))
+    return next
+
+x1,y1,x2,y2 = LII()
+n1 = next(x1,y1)
+n2 = next(x2,y2)
+
+ans = YES if n1 & n2 else NO
 print(ans)
