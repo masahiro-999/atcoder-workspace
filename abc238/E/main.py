@@ -99,35 +99,34 @@ inf = 1<<60
 YES = "Yes"
 NO = "No"
 
-T = II()
-a_s = [TII() for _ in range(T)]
+N,Q = TII()
+lr = [TII() for _ in range(Q)]
 
-for a,s in a_s:
-    xy = s-2*a
-    if s >= 2*a:
-        ans = YES if a & xy == 0 else NO
-    else:
-        ans = NO
+g = defaultdict(list)
 
-    print(ans)
+visited = [False]*(N+1)
 
-# 4
-# 201408139683277485 381410962404666524
-# 360288799186493714 788806911317182736
-# 18999951915747344 451273909320288229
-# 962424162689761932 1097438793187620758
-# [Expected]
-# No
-# Yes
-# Yes
-# No
-# [Received]
-# No
-# No
-# No
-# No
+for l,r in lr:
+    l -= 1
+    r -= 1
+    g[l].append(r+1)
+    g[r+1].append(l)
 
+# print(g)
+def bfs():
+    q = deque()
+    q.append(0)
+    visited[0] = True
+    while q:
+        i = q.popleft()
+        for next in g[i]:
+            if visited[next] == False:
+                q.append(next)
+                visited[next]=True
 
-# a  '10100000000000000001100000100000100000100000010000100010010'
-#       '11110010011001100011001011011001010011101100011011101100'
-# s '101011110010011001111011010011100001011011110000100100010000'
+bfs()
+# print(visited)
+if visited[N]:
+    print(YES)
+else:
+    print(NO)
