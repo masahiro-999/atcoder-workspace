@@ -113,43 +113,32 @@ for i,p in enumerate(P):
 sum_a0 = 0
 sum_tmp = 0
 
-result = [0]*N
-def dfs(n):
+result = defaultdict(list)
+
+def dfs(n,d):
+    result[d].append(A[n])
     if g[n] == []:
-        return (0,0,A[n])
-    ret = []
+        return 
     for next in g[n]:
-        ret.append(dfs(next))
-    (a,b,c) = max(ret)
-    if a !=0:
-        return (a,b,0)
-    else:
-        c = sum([c for a,b,c in ret])
-        return (abs(c),c,0)
-def bfs():
-    global sum_a0,sum_tmp
-    q = deque()
-    q.append(0)
-    while q:
-        p = q.popleft()
-        sum_tmp += A[p]
-        sum_a0 += sum_tmp
-        # print(sum_a0)
-        for next in g[p]:
-            q.append(next)
+        dfs(next,d+1)
 
-# bfs()
-# if sum_a0 > 0 or (sum_a0 == 0 and A[0]>0):
-#     ans = "+"
-# elif sum_a0 < 0 or (sum_a0 == 0 and A[0]<0):
-#     ans = "-"
-# else:
-#     ans = "0"
 
-_,b,c = dfs(0,0)
-if b >0 or (b == 0 and c > 0):
+dfs(0,0)
+
+key_list = list(result.keys())
+key_list.sort(reverse=True)
+
+# print(result)
+
+sm = 0
+for k in key_list:
+    sm = sum(result[k])
+    if sm !=0:
+        break
+    
+if sm >0 or (sm==0 and A[0]>0):
     print("+")
-elif b <0 or (b == 0 and c <0):
+elif sm <0 or (sm == 0 and A[0] <0):
     print("-")
 else:
     print("0")
