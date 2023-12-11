@@ -101,72 +101,28 @@ H,W = TII()
 A = [LII() for _ in range(H)]
 B = [LII() for _ in range(H)]
 
-H_set = []
-
-def create_H_set(A):
-    ret = []
-    for i in range(H):
-        s = set()
-        for j in range(W):
-            s.add(A[i][j])
-        ret.append(s)
+def count_swap(p):
+    L = len(p)
+    ret = 0
+    for i in range(L-1):
+        for j in range(i+1,L):
+            if p[i]>p[j]:
+                ret += 1
     return ret
 
-def create_W_set(A):
-    ret = []
-    for j in range(W):
-        s = set()
-        for i in range(H):
-            s.add(A[i][j])
-        ret.append(s)
-    return ret
-
-def cmp_set(A, B):
-    t = [-1] * len(A)
-    ok = [False] * len(A)
-    for j, a in enumerate(A):
-        for i, b in enumerate(B):
-            if ok[i]:
-                continue
-            if a == b:
-                t[j] =i
-                ok[i] = True
-                break
-    if all(ok):
-        return t
+ans = inf
+for ph, pw in product(
+    permutations(range(H),H),
+    permutations(range(W),W)
+):
+    for i,j in product(range(H),range(W)):
+        if A[ph[i]][pw[j]] != B[i][j]:
+            break
     else:
-        return False
+        # print(ph,pw)
+        ans = min(ans, count_swap(ph)+count_swap(pw))
 
-def count_swap(A,B):
-    # print(t)
-    cnt = 0
-    back_t = [0] * len(A)
-    i = 0
-    while i < len(A):
-        if A[i] == B[i]:
-            i += 1
-            continue
-        for j in range(i+1, len(A)):
-            if A[j] == B[i]:
-                break
-        target = j
-        target2 = j -1
-        B[target], B[target2] = B[target2], B[target]
-        cnt += 1
-        # print(t)
-    # print(cnt)
-    return cnt
-
-AH = create_H_set(A)
-BH = create_H_set(B)
-AW = create_W_set(A)
-BW = create_W_set(B)
-
-th = cmp_set(AH, BH)
-tw = cmp_set(AW, BW)
-if th and tw:
-    ans = count_swap(AH,BH) + count_swap(AW,BW)
-else:
+if ans == inf:
     ans = -1
 print(ans)
 
