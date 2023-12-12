@@ -96,15 +96,13 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
+YES = "Yes"
+NO = "No"
 
 N = II()
-q = deque([N])
 
-for s,i in zip(I()[::-1], range(N-1,-1,-1)):
-    # print(s,i)
-    if s == "R":
-        q.appendleft(i)
-    else:
-        q.append(i)
-
-print(*q)
+x = 1<<31
+if -x <= N < x:
+    print(YES)
+else:
+    print(NO)

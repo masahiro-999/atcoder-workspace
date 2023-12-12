@@ -97,14 +97,39 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-N = II()
-q = deque([N])
+N,M = TII()
+H = LII()
+uv = [LII() for _ in range(M)]
 
-for s,i in zip(I()[::-1], range(N-1,-1,-1)):
-    # print(s,i)
-    if s == "R":
-        q.appendleft(i)
-    else:
-        q.append(i)
+g = defaultdict(list)
+for u,v in uv:
+    u -= 1
+    v -= 1
+    g[u].append( (max(-(H[u]-H[v]),0),v))
+    g[v].append( (max(-(H[v]-H[u]),0),u))
 
-print(*q)
+# print(g)
+
+def dijkstra():
+    q = [(0,0)]
+    heapify(q)
+    cost_table = [inf]*N
+    cost_table[0] = 0
+    while q:
+        c,p = heappop(q)
+        # print(p,c)
+        if cost_table[p] != c:
+            continue
+        for next_c,next_p in g[p]:
+            if cost_table[next_p] <= c+next_c:
+                continue 
+            cost_table[next_p] = c+next_c
+            heappush(q,(c+next_c, next_p))
+    # print(visited)
+    # print(cost_table)
+    return cost_table
+
+cost_table = dijkstra()
+result = [H[0] - h - cost_table[i] for i,h in enumerate(H)]
+ans = max(result)
+print(ans)

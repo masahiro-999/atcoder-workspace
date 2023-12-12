@@ -97,14 +97,8 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-N = II()
-q = deque([N])
+H,W = TII()
+a = [LII() for _ in range(H)]
 
-for s,i in zip(I()[::-1], range(N-1,-1,-1)):
-    # print(s,i)
-    if s == "R":
-        q.appendleft(i)
-    else:
-        q.append(i)
-
-print(*q)
+for l in zip(*a):
+    print(*l)

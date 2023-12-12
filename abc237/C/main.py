@@ -96,15 +96,26 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
+YES = "Yes"
+NO = "No"
 
-N = II()
-q = deque([N])
+S = I()
 
-for s,i in zip(I()[::-1], range(N-1,-1,-1)):
-    # print(s,i)
-    if s == "R":
-        q.appendleft(i)
+def count_a(S):
+    for i,s in enumerate(S):
+        if s != "a":
+            return i
+    return len(S)
+
+n_head = count_a(S)
+n_tail = count_a(S[::-1])
+if n_head > n_tail:
+    ans = False
+else:
+    if n_tail == 0:
+        ans = S[n_head:] == S[n_head:][::-1]
     else:
-        q.append(i)
+        ans = S[n_head:-n_tail] == S[n_head:-n_tail][::-1]
 
-print(*q)
+
+print(YES if ans else NO)
