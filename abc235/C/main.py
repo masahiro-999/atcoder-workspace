@@ -97,36 +97,18 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-a,N = TII()
+N,Q = TII()
+A = LII()
 
-keta = len(f'{N}')
-table_size = 10**keta
-visited = [inf]*(table_size)
+xk = [TII() for _ in range(Q)]
 
-visited[1] = 0
+table = defaultdict(list)
 
-def bfs():
-    q = deque()
-    q.append(1)
-    while q:
-        x = q.popleft()
-        n = visited[x]
-        next_x = x*a
-        if next_x < table_size and  next_x < visited[next_x] == inf:
-            visited[next_x] = n+1
-            q.append(next_x)
-
-        str_x = str(x)
-        if len(str_x) <= keta and len(str_x)>1 and str_x[-1] != "0":
-                str_x = str_x[-1]+str_x[:-1]
-                next_x = int(str_x)
-                if visited[next_x] == inf:
-                    visited[next_x] = n+1
-                    q.append(next_x)
-    
-bfs()
-# print(visited)
-ans = visited[N]
-if ans == inf:
-    ans = -1
-print(ans)
+for i,a in enumerate(A):
+    table[a].append(i)
+# print(table)
+for x,k in xk:
+    try:
+        print(table[x][k-1]+1)
+    except IndexError:
+        print(-1)
