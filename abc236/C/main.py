@@ -96,39 +96,18 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
+YES = "Yes"
+NO = "No"
 
-N = II()
-A = [[0]*2*N for _ in range(2*N)]
+N,M = TII()
+S = LI()
+T = LI()
 
-for i in range(2*N-1):
-    X = LII()
-    for j,x in enumerate(X):
-        A[i][j+i+1] = x
+set_t = set(T)
 
-
-p_list = []
-def create_p(remain,clist):
-    p1 = min(remain)
-    remain.remove(p1)
-    for p2 in list(remain):
-        remain.remove(p2)
-        if(len(remain)==0):
-            p_list.append([(p1,p2)]+clist)
-        else:
-            create_p(remain,[(p1,p2)]+clist)
-        remain.add(p2)
-    remain.add(p1)
-
-create_p(set(range(2*N)), [])
-# print(p_list)
-
-# print(p_list)
-# print(len(p_list))
-ans = 0
-for p in p_list:
-    x = 0
-    for a,b in p:
-        x ^= A[a][b]        
-    ans = max(ans,x)
-
-print(ans)
+for s in S:
+    if s in set_t:
+        print(YES)
+    else:
+        print(NO)
+    
