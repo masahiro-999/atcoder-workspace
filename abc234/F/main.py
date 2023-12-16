@@ -96,12 +96,52 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
+MOD = 998244353
 
-N,K = TII()
-P = LII()
+def prepare(n, MOD):
+    f = 1
+    factorials = [1]
+    for m in range(1, n + 1):
+        f *= m
+        f %= MOD
+        factorials.append(f)
+    inv = pow(f, MOD - 2, MOD)
+    invs = [1] * (n + 1)
+    invs[n] = inv
+    for m in range(n, 1, -1):
+        inv *= m
+        inv %= MOD
+        invs[m - 1] = inv
+ 
+    return factorials, invs
 
-s = SortedSet(P[:K])
-print(s[len(s)-K])
-for p in P[K:]:
-    s.add(p)
-    print(s[len(s)-K])
+factorials, invs = prepare(5000,MOD)
+
+def choose(n,a):
+    if a == 0:
+        return 1
+    if n<a or a <0:
+        return 0
+    return (factorials[n] * (invs[n-a] * invs[a])) % MOD
+
+S = I()
+
+cnt = Counter(S)
+
+def find_choose(n):
+    dp = [0]*(n+1)
+    dp[0] = 1
+    for k_n in cnt.values():
+        ndp = [0]*(n+1)
+        for k in range(k_n+1):
+            for j in range(n-k+1):
+                ndp[j+k] += dp[j] * choose(j+k,j)
+                ndp[j+k] %= MOD
+        dp = ndp
+    return dp
+
+L = len(S)
+dp = find_choose(L)
+ans = reduce(lambda x,y: (x+y)%MOD,dp[1:L+1])
+
+print(ans)

@@ -97,11 +97,11 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-N,K = TII()
-P = LII()
+t = II()
 
-s = SortedSet(P[:K])
-print(s[len(s)-K])
-for p in P[K:]:
-    s.add(p)
-    print(s[len(s)-K])
+def f(x):
+    return x*x+2*x+3
+
+ans =  f(f(f(t)+t)+f(f(t)))
+
+print(ans)

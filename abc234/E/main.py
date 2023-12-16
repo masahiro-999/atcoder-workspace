@@ -97,11 +97,36 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-N,K = TII()
-P = LII()
+X = II()
+str_X = str(X)
+keta = len(str_X)
 
-s = SortedSet(P[:K])
-print(s[len(s)-K])
-for p in P[K:]:
-    s.add(p)
-    print(s[len(s)-K])
+def find(X,n_top, keta):
+    ret = None
+    for d in range(-9,10,1):
+        if not 0<=n_top+d*(keta-1)<=9:
+            continue
+        str_n = "".join([str(n_top+d*i) for i in range(keta)])
+        if int(str_n)>=X:
+            ret = int(str_n)
+            break
+    return ret
+
+# if X > 9876543210:
+#     if X <= int(str_X[0]*keta):
+#         ans = int(str_X[0]*keta)
+#     else:
+#         ans = int("1"*(keta+1))
+# else:
+n = int(str_X[0])
+while True:
+    ans = find(X,n,keta)
+    if ans is not None:
+        break
+    n += 1
+    if n == 0:
+        n = 1
+        keta += 1
+
+
+print(ans)

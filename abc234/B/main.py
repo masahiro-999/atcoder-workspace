@@ -97,11 +97,13 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-N,K = TII()
-P = LII()
+N = II()
+xy = [TII() for _ in range(N)]
 
-s = SortedSet(P[:K])
-print(s[len(s)-K])
-for p in P[K:]:
-    s.add(p)
-    print(s[len(s)-K])
+comp_xy =[complex(x,y) for x,y in xy]
+
+ans = 0
+for s,t in product(comp_xy,comp_xy):
+    ans = max(ans,abs(s-t))
+
+print(ans)

@@ -97,11 +97,9 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-N,K = TII()
-P = LII()
+K = II()
 
-s = SortedSet(P[:K])
-print(s[len(s)-K])
-for p in P[K:]:
-    s.add(p)
-    print(s[len(s)-K])
+# K -= 1
+
+bin_k = f'{K:b}'
+print(bin_k.replace("1","2"))
