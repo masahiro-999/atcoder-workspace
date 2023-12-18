@@ -97,20 +97,11 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-N,K = TII()
-A = LII()
+X,Y = TII()
 
-acc_a = list(accumulate(A, initial = 0))
-
-# print(acc_a)
-
-table_acc_a = defaultdict(list)
-for i,value in enumerate(acc_a):
-    table_acc_a[value].append(i)
-
-cnt = 0
-for i,value in enumerate(acc_a):
-    l = table_acc_a[value+K]
-    cnt += len(l) - bisect_right(l,i)
-
-print(cnt)
+Y -= X
+if Y <=0:
+    ans = 0
+else:
+    ans = -((-Y)//10)
+print(ans)

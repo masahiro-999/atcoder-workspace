@@ -1,0 +1,39 @@
+import sys, re
+from math import ceil, floor, sqrt, pi, factorial, gcd,sin,cos,tan,asin,acos,atan2,exp,log,log10
+from collections import deque, Counter, defaultdict
+from itertools import product, accumulate
+from functools import reduce,lru_cache
+from bisect import bisect
+from heapq import heapify, heappop, heappush
+sys.setrecursionlimit(5 * 10 ** 5)
+try:
+    from pypyjit import set_param
+    set_param('max_unroll_recursion=-1')
+except ModuleNotFoundError:
+    pass
+input = lambda: sys.stdin.readline().rstrip()
+ii = lambda: int(input())
+mi = lambda: map(int, input().split())
+li = lambda: list(mi())
+inf = 2 ** 63 - 1
+tokens = (i for line in iter(input, "") for i in line.split())
+
+
+def solve(N: int, K: int, A: "List[int]"):
+    acc_a = list(accumulate([0]+A))
+    ans = 0
+    a_counter = Counter()
+    for a in acc_a:
+        if a_counter[a-K] > 0:
+            ans += a_counter[a-K]
+        a_counter[a] += 1
+    print(ans)
+
+def main():
+    N = int(next(tokens))  # type: int
+    K = int(next(tokens))  # type: int
+    A = [int(next(tokens)) for _ in range(N)]  # type: "List[int]"
+    solve(N, K, A)
+    return
+
+main()

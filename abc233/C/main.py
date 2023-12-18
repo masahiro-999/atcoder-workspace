@@ -97,20 +97,15 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-N,K = TII()
-A = LII()
-
-acc_a = list(accumulate(A, initial = 0))
-
-# print(acc_a)
-
-table_acc_a = defaultdict(list)
-for i,value in enumerate(acc_a):
-    table_acc_a[value].append(i)
+N,X = TII()
+a = [TII()[1:] for _ in range(N)]
 
 cnt = 0
-for i,value in enumerate(acc_a):
-    l = table_acc_a[value+K]
-    cnt += len(l) - bisect_right(l,i)
+for p in product(*a):
+    n = 1
+    for x in p:
+        n *= x
+    if n == X:
+        cnt += 1
 
 print(cnt)

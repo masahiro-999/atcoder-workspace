@@ -97,20 +97,26 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-N,K = TII()
-A = LII()
+x = I()
 
-acc_a = list(accumulate(A, initial = 0))
+S = [int(a) for a in x]
 
-# print(acc_a)
+sm = 0
+for i in range(len(S)):
+    S[i] += sm
+    sm = S[i]
 
-table_acc_a = defaultdict(list)
-for i,value in enumerate(acc_a):
-    table_acc_a[value].append(i)
+# print(S)
+carry = 0
+S = S[::-1]
+S1 = []
+for i in range(len(S)):
+    S1.append(str((S[i]+carry)%10))
+    carry = (S[i]+carry)//10
 
-cnt = 0
-for i,value in enumerate(acc_a):
-    l = table_acc_a[value+K]
-    cnt += len(l) - bisect_right(l,i)
+while carry:
+    S1.append(str(carry%10))
+    carry //= 10
 
-print(cnt)
+ans = "".join(S1[::-1])
+print(ans)
