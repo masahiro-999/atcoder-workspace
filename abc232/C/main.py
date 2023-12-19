@@ -96,24 +96,30 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
+YES = "Yes"
+NO = "No"
 
-H,W = TII()
+N,M = TII()
 
-C = [I() for _ in range(H)]
+ab = [TII() for _ in range(M)]
+cd = [TII() for _ in range(M)]
 
-visited = [[False]*W for _ in range(H)]
-
-def dfs(i,j,d):
-    visited[i][j] = True
-    if i+1 < H and visited[i+1][j]==False and C[i+1][j] == ".":
-        d1 = dfs(i+1,j,d+1)
-    else:
-        d1 = d
-    if j+1<W and visited[i][j+1]==False and C[i][j+1] == ".":
-        d2 = dfs(i,j+1,d+1)
-    else:
-        d2 = d
-    return max(d1,d2)
-
-ans = dfs(0,0,1)
+ans = NO
+set_ab = set()
+for a,b in ab:
+    if a>b:
+        a,b = b,a
+    set_ab.add((a,b))
+# print(set_ab)
+for p in permutations(range(1,N+1)):
+    set_cd = set()
+    for c,d in cd:
+        a,b = (p[c-1], p[d-1])
+        if a > b:
+            a,b = b,a
+        set_cd.add((a,b))
+    # print(set_cd)
+    if set_cd == set_ab:
+        ans = YES
+        break
 print(ans)
