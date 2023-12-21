@@ -17,13 +17,14 @@ class UnionFind():
         y = self.find(y)
 
         if x == y:
-            return
+            return True
 
         if self.parents[x] > self.parents[y]:
             x, y = y, x
 
         self.parents[x] += self.parents[y]
         self.parents[y] = x
+        return False
 
     def size(self, x):
         return -self.parents[self.find(x)]
