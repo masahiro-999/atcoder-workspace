@@ -96,80 +96,16 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
-YES = "Yes"
-NO = "No"
 
-#abc157_dで使用した
+N = II()
 
-class UnionFind():
-    def __init__(self, n):
-        self.n = n
-        self.parents = [-1] * n
+S = [I() for _ in range(N)]
 
-    def find(self, x):
-        if self.parents[x] < 0:
-            return x
-        else:
-            self.parents[x] = self.find(self.parents[x])
-            return self.parents[x]
+cnt = Counter(S)
 
-    def union(self, x, y):
-        x = self.find(x)
-        y = self.find(y)
-
-        if x == y:
-            return True
-
-        if self.parents[x] > self.parents[y]:
-            x, y = y, x
-
-        self.parents[x] += self.parents[y]
-        self.parents[y] = x
-        return False
-
-    def size(self, x):
-        return -self.parents[self.find(x)]
-
-    def same(self, x, y):
-        return self.find(x) == self.find(y)
-
-    def members(self, x):
-        root = self.find(x)
-        return [i for i in range(self.n) if self.find(i) == root]
-
-    def roots(self):
-        return [i for i, x in enumerate(self.parents) if x < 0]
-
-    def group_count(self):
-        return len(self.roots())
-
-    def all_group_members(self):
-        group_members = defaultdict(list)
-        for member in range(self.n):
-            group_members[self.find(member)].append(member)
-        return group_members
-
-    def __str__(self):
-        return '\n'.join(f'{r}: {m}' for r, m in self.all_group_members().items())
-
-N,M = TII()
-ab = [TII() for _ in range(M)]
-
-g = defaultdict(list)
-uf = UnionFind(N)
-
-ans = YES
-for a,b in ab:
-    a -= 1
-    b -= 1
-    g[a].append(b)
-    g[b].append(a)
-    if uf.union(a,b):
-        ans = NO
-        break
-
-for v in g.values():
-    if len(v) >2:
-        ans = NO
-        break
+mx = 0
+for k,v in cnt.items():
+    if v > mx:
+        mx = v
+        ans = k
 print(ans)
