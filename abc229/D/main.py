@@ -1,72 +1,123 @@
-import sys, re
-from math import ceil, floor, sqrt, pi, factorial, gcd,sin,cos,tan,asin,acos,atan2,exp,log,log10
-from collections import deque, Counter, defaultdict
-from itertools import product, accumulate
-from functools import reduce,lru_cache
+from io import BytesIO, IOBase
+
+import sys
+import os
+
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
 from bisect import bisect, bisect_left, bisect_right
-from heapq import heapify, heappop, heappush
+from collections import Counter, defaultdict, deque
+from copy import deepcopy
+from functools import cmp_to_key, lru_cache, reduce
+from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
+from itertools import product, accumulate,permutations,combinations, count, groupby
+from operator import add, iand, ior, itemgetter, mul, xor
+from string import ascii_lowercase, ascii_uppercase, ascii_letters
+from typing import *
+from sortedcontainers import SortedSet, SortedList, SortedDict
+
+BUFSIZE = 4096
+
+class FastIO(IOBase):
+    newlines = 0
+
+    def __init__(self, file):
+        self._fd = file.fileno()
+        self.buffer = BytesIO()
+        self.writable = "x" in file.mode or "r" not in file.mode
+        self.write = self.buffer.write if self.writable else None
+
+    def read(self):
+        while True:
+            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
+            if not b:
+                break
+            ptr = self.buffer.tell()
+            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
+        self.newlines = 0
+        return self.buffer.read()
+
+    def readline(self):
+        while self.newlines == 0:
+            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
+            self.newlines = b.count(b"\n") + (not b)
+            ptr = self.buffer.tell()
+            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
+        self.newlines -= 1
+        return self.buffer.readline()
+
+    def flush(self):
+        if self.writable:
+            os.write(self._fd, self.buffer.getvalue())
+            self.buffer.truncate(0), self.buffer.seek(0)
+
+class IOWrapper(IOBase):
+    def __init__(self, file):
+        self.buffer = FastIO(file)
+        self.flush = self.buffer.flush
+        self.writable = self.buffer.writable
+        self.write = lambda s: self.buffer.write(s.encode("ascii"))
+        self.read = lambda: self.buffer.read().decode("ascii")
+        self.readline = lambda: self.buffer.readline().decode("ascii")
+
+sys.stdin = IOWrapper(sys.stdin)
+sys.stdout = IOWrapper(sys.stdout)
+input = lambda: sys.stdin.readline().rstrip("\r\n")
+
+if True:
+    def I():
+        return input()
+
+    def II():
+        return int(input())
+
+    def MII():
+        return map(int, input().split())
+
+    def LI():
+        return list(input().split())
+
+    def LII():
+        return list(map(int, input().split()))
+
+    def TII():
+        return tuple(map(int, input().split()))
+
+    def GMI():
+        return map(lambda x: int(x) - 1, input().split())
+
+    def LGMI():
+        return list(map(lambda x: int(x) - 1, input().split()))
+
 sys.setrecursionlimit(5 * 10 ** 5)
 try:
     from pypyjit import set_param
     set_param('max_unroll_recursion=-1')
 except ModuleNotFoundError:
     pass
-input = lambda: sys.stdin.readline().rstrip()
-ii = lambda: int(input())
-mi = lambda: map(int, input().split())
-li = lambda: list(mi())
-inf = 2 ** 63 - 1
-tokens = (i for line in iter(input, "") for i in line.split())
 
-def solve1(S: str, K: int):
-    #先頭からの.の数
-    acc_s_dot = [0] + list(accumulate([1 if s == '.' else 0 for s in S]))
-    
-    # acc_s_dot[l] - acc_s_dot[r] =Kとなる最大のrを求める
-    # 尺取り法
-    l = 0
-    r = 0
-    ans = 0
-    while l < len(acc_s_dot):
-        while r < len(acc_s_dot) and acc_s_dot[r] - acc_s_dot[l] <= K:
-            ans = max(ans, r - l)
-            r += 1
-        l += 1
-    print(ans)
-    return ans
+inf = 1<<60
 
-def solve(S: str, K: int):
-    #先頭からの.の数
-    acc_s_dot = [0] + list(accumulate([1 if s == '.' else 0 for s in S]))
-    
-    # acc_s_dot[l] - acc_s_dot[r] =Kとなる最大のrを求める
-    # 二分探査で求める
-    def f(start, l):
-        if l == len(acc_s_dot):
-            return False
-        return acc_s_dot[l] - acc_s_dot[start] <= K
-    
-    ans = 0
-    for start in range(len(acc_s_dot)):
-        l = start
-        r = len(acc_s_dot)
-        while r - l > 1:
-            m = (l + r) // 2
-            if f(start, m):
-                l = m
-            else:
-                r = m
-        ans = max(ans, l - start)
-    print(ans)
-    return ans
+S = I()
+K = II()
 
+ans = 0
+s = 0
+t = 0
+k = K
+len_s = len(S)
+while t < len_s:
+    if S[t] == "X":
+        t += 1
+        continue
+    if k > 0:
+        k -= 1
+        t += 1
+        continue
+    ans = max(ans,(t-s))
+    # print(s,t,k,ans)
+    if S[s] == ".":
+        k += 1
+    s+= 1
+ans = max(ans,(t-s))
 
-
-def main():
-    S = next(tokens)  # type: str
-    K = int(next(tokens))  # type: int
-    solve(S, K)
-    return
-
-if __name__ == '__main__':
-    main()
+print(ans)
