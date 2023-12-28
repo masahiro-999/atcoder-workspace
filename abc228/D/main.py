@@ -1,22 +1,99 @@
-import sys, re
-from math import ceil, floor, sqrt, pi, factorial, gcd,sin,cos,tan,asin,acos,atan2,exp,log,log10
-from collections import deque, Counter, defaultdict
-from itertools import product, accumulate
-from functools import reduce,lru_cache
-from bisect import bisect
-from heapq import heapify, heappop, heappush
+from io import BytesIO, IOBase
+
+import sys
+import os
+
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
+from bisect import bisect, bisect_left, bisect_right
+from collections import Counter, defaultdict, deque
+from copy import deepcopy
+from functools import cmp_to_key, lru_cache, reduce
+from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
+from itertools import product, accumulate,permutations,combinations, count
+from operator import add, iand, ior, itemgetter, mul, xor
+from string import ascii_lowercase, ascii_uppercase, ascii_letters
+from typing import *
+from sortedcontainers import SortedSet, SortedList, SortedDict
+
+BUFSIZE = 4096
+
+class FastIO(IOBase):
+    newlines = 0
+
+    def __init__(self, file):
+        self._fd = file.fileno()
+        self.buffer = BytesIO()
+        self.writable = "x" in file.mode or "r" not in file.mode
+        self.write = self.buffer.write if self.writable else None
+
+    def read(self):
+        while True:
+            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
+            if not b:
+                break
+            ptr = self.buffer.tell()
+            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
+        self.newlines = 0
+        return self.buffer.read()
+
+    def readline(self):
+        while self.newlines == 0:
+            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
+            self.newlines = b.count(b"\n") + (not b)
+            ptr = self.buffer.tell()
+            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
+        self.newlines -= 1
+        return self.buffer.readline()
+
+    def flush(self):
+        if self.writable:
+            os.write(self._fd, self.buffer.getvalue())
+            self.buffer.truncate(0), self.buffer.seek(0)
+
+class IOWrapper(IOBase):
+    def __init__(self, file):
+        self.buffer = FastIO(file)
+        self.flush = self.buffer.flush
+        self.writable = self.buffer.writable
+        self.write = lambda s: self.buffer.write(s.encode("ascii"))
+        self.read = lambda: self.buffer.read().decode("ascii")
+        self.readline = lambda: self.buffer.readline().decode("ascii")
+
+sys.stdin = IOWrapper(sys.stdin)
+sys.stdout = IOWrapper(sys.stdout)
+input = lambda: sys.stdin.readline().rstrip("\r\n")
+
+if True:
+    def I():
+        return input()
+
+    def II():
+        return int(input())
+
+    def MII():
+        return map(int, input().split())
+
+    def LI():
+        return list(input().split())
+
+    def LII():
+        return list(map(int, input().split()))
+
+    def TII():
+        return tuple(map(int, input().split()))
+
+    def GMI():
+        return map(lambda x: int(x) - 1, input().split())
+
+    def LGMI():
+        return list(map(lambda x: int(x) - 1, input().split()))
+
 sys.setrecursionlimit(5 * 10 ** 5)
 try:
     from pypyjit import set_param
     set_param('max_unroll_recursion=-1')
 except ModuleNotFoundError:
     pass
-input = lambda: sys.stdin.readline().rstrip()
-ii = lambda: int(input())
-mi = lambda: map(int, input().split())
-li = lambda: list(mi())
-inf = 2 ** 63 - 1
-tokens = (i for line in iter(input, "") for i in line.split())
 
 #abc157_dで使用した
 
@@ -24,15 +101,6 @@ class UnionFind():
     def __init__(self, n):
         self.n = n
         self.parents = [-1] * n
-        self.write_pos = defaultdict(lambda : -1)
-
-    def set_write_pos(self, x, write_pos):
-        root = self.find(x)
-        self.write_pos[root] = write_pos
-    
-    def get_write_pos(self, x):
-        root = self.find(x)
-        return self.write_pos[root]
 
     def find(self, x):
         if self.parents[x] < 0:
@@ -46,17 +114,14 @@ class UnionFind():
         y = self.find(y)
 
         if x == y:
-            return
+            return True
 
-        wrote_pos = self.write_pos[y]
-    
         if self.parents[x] > self.parents[y]:
             x, y = y, x
 
         self.parents[x] += self.parents[y]
         self.parents[y] = x
-
-        self.write_pos[x] = wrote_pos
+        return False
 
     def size(self, x):
         return -self.parents[self.find(x)]
@@ -83,37 +148,44 @@ class UnionFind():
     def __str__(self):
         return '\n'.join(f'{r}: {m}' for r, m in self.all_group_members().items())
 
-MOD = 1
+inf = 1<<60
+ 
+N=1048576
 
-def solve(Q: int, tx):
-    N = 1 << 20
-    a = [-1] * N
-    uf = UnionFind(N)
-    for t, x in tx:
-        if t == 1:
-            if a[(x)%N] == -1:
-                write_pos = (x)%N
-            else:
-                write_pos = (uf.get_write_pos((x)%N)+1)%N
+Q = II()
+tx = [TII() for _ in range(Q)]
 
-            uf.set_write_pos(write_pos, write_pos)
-            a[write_pos] = x
-            # ひつ前とつなげる
-            if a[(write_pos-1)%N] != -1:
-                uf.union((write_pos-1)%N, (write_pos)%N)
-            # 一つ後とつなげる
-            if a[(write_pos+1)%N] != -1:
-                uf.union((write_pos)%N, (write_pos+1)%N)
+A = defaultdict(lambda : -1)
+root_index = defaultdict(lambda : -1)
 
+uf = UnionFind(N)
+
+# uf.union(3,2)
+# uf.union(2,1)
+# r = uf.find(1)
+# print(r)
+# r = uf.find(2)
+# print(r)
+# r = uf.find(3)
+# print(r)
+
+
+for t,x in tx:
+    if t == 1:
+        h = x
+        if A[h%N] == -1:
+            write_pos = h%N
         else:
-            print(a[x%N])
-    return
-
-def main():
-    Q = int(next(tokens))  # type: int
-    tx = [li() for _ in range(Q)]
-    solve(Q, tx)
-    return
-
-if __name__ == '__main__':
-    main()
+            write_pos = root_index[uf.find(h%N)]
+            if write_pos == -1:
+                write_pos = h % N
+        A[write_pos] = x
+        # print(A)
+        i = root_index[uf.find((write_pos+1)%N)]
+        if i == -1:
+            i = (write_pos+1)%N
+        uf.union(i,write_pos)
+        r = uf.find(write_pos)
+        root_index[r] = i
+    else:
+        print(A[x%N])
