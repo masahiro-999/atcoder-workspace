@@ -124,15 +124,15 @@ def slide_max(A,k):
     q = deque()
     ret = []
     for i,a in enumerate(A,start=1):
-        cnt = 1
+        # remove old one
+        if q and q[0][1]+k<=i:
+            q.popleft()
+        # aより小さいものは除く
         while q and q[-1][0] <a:
             q.pop()
-            cnt += 1
         q.append((a,i))
         if i<k:
             continue
-        if q[0][1]+k<=i:
-            q.popleft()
         ret.append(q[0][0])
     return ret
 
