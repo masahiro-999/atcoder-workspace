@@ -104,24 +104,23 @@ S = [II() for _ in range(N)]
 s = 0 
 t = 0
 ans = 0
-p = S[t]
+p = 1
 if 0 in S:
     ans = N
 else:
     while s < N:
         # print(s,t,p,ans)
-        if t+1 < N and p*S[t+1]<=K:
-            p *= S[t+1]
+        if t < N and p*S[t]<=K:
+            p *= S[t]
             t += 1
             continue
-        if p <= K:
-            ans = max(ans,t-s+1)
+        ans = max(ans,t-s)
 
-        p //=S[s]
-        s += 1
-        if t+1 < N and t<s:
+        if  t==s:
             t+= 1
-            p *= S[t]
+        else:
+            p //=S[s]
+        s += 1
 
 print(ans)
 
