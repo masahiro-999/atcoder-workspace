@@ -101,16 +101,15 @@ N = II()
 A = LII()
 
 s = 0
-t = 0
+t = 1
 ans = 0
 while s < N:
-    if t+1 < N and A[t] <A[t+1]:
+    if t < N and A[t-1] <A[t]:
         t += 1
         continue
-    ans += t-s+1
+    ans += t-s
     s += 1
-    if s <= t:
-        continue
-    t += 1
+    if s == t:
+        t += 1
 
 print(ans)
