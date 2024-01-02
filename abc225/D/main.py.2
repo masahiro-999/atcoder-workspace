@@ -97,34 +97,3 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-N,Q = TII()
-
-Q = [TII() for _ in range(Q)]
-
-forward = defaultdict(lambda: -1)
-backward = defaultdict(lambda: -1)
-
-for q in Q:
-    if q[0] ==3:
-        x = q[1]
-        p = x
-        ret = [p]
-        while (next :=backward[p]) != -1:
-            ret.append(next)
-            p = next
-        ret = ret[::-1]
-        p = x
-        while (next :=forward[p]) != -1:
-            ret.append(next)
-            p = next
-        print(len(ret), *ret)
-        continue
-    cmd,x,y = q
-    if cmd == 1:
-        forward[x] = y
-        backward[y] = x
-    else:
-        del forward[x]
-        del backward[y]
-
-
