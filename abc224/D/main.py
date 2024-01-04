@@ -1,66 +1,146 @@
-import sys, re
-from math import ceil, floor, sqrt, pi, factorial, gcd,sin,cos,tan,asin,acos,atan2,exp,log,log10
-from collections import deque, Counter, defaultdict
-from itertools import product, accumulate
-from functools import reduce,lru_cache
-from bisect import bisect
-from heapq import heapify, heappop, heappush
+from io import BytesIO, IOBase
+
+import sys
+import os
+
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
+from bisect import bisect, bisect_left, bisect_right
+from collections import Counter, defaultdict, deque
+from copy import deepcopy
+from functools import cmp_to_key, lru_cache, reduce
+from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
+from itertools import product, accumulate,permutations,combinations, count
+from operator import add, iand, ior, itemgetter, mul, xor
+from string import ascii_lowercase, ascii_uppercase, ascii_letters
+from typing import *
+from sortedcontainers import SortedSet, SortedList, SortedDict
+
+BUFSIZE = 4096
+
+class FastIO(IOBase):
+    newlines = 0
+
+    def __init__(self, file):
+        self._fd = file.fileno()
+        self.buffer = BytesIO()
+        self.writable = "x" in file.mode or "r" not in file.mode
+        self.write = self.buffer.write if self.writable else None
+
+    def read(self):
+        while True:
+            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
+            if not b:
+                break
+            ptr = self.buffer.tell()
+            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
+        self.newlines = 0
+        return self.buffer.read()
+
+    def readline(self):
+        while self.newlines == 0:
+            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
+            self.newlines = b.count(b"\n") + (not b)
+            ptr = self.buffer.tell()
+            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
+        self.newlines -= 1
+        return self.buffer.readline()
+
+    def flush(self):
+        if self.writable:
+            os.write(self._fd, self.buffer.getvalue())
+            self.buffer.truncate(0), self.buffer.seek(0)
+
+class IOWrapper(IOBase):
+    def __init__(self, file):
+        self.buffer = FastIO(file)
+        self.flush = self.buffer.flush
+        self.writable = self.buffer.writable
+        self.write = lambda s: self.buffer.write(s.encode("ascii"))
+        self.read = lambda: self.buffer.read().decode("ascii")
+        self.readline = lambda: self.buffer.readline().decode("ascii")
+
+sys.stdin = IOWrapper(sys.stdin)
+sys.stdout = IOWrapper(sys.stdout)
+input = lambda: sys.stdin.readline().rstrip("\r\n")
+
+if True:
+    def I():
+        return input()
+
+    def II():
+        return int(input())
+
+    def MII():
+        return map(int, input().split())
+
+    def LI():
+        return list(input().split())
+
+    def LII():
+        return list(map(int, input().split()))
+
+    def TII():
+        return tuple(map(int, input().split()))
+
+    def GMI():
+        return map(lambda x: int(x) - 1, input().split())
+
+    def LGMI():
+        return list(map(lambda x: int(x) - 1, input().split()))
+
 sys.setrecursionlimit(5 * 10 ** 5)
 try:
     from pypyjit import set_param
     set_param('max_unroll_recursion=-1')
 except ModuleNotFoundError:
     pass
-input = lambda: sys.stdin.readline().rstrip()
-ii = lambda: int(input())
-mi = lambda: map(int, input().split())
-li = lambda: list(mi())
-inf = 2 ** 63 - 1
-tokens = (i for line in iter(input, "") for i in line.split())
 
+inf = 1<<60
 
-def solve(M: int, u_list: "List[int]", v_list: "List[int]", p: "List[int]"):
-    def bfs():
-        current_p = [1,2,3,4,5,6,7,8] # 1-8の数字がいる点の番号　index0が1の位置
-        if current_p == p:
-            return 0
-        free = 9 # 9が空き
-        count = 0
-        q = deque()
-        q.append((current_p, free, count))
-        visited = set()
-        visited.add(tuple(current_p))
-        while q:
-            current_p, free, count = q.popleft()
-            for next_free in d[free]:
-                i = current_p.index(next_free)
-                next_p = current_p[:]
-                next_p[i] = free
-                if tuple(next_p) in visited:
-                    continue
-                if next_p == p:
-                    return count + 1
-                q.append((next_p, next_free, count + 1))
-                visited.add(tuple(next_p))
-        return -1
-    
-    d = defaultdict(list)
-    for u,v in zip(u_list, v_list):
-        d[u].append(v)
-        d[v].append(u)
+M = II()
 
-    ans = bfs()
-    print(ans)
+g = defaultdict(list)
+uv = [LII() for _ in range(M)]
+P = LII()
+P = [p-1 for p in P]
 
-def main():
-    M = int(next(tokens))  # type: int
-    u = [int()] * (M)  # type: "List[int]"
-    v = [int()] * (M)  # type: "List[int]"
-    for i in range(M):
-        u[i] = int(next(tokens))
-        v[i] = int(next(tokens))
-    p = [int(next(tokens)) for _ in range(8)]  # type: "List[int]"
-    solve(M, u, v, p)
-    return
+for u,v in uv:
+    u -= 1
+    v -= 1
+    g[u].append(v)
+    g[v].append(u)
 
-main()
+set_p = set(P)
+for i in range(9):
+    if i not in set_p:
+        break
+free = i
+
+visited=set()
+finish=(0,1,2,3,4,5,6,7)
+def bfs(s):
+    t = tuple(P)
+    visited.add(t)
+    if t == finish:
+        return 0
+    q = deque()
+    q.append((s,tuple(P),1))
+    while q:
+        s,p,d = q.popleft()
+        # print(s,p,d)
+        for next_s in g[s]:
+            next_p = list(p)
+            i = next_p.index(next_s)
+            next_p[i] = s
+            t = tuple(next_p)
+            if t in visited:
+                continue
+            if t == finish:
+                return d             
+            visited.add(t)
+            q.append((next_s,t,d+1))
+    return -1
+
+ans = bfs(free)
+
+print(ans)
