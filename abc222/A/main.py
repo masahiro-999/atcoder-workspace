@@ -96,26 +96,6 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
-MOD = 998244353
 
-N = II()
-A = LII()
-B = LII()
-
-i = 0
-dp = [1]*(B[i]-A[i]+1)
-for i in range(1,N):
-    acc_dp= list(accumulate(dp))
-    dp2 = []
-    d = A[i-1] - A[i]
-    for j in range(B[i]-A[i]+1):
-        if j-d<0:
-            dp2.append(0)
-        else:
-            dp2.append(acc_dp[min(j-d,len(acc_dp)-1)] % MOD)
-    # print(dp)
-    # print(dp2)
-    dp = dp2
-
-ans = sum(dp) % MOD
-print(ans)
+N = I()
+print(f'{N.zfill(4)}')

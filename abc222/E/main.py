@@ -98,24 +98,75 @@ except ModuleNotFoundError:
 inf = 1<<60
 MOD = 998244353
 
-N = II()
+N,M,K = TII()
 A = LII()
-B = LII()
+uv = [TII() for _ in range(N-1)]
 
-i = 0
-dp = [1]*(B[i]-A[i]+1)
-for i in range(1,N):
-    acc_dp= list(accumulate(dp))
-    dp2 = []
-    d = A[i-1] - A[i]
-    for j in range(B[i]-A[i]+1):
-        if j-d<0:
-            dp2.append(0)
-        else:
-            dp2.append(acc_dp[min(j-d,len(acc_dp)-1)] % MOD)
-    # print(dp)
-    # print(dp2)
-    dp = dp2
+g = defaultdict(list)
 
-ans = sum(dp) % MOD
+A = [a-1 for a in A]
+
+back = defaultdict(int)
+
+for i,(u,v) in enumerate(uv):
+    u -= 1
+    v -= 1
+    g[u].append(v)
+    g[v].append(u)
+    if u > v:
+        u,v = v,u
+    back[(u,v)] = i
+
+path_count = [0]*(N-1)
+
+def count_up_path(a,b):
+    if a == b:
+        return
+    # print(a,b)
+    path = [-1]*N
+    q = deque()
+    q.append(a)
+    while q:
+        p = q.popleft()
+        if p == b:
+            break
+        for next in g[p]:
+            if path[next] == -1:
+                path[next]=p
+                q.append(next)
+    s = b
+    while True:
+        t = path[s]
+        x,y = s,t
+        if x > y:
+            x,y = y,x
+        path_count[back[(x,y)]]+= 1
+        # print("ab", x,y)
+        s = t
+        if s == a:
+            break
+    # print(path)
+    # print(path_count)
+
+for i in range(1,M):
+    count_up_path(A[i-1],A[i])
+
+total_path = sum(path_count)
+if (total_path-K)%2 == 1:
+    ans = 0
+else:
+    target = (total_path-K)//2
+    n = len(path_count)
+    dp = defaultdict(int)
+    dp[0] = 1
+    for i in range(n):
+        next_dp = defaultdict(int)
+        for j in dp.keys():
+            if path_count[i]+j<=target:
+                next_dp[path_count[i]+j] += dp[j]
+                next_dp[path_count[i]+j] %= MOD
+            next_dp[j] += dp[j]
+            next_dp[j] %= MOD
+        dp = next_dp
+    ans = dp[target] % MOD
 print(ans)

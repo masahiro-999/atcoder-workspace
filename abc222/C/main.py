@@ -96,26 +96,38 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
-MOD = 998244353
 
-N = II()
-A = LII()
-B = LII()
+N,M = TII()
+A = [I() for _ in range(2*N)]
 
-i = 0
-dp = [1]*(B[i]-A[i]+1)
-for i in range(1,N):
-    acc_dp= list(accumulate(dp))
-    dp2 = []
-    d = A[i-1] - A[i]
-    for j in range(B[i]-A[i]+1):
-        if j-d<0:
-            dp2.append(0)
-        else:
-            dp2.append(acc_dp[min(j-d,len(acc_dp)-1)] % MOD)
-    # print(dp)
-    # print(dp2)
-    dp = dp2
+t = {"G":0, "C":1, "P":2}
 
-ans = sum(dp) % MOD
-print(ans)
+A = [[t[a] for a in aa] for aa in A]
+
+p = [0]*2*N
+for i in range(N*2):
+    p[i]=(0,i)
+
+def match(a,b):
+    # aが勝のとき1
+    if a == b:
+        return 0
+    if a-b == 1 or a-b == -2:
+        return -1
+    return 1
+
+for j in range(M):
+    p.sort()
+    for i in range(N):
+        a = p[i*2][1]
+        b = p[i*2+1][1]
+        r = match(A[a][j],A[b][j])
+        if r == 1:
+            p[i*2] =p[i*2][0]-1,p[i*2][1]
+        elif r == -1:
+            p[i*2+1] =p[i*2+1][0]-1,p[i*2+1][1]
+    # print(p)
+p.sort()
+for i in range(2*N):
+    print(p[i][1]+1)
+
