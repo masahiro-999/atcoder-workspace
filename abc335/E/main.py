@@ -97,6 +97,8 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
+from atcoder.dsu import DSU
+
 N,M = TII()
 A = LII()
 uv = [TII() for _ in range(M)]
@@ -104,32 +106,40 @@ uv = [TII() for _ in range(M)]
 
 g = defaultdict(list)
 
+dsu = DSU(N)
+
+for u,v in uv:
+    u -= 1
+    v -= 1
+    if A[u] == A[v]:
+        dsu.merge(u,v)
+
 for u,v in uv:
     u -= 1
     v -= 1
     if A[u]>A[v]:
-        g[v].append((u,1))
-    elif A[v] >A [u]:
-        g[u].append((v,1))
-    else:
-        g[u].append((v,0))
-        g[v].append((u,0))
+        g[dsu.leader(v)].append(dsu.leader(u))
+    elif A[u]<A[v]:
+        g[dsu.leader(u)].append(dsu.leader(v))
 
-def bfs(s):
-    q = [(A[s],s,1)]
+def bfs():
+    s = dsu.leader(0)
+    q = [(A[s],s,-1)]
     dist = [0]*N
-    dist[s] = 1
+    dist[s] = 0
     heapify(q)
     while q:
-        a,p,d = heappop(q)
+        # 頂点の値が小さく、そこまでの得点が高いものを取り出す（得点はマイナス符号で入れる）
+        _,p,neg_d = heappop(q)
+        d = -neg_d
         # print(a,p,d)
-        if dist[p]>d:
+        if dist[p]>=d:
             continue
-        for next,c in g[p]:
-            if dist[next]<d+c:
-                dist[next] = d+c
-                heappush(q,(A[next],next,d+c))
-    return dist[N-1]
+        dist[p] = d
+        for next in g[p]:
+            if dist[next]<d+1:
+                heappush(q,(A[next],next,-(d+1)))
+    return dist[dsu.leader(N-1)]
 
-ans = bfs(0)
+ans = bfs()
 print(ans)
