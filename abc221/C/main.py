@@ -97,23 +97,20 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-N = II()
-ab = [TII() for _ in range(N)]
+N = I()
 
-t = defaultdict(int)
-cnt = [0]*N
+str_n = str(N)
 
-for a,b in ab:
-    t[a] += 1
-    t[a+b] -= 1
+ans = 0
+for i in range(1,(len(str_n)+1)//2+1):
+    for p in combinations(range(len(str_n)), i):
+        p1 = [s for i,s in enumerate(str_n) if i in p] 
+        p2 = [s for i,s in enumerate(str_n) if i not in p] 
+        for s1,s2 in product(permutations(p1), permutations(p2)):
+            x = "".join(s1)
+            y = "".join(s2)
+            if len(x)+len(y) != len(str_n):
+                continue
+            ans = max(ans, int(x)*int(y))
 
-k_list = sorted(t.keys())
-sm = 0
-for i in range(len(k_list)-1):
-    k1 = k_list[i]
-    k2 = k_list[i+1]
-    sm += t[k1]
-    if sm != 0:
-        cnt[sm-1] += (k2-k1)
-
-print(*cnt)
+print(ans)

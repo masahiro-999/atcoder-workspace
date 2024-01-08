@@ -96,24 +96,20 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
+YES = "Yes"
+NO = "No"
 
-N = II()
-ab = [TII() for _ in range(N)]
+S = I()
+T = I()
 
-t = defaultdict(int)
-cnt = [0]*N
+diff = []
+for i in range(len(S)):
+    if S[i] != T[i]:
+        diff.append(i)
 
-for a,b in ab:
-    t[a] += 1
-    t[a+b] -= 1
-
-k_list = sorted(t.keys())
-sm = 0
-for i in range(len(k_list)-1):
-    k1 = k_list[i]
-    k2 = k_list[i+1]
-    sm += t[k1]
-    if sm != 0:
-        cnt[sm-1] += (k2-k1)
-
-print(*cnt)
+if len(diff)==0:
+    print(YES)
+elif (len(diff)==2 and abs(diff[0]-diff[1])==1 and S[diff[0]]==T[diff[1]] and S[diff[1]]==T[diff[0]]):
+    print(YES)
+else:
+    print(NO)

@@ -97,23 +97,8 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-N = II()
-ab = [TII() for _ in range(N)]
+A,B = LII()
 
-t = defaultdict(int)
-cnt = [0]*N
+ans = 32**(A-B)
 
-for a,b in ab:
-    t[a] += 1
-    t[a+b] -= 1
-
-k_list = sorted(t.keys())
-sm = 0
-for i in range(len(k_list)-1):
-    k1 = k_list[i]
-    k2 = k_list[i+1]
-    sm += t[k1]
-    if sm != 0:
-        cnt[sm-1] += (k2-k1)
-
-print(*cnt)
+print(ans)
