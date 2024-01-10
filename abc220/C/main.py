@@ -96,23 +96,22 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
-MOD = 998244353
 
 N = II()
-A=LII()
+A = LII()
+X = II()
 
-dp = [[0]*10 for _ in range(N)]
+sm_a = sum(A)
 
-dp[0][A[0]] = 1
+n = X//sm_a
+r = X%sm_a
 
-for i in range(1,N):
-    for j in range(10):
-        x = j
-        y = A[i]
-        dp[i][(x+y)%10] += dp[i-1][j]
-        dp[i][(x+y)%10] %= MOD
-        dp[i][(x*y)%10] += dp[i-1][j]
-        dp[i][(x*y)%10] %= MOD
+sm = 0
+for i,a in enumerate(A):
+    sm += a
+    if sm > r:
+        break
 
-ans = dp[N-1]
-print(*ans, sep='\n')
+ans = n*N+i+1
+
+print(ans)

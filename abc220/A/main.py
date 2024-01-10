@@ -96,23 +96,13 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
-MOD = 998244353
 
-N = II()
-A=LII()
+A,B,C = TII()
 
-dp = [[0]*10 for _ in range(N)]
+n = B//C
 
-dp[0][A[0]] = 1
+ans = n*C
+if ans < A:
+    ans = -1
 
-for i in range(1,N):
-    for j in range(10):
-        x = j
-        y = A[i]
-        dp[i][(x+y)%10] += dp[i-1][j]
-        dp[i][(x+y)%10] %= MOD
-        dp[i][(x*y)%10] += dp[i-1][j]
-        dp[i][(x*y)%10] %= MOD
-
-ans = dp[N-1]
-print(*ans, sep='\n')
+print(ans)
