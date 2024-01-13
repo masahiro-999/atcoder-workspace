@@ -97,14 +97,8 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-L,Q = TII()
-cx = [TII() for _ in range(Q)]
+t = set(["ABC", "ARC" , "AGC" , "AHC"])
 
-s = SortedSet([0,L])
+s = set([I() for _ in range(3)])
 
-for c,x in cx:
-    if c == 1:
-        s.add(x)
-    else:
-        i = s.bisect_left(x)
-        print(s[i]-s[i-1])
+print(list(t-s)[0])

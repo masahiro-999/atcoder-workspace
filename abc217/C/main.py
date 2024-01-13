@@ -97,14 +97,11 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-L,Q = TII()
-cx = [TII() for _ in range(Q)]
+N = II()
+P = LII()
 
-s = SortedSet([0,L])
+Q = [0]*N
+for i in range(N):
+    Q[P[i]-1] = i+1
 
-for c,x in cx:
-    if c == 1:
-        s.add(x)
-    else:
-        i = s.bisect_left(x)
-        print(s[i]-s[i-1])
+print(*Q) 

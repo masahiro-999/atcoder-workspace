@@ -96,15 +96,8 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
+YES = "Yes"
+NO = "No"
 
-L,Q = TII()
-cx = [TII() for _ in range(Q)]
-
-s = SortedSet([0,L])
-
-for c,x in cx:
-    if c == 1:
-        s.add(x)
-    else:
-        i = s.bisect_left(x)
-        print(s[i]-s[i-1])
+S,T = LI()
+print(YES if S<T else NO)

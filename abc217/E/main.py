@@ -97,14 +97,22 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-L,Q = TII()
-cx = [TII() for _ in range(Q)]
+Q = II()
+query_list = [LII() for _ in range(Q)]
 
-s = SortedSet([0,L])
+fifo = deque()
+sl = SortedList()
 
-for c,x in cx:
+for q in query_list:
+    c = q[0]
     if c == 1:
-        s.add(x)
+        x = q[1]
+        fifo.append(x)
+    elif c == 2:
+        if sl:
+            print(sl.pop(0))
+        else:
+            print(fifo.popleft())
     else:
-        i = s.bisect_left(x)
-        print(s[i]-s[i-1])
+        while fifo:
+            sl.add(fifo.popleft())
