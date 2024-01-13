@@ -3,7 +3,7 @@ from io import BytesIO, IOBase
 import sys
 import os
 
-from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10,comb
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
@@ -97,18 +97,45 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-N = II()
-xy = [LII() for _ in range(N)]
+N,M = TII()
 
-t = defaultdict(set)
+st = [TII() for _ in range(M)]
 
-for x,y in xy:
-    t[x].add(y)
+f = defaultdict(list)
+b = defaultdict(list)
 
-x_list = t.keys()
-n = len(x_list)
-ans = 0
-for i,j in combinations(x_list,2):
-    ans +=comb(len(t[i] & t[j]),2)
+for i,(s,t) in enumerate(st):
+    s -= 1
+    t -= 1
+    f[s].append((t,i))
+    b[t].append((s,i))
 
-print(ans)
+def bfs(s,g):
+    dist = [inf]*N
+    trace = [set() for _ in range(N)]
+    q = deque()
+    q.append((s,0))
+    while q:
+        p,c = q.popleft()
+        for next,i in g[p]:
+            if dist[next] ==inf:
+                dist[next] = c+1
+                trace[next] = trace[p]|set([i])
+                q.append((next,c+1))
+    return dist,trace
+
+dist_f,trace_f = bfs(0,f)
+dist_b,trace_b = bfs(N-1,b)
+
+for i in range(M):
+    if i in trace_f[N-1]:
+        x = [min(dist_f[j]+dist_b[j],inf) for j in range(N) if 0<j<N-1 and i not in trace_f[j] and i not in trace_b[j]]
+        if len(x)>0:
+            ans = min(x)
+        else:
+            ans = inf
+    else:
+        ans = dist_f[N-1]
+    if ans == inf:
+        ans = -1
+    print(ans)

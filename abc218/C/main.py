@@ -3,7 +3,7 @@ from io import BytesIO, IOBase
 import sys
 import os
 
-from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10,comb
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
@@ -96,19 +96,35 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
+YES = "Yes"
+NO = "No"
 
 N = II()
-xy = [LII() for _ in range(N)]
+S = [I() for _ in range(N)]
+T = [I() for _ in range(N)]
 
-t = defaultdict(set)
+def create_set(S):
+    ret = set()
+    for i,j in product(range(N),range(N)):
+        if S[i][j]=="#":
+            break
+    si,sj = i,j
+    for i,j in product(range(N),range(N)):
+        if S[i][j]=="#":
+            ret.add((i-si,j-sj))
+    return ret
 
-for x,y in xy:
-    t[x].add(y)
+def rotate(S):
+    return list(zip(*S))[::-1]
 
-x_list = t.keys()
-n = len(x_list)
-ans = 0
-for i,j in combinations(x_list,2):
-    ans +=comb(len(t[i] & t[j]),2)
+ans = NO
+t = create_set(T)
+for _ in range(4):
+    s = create_set(S)
+    if s == t:
+        ans = YES
+        break
+    S = rotate(S)
+
 
 print(ans)

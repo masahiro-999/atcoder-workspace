@@ -3,7 +3,7 @@ from io import BytesIO, IOBase
 import sys
 import os
 
-from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10,comb
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
@@ -96,19 +96,11 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
+YES = "Yes"
+NO = "No"
 
 N = II()
-xy = [LII() for _ in range(N)]
+S = I()
 
-t = defaultdict(set)
-
-for x,y in xy:
-    t[x].add(y)
-
-x_list = t.keys()
-n = len(x_list)
-ans = 0
-for i,j in combinations(x_list,2):
-    ans +=comb(len(t[i] & t[j]),2)
-
+ans = YES if S[N-1]=="o" else NO
 print(ans)

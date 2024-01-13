@@ -3,7 +3,7 @@ from io import BytesIO, IOBase
 import sys
 import os
 
-from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10,comb
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
@@ -97,18 +97,22 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-N = II()
-xy = [LII() for _ in range(N)]
+N,M = LII()
+abc = [TII() for _ in range(M)]
 
-t = defaultdict(set)
+from atcoder.dsu import DSU
 
-for x,y in xy:
-    t[x].add(y)
+uf = DSU(N)
+abc.sort(key=lambda x: x[2])
 
-x_list = t.keys()
-n = len(x_list)
+
 ans = 0
-for i,j in combinations(x_list,2):
-    ans +=comb(len(t[i] & t[j]),2)
+for a,b,c in abc:
+    a -= 1
+    b -= 1
+    if c > 0:
+        if uf.same(a,b):
+            ans += c
+    uf.merge(a,b)
 
 print(ans)
