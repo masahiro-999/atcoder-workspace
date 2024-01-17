@@ -97,48 +97,5 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-N, M = TII()
-
-A = LII()
-
-def get_prime_list(num_max):
-    prime_table=[1]*(num_max+1)
-    prime_table[0] = 0
-    prime_table[1] = 0
-    for i in range(2, num_max+1):
-        k = i*2
-        while k <= num_max:
-            prime_table[k] = 0
-            k += i
-    return [i for i in range(2,num_max+1) if prime_table[i]]
-
-prime_table = get_prime_list(1000)
-
-p_list = set()
-t = [True]*(M+1)
-for a in A:
-    for p in prime_table:
-        if a % p == 0:
-            p_list.add(p)
-            while a % p == 0:
-                a //= p
-        if a < p:
-            break
-    if a > 1:
-        p_list.add(a)
-    
-# print(p_list)            
-for a in p_list:
-    i = a
-    while i <=M:
-        t[i]=False
-        i += a
-    # print(a,t)
-
-ans = []
-for i in range(1,M+1):
-    if t[i]:
-        ans.append(i)
-
-print(len(ans))
-print(*ans, sep="\n")
+S = I()
+print("AC" if S == "Hello,World!" else "WA")

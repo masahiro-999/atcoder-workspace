@@ -9,7 +9,7 @@ from collections import Counter, defaultdict, deque
 from copy import deepcopy
 from functools import cmp_to_key, lru_cache, reduce
 from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
-from itertools import product, accumulate,permutations,combinations, count
+from itertools import product, accumulate,permutations,combinations, count, groupby
 from operator import add, iand, ior, itemgetter, mul, xor
 from string import ascii_lowercase, ascii_uppercase, ascii_letters
 from typing import *
@@ -96,49 +96,29 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
+MOD = 998244353
 
-N, M = TII()
+N = II()
+S = [ord(s)-ord("A") for s in I()]
 
-A = LII()
+# dp[i][j][k] i番目、使用済みj 最後がk の時の数
+dp = [[[0]*10 for _ in range(1024)] for _ in range(N+1)]
 
-def get_prime_list(num_max):
-    prime_table=[1]*(num_max+1)
-    prime_table[0] = 0
-    prime_table[1] = 0
-    for i in range(2, num_max+1):
-        k = i*2
-        while k <= num_max:
-            prime_table[k] = 0
-            k += i
-    return [i for i in range(2,num_max+1) if prime_table[i]]
+for i in range(1,N+1):
+    current_bit = 1<<S[i-1]
+    for j in range(1024):
+        for k in range(10):
+            if j & 1<<k:
+                # 選ぶとき
+                dp[i][j][k] += dp[i-1][j][k]
+                dp[i][j][k] %= MOD
+                if k == S[i-1]:
+                    dp[i][j][k] += dp[i-1][j][k]
+                    dp[i][j][k] %= MOD
+                elif j & current_bit == 0:
+                    dp[i][j|current_bit][S[i-1]] += dp[i-1][j][k]
+                    dp[i][j|current_bit][S[i-1]] %= MOD
+    dp[i][current_bit][S[i-1]] += 1
+ans =sum([sum(x)%MOD for x in dp[N]])%MOD
 
-prime_table = get_prime_list(1000)
-
-p_list = set()
-t = [True]*(M+1)
-for a in A:
-    for p in prime_table:
-        if a % p == 0:
-            p_list.add(p)
-            while a % p == 0:
-                a //= p
-        if a < p:
-            break
-    if a > 1:
-        p_list.add(a)
-    
-# print(p_list)            
-for a in p_list:
-    i = a
-    while i <=M:
-        t[i]=False
-        i += a
-    # print(a,t)
-
-ans = []
-for i in range(1,M+1):
-    if t[i]:
-        ans.append(i)
-
-print(len(ans))
-print(*ans, sep="\n")
+print(ans)
