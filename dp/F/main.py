@@ -97,3 +97,36 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
+S = I()
+T = I()
+
+NS=len(S)
+NT=len(T)
+
+dp =[[0]*(NT+1) for _ in range(NS+1)]
+
+dp[0][0] = 1
+for i in range(1,NS+1):
+    for j in range(1,NT+1):
+        if S[i-1] == T[j-1]:
+            dp[i][j] = max(dp[i][j],dp[i-1][j-1]+1)
+        dp[i][j] = max(dp[i][j],dp[i-1][j])
+        dp[i][j] = max(dp[i][j],dp[i][j-1])
+
+
+i = NS
+j = NT
+ans = []
+while i > 0 and j > 0:
+    if dp[i][j] == dp[i-1][j]:
+        i -= 1
+    elif dp[i][j] == dp[i][j-1]:
+        j -= 1
+    else:
+        ans.append(S[i-1])
+        i -= 1
+        j -= 1
+        continue
+
+ans = "".join(ans[::-1])
+print(ans)         
