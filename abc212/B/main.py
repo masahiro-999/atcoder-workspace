@@ -97,18 +97,18 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-Q = II()
+X =[int(x) for x in I()]
 
-heap_q = []
-queue_list = [LII() for _ in range(Q)]
-offset = 0
+t1 = False
+t2 = False
+for i in range(3):
+    if (X[i]+1)%10 !=X[i+1]:
+        t1 = True
+        break
 
-for q in queue_list:
-    if q[0] == 1:
-        heappush(heap_q,q[1]-offset)
-        # print(heap_q)
-    elif q[0] == 2:
-        offset += q[1]
-    else:
-        x = heappop(heap_q)+offset
-        print(x)
+for i in range(3):
+    if X[i] !=X[i+1]:
+        t2 = True
+        break
+
+print("Strong" if t1 and t2 else "Weak")

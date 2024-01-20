@@ -97,18 +97,16 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-Q = II()
+N,M = TII()
+A=LII()
+B=LII()
 
-heap_q = []
-queue_list = [LII() for _ in range(Q)]
-offset = 0
+C = [(a,0) for a in A]+[(b,1) for b in B]
+C.sort()
 
-for q in queue_list:
-    if q[0] == 1:
-        heappush(heap_q,q[1]-offset)
-        # print(heap_q)
-    elif q[0] == 2:
-        offset += q[1]
-    else:
-        x = heappop(heap_q)+offset
-        print(x)
+ans = inf
+for c1,c2 in zip(C,C[1:]):
+    if c1[1]!=c2[1]:
+        ans = min(ans, abs(c1[0]-c2[0]))
+
+print(ans)

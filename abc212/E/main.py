@@ -96,19 +96,35 @@ except ModuleNotFoundError:
     pass
 
 inf = 1<<60
+MOD = 998244353
 
-Q = II()
+N,M,K = TII()
+uv = [TII() for _ in range(M)]
 
-heap_q = []
-queue_list = [LII() for _ in range(Q)]
-offset = 0
 
-for q in queue_list:
-    if q[0] == 1:
-        heappush(heap_q,q[1]-offset)
-        # print(heap_q)
-    elif q[0] == 2:
-        offset += q[1]
-    else:
-        x = heappop(heap_q)+offset
-        print(x)
+g = defaultdict(list)
+for u,v in uv:
+    u -= 1
+    v -= 1
+    g[u].append(v)
+    g[v].append(u)
+
+dp=[[0]*(N) for _ in range(K+1)]
+dp[0][0] = 1
+
+for i in range(1,K+1):
+    sum_dp = sum(dp[i-1])
+    
+    for j in range(N):
+        sm = dp[i-1][j]
+        for next in g[j]:
+            sm += dp[i-1][next]
+            sm %= MOD
+        dp[i][j] = (sum_dp - sm)%MOD
+
+# for d in dp:
+#     print(d)
+
+ans = dp[K][0]
+
+print(ans)

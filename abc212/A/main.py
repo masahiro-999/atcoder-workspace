@@ -97,18 +97,11 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
-Q = II()
+A,B = TII()
 
-heap_q = []
-queue_list = [LII() for _ in range(Q)]
-offset = 0
-
-for q in queue_list:
-    if q[0] == 1:
-        heappush(heap_q,q[1]-offset)
-        # print(heap_q)
-    elif q[0] == 2:
-        offset += q[1]
-    else:
-        x = heappop(heap_q)+offset
-        print(x)
+if A==0:
+    print("Silver")
+elif B==0:
+    print("Gold")
+else:
+    print("Alloy")
