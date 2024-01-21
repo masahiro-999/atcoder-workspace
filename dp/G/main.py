@@ -97,3 +97,26 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
+N,M = TII()
+
+xy = [TII() for _ in range(M)]
+
+g = defaultdict(list)
+for x,y in xy:
+    g[x].append(y)
+
+@lru_cache(5000)
+def max_path(s):
+    mx = 0
+    for next in g[s]:
+        if g[next]==[]:
+            mx = max(mx,1)
+        else:
+            mx = max(mx,max_path(next)+1)
+    return mx
+
+mx = 0
+for i in range(1,N+1):
+    mx = max(mx, max_path(i))
+
+print(mx)
