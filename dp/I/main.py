@@ -97,3 +97,18 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
+N = II()
+P = [float(p) for p in LI()]
+
+# i枚目でj回表がでた時の場合の数
+dp = [[0]*(N+1) for _ in range(N+1)]
+dp[0][0]=1
+
+for i in range(1,N+1):
+    for j in range(N+1):
+        if j > 0:
+            dp[i][j] += dp[i-1][j-1]*P[i-1]
+        dp[i][j] += dp[i-1][j]*(1-P[i-1])
+# print(dp)
+p = sum(dp[N][N//2+1:])
+print(p)
