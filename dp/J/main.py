@@ -7,7 +7,7 @@ from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
-from functools import cmp_to_key, lru_cache, reduce
+from functools import cmp_to_key, lru_cache, reduce, cache
 from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
 from itertools import product, accumulate,permutations,combinations, count
 from operator import add, iand, ior, itemgetter, mul, xor
@@ -97,3 +97,25 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
+N = II()
+A = LII()
+
+dp = [[[-1]*(N+1) for _ in range(N+1)] for _ in range(N+1)]
+dp[0][0][0] = 0
+
+def n(i,j,k):
+    ret = N
+    if i>0:
+        ret += n(i-1,j,k)*i if dp[i-1][j][k] ==-1  else dp[i-1][j][k]*i
+    if j>0:
+        ret += n(i+1,j-1,k)*j if dp[i+1][j-1][k] ==-1  else dp[i+1][j-1][k]*j
+    if k>0:
+        ret += n(i,j+1,k-1)*k if dp[i][j+1][k-1] ==-1  else dp[i][j+1][k-1]*k
+    # print(i,j,k,ret)
+    ret /= i+j+k
+    dp[i][j][k] = ret
+    return ret
+
+cnt = Counter(A)
+ans = n(cnt[1], cnt[2], cnt[3])
+print(ans)
