@@ -97,3 +97,17 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
+N,K = TII()
+A = LII()
+
+dp = [True]*(K+1)
+
+dp[0] = True
+for k in range(1,K+1):
+    for a in A:
+        if 0 <= k-a and dp[k-a]:
+            dp[k] = False
+        # print(k,a,dp)
+ans = dp[K]
+# print(dp)
+print("Second" if ans else "First")
