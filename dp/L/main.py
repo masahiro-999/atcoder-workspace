@@ -7,7 +7,7 @@ from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
-from functools import cmp_to_key, lru_cache, reduce
+from functools import cmp_to_key, lru_cache, reduce, cache
 from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
 from itertools import product, accumulate,permutations,combinations, count
 from operator import add, iand, ior, itemgetter, mul, xor
@@ -95,5 +95,51 @@ try:
 except ModuleNotFoundError:
     pass
 
+# https://github.com/cheran-senthil/PyRival/blob/master/pyrival/misc/bootstrap.py
+from types import GeneratorType
+
+
+def bootstrap(f, stack=[]):
+    def wrappedfunc(*args, **kwargs):
+        if stack:
+            return f(*args, **kwargs)
+        to = f(*args, **kwargs)
+        while True:
+            if type(to) is GeneratorType:
+                stack.append(to)
+                to = next(to)
+            else:
+                stack.pop()
+                if not stack:
+                    break
+                to = stack[-1].send(to)
+        return to
+
+    return wrappedfunc
+
 inf = 1<<60
 
+N = II()
+A = LII()
+
+taro_teban = N%2
+
+dp = [[-1]*(N+1) for _ in range(N+1)]
+
+# l,r 半開区間rは含まない
+def n(l,r):
+    if dp[l][r] !=-1:
+        return dp[l][r]
+    if r-l == 1:
+        dp[l][r] = A[l]
+        return A[l]
+
+    n1 = (n(l+1,r)) 
+    n2 = (n(l,r-1)) 
+    ret = max(-n1+A[l], -n2+A[r-1])
+    dp[l][r] = ret
+    return ret
+
+ans = n(0,N)
+# print(dp)
+print(ans)
