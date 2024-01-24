@@ -98,3 +98,18 @@ except ModuleNotFoundError:
 inf = 1<<60
 MOD = 1000000007
 
+L,K = TII()
+A = LII()
+
+dp = [[0]*(K+1) for _ in range(L+1)]
+
+dp[0][K]=1
+
+for i in range(1,L+1):
+    acc_dp = list(accumulate(dp[i-1],initial = 0))
+    for j in range(K+1):
+        dp[i][j] += acc_dp[min(K+1,j+A[i-1]+1)]-acc_dp[j]
+        dp[i][j] %= MOD
+
+ans = dp[L][0]
+print(ans)
