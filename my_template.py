@@ -7,7 +7,7 @@ from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
-from functools import cmp_to_key, lru_cache, reduce
+from functools import cmp_to_key, lru_cache, reduce, cache
 from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
 from itertools import product, accumulate,permutations,combinations, count
 from operator import add, iand, ior, itemgetter, mul, xor
@@ -95,6 +95,11 @@ try:
 except ModuleNotFoundError:
     pass
 
+dxdy1 = ((0, 1), (0, -1), (1, 0), (-1, 0))  # 上下左右
+dxdy2 = ((0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, -1), (1, -1), (-1, 1))  # 8方向すべて
+dxdy3 = ((0, 1), (1, 0))  # 右 or 下
+dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
+
 inf = 1<<60
 {% if mod %}
 MOD = {{ mod }}
@@ -105,3 +110,4 @@ YES = "{{ yes_str }}"
 {% if no_str %}
 NO = "{{ no_str }}"
 {% endif %}
+

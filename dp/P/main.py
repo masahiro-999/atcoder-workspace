@@ -7,7 +7,7 @@ from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
-from functools import cmp_to_key, lru_cache, reduce
+from functools import cmp_to_key, lru_cache, reduce, cache
 from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
 from itertools import product, accumulate,permutations,combinations, count
 from operator import add, iand, ior, itemgetter, mul, xor
@@ -98,3 +98,34 @@ except ModuleNotFoundError:
 inf = 1<<60
 MOD = 1000000007
 
+N = II()
+xy = [TII() for _ in range(N-1)]
+
+g = defaultdict(list)
+
+for x,y in xy:
+    g[x].append(y)
+    g[y].append(x)
+
+dp = [[0]*2 for _ in range(N)]
+
+visited = [False]*(N+1)
+
+@cache
+def dfs(s):
+    n_w = 1
+    n_b = 1
+    visited[s] = True
+    for next in g[s]:
+        if visited[next]:
+            continue
+        b,w = dfs(next)
+        n_w *= (b+w)
+        n_w %= MOD
+        n_b *= w
+        n_b %= MOD
+    return (n_b, n_w)
+
+n_b, n_w = dfs(1)
+
+print((n_b+n_w)%MOD)
