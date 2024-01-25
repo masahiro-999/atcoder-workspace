@@ -98,3 +98,22 @@ except ModuleNotFoundError:
 inf = 1<<60
 MOD = 1000000007
 
+
+N = II()
+A = [LII() for _ in range(N)]
+
+M = 1<<N
+
+dp = [0]*M
+dp[0]=1
+
+for j in range(1,M):
+    i = bin(j).count("1")
+    for k in range(N):
+        if A[i-1][k]==1 and (j &(1<<k))!=0:
+            dp[j] += dp[j-(1<<k)]
+            dp[j] %= MOD
+            # print(i,j,k)
+    # print(j,dp)
+ans = dp[-1]
+print(ans)
