@@ -7,7 +7,7 @@ from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
-from functools import cmp_to_key, lru_cache, reduce
+from functools import cmp_to_key, lru_cache, reduce, cache
 from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
 from itertools import product, accumulate,permutations,combinations, count
 from operator import add, iand, ior, itemgetter, mul, xor
@@ -97,3 +97,28 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
+N = II()
+A = LII()
+
+acc_A = list(accumulate(A, initial = 0))
+
+t = [[-1]*(N+1) for _ in range(N+1)]
+# 区間[l,r)のコストの総和
+def n(l,r):
+    if t[l][r] != -1:
+        return t[l][r]
+    # print(l,r)
+    assert r-l>0
+    if r-l==1:
+        return 0
+    mi = inf
+    for i in range(l+1,r):
+        n1 = n(l,i) if i-l!=1 else 0
+        n2 = n(i,r) if r-i!=1 else 0
+        mi = min(mi, n1+n2) 
+    assert mi != inf
+    t[l][r] = mi + acc_A[r] - acc_A[l]
+    return t[l][r]
+
+ans = n(0,N)
+print(ans)
