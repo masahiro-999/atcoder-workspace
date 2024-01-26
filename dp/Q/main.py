@@ -97,3 +97,19 @@ except ModuleNotFoundError:
 
 inf = 1<<60
 
+N = II()
+H = LII()
+A = LII()
+
+from atcoder.segtree import SegTree
+
+seg = SegTree(max, 0, N+1) # nはAの長さ, Aはリスト
+
+for i in range(N):
+    mx = seg.prod(0,H[i])+A[i]
+    seg.set(H[i],mx)
+    # print(i, H[i], mx)
+
+ans = seg.prod(0,N+1)
+
+print(ans)
