@@ -98,3 +98,39 @@ except ModuleNotFoundError:
 inf = 1<<60
 MOD = 1000000007
 
+N, K = TII()
+A = [LII() for _ in range(N)]
+
+
+def mul(A1,A2):
+    B =[[0]*N for _ in range(N)]
+    for i in range(N):
+        for j in range(N):
+            sm = 0
+            for k in range(N):
+                sm += A1[i][k]*A2[k][j]
+                sm %= MOD
+            B[i][j] = sm
+    return B
+
+def pow(A,K):
+    if K == 1:
+        return A
+    n = K//2
+    r = K%2
+    An = pow(A,n)
+    ret = mul(An,An)
+    if r == 1:
+        ret = mul(ret,A)
+    return ret
+
+dp = pow(A,K)
+# for x in dp:
+#     print(x)
+
+ans = 0
+for i in range(N):
+    for j in range(N):
+        ans += dp[i][j]
+        ans %= MOD
+print(ans)
