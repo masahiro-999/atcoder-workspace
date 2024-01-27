@@ -98,3 +98,32 @@ except ModuleNotFoundError:
 inf = 1<<60
 MOD = 1000000007
 
+K = II()
+D = II()
+str_K = str(K)
+N = len(str_K)
+
+# dp[i][j] j==0 確定0-9 j==1 未確定
+dp = [[[0]*D for _ in range(2)] for _ in range(N+1)]
+
+dp[0][1][0] = 1
+
+for i in range(0,N):
+    for j in range(D):
+        for k in range(10):
+            dp[i+1][0][(j+k)%D] += dp[i][0][j]
+            dp[i+1][0][(j+k)%D] %= MOD
+
+        n = int(str_K[i])
+        for k in range(n):
+            dp[i+1][0][(j+k)%D] += dp[i][1][j]
+            dp[i+1][0][(j+k)%D] %= MOD
+        dp[i+1][1][(j+n)%D] += dp[i][1][j]
+        dp[i+1][1][(j+n)%D] %= MOD
+
+
+ans = (dp[N][0][0]-1+dp[N][1][0]) % MOD
+
+# print(dp)
+
+print(ans)
