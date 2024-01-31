@@ -102,31 +102,8 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
-N,Q = TII()
-ab = [TII() for _ in range(N-1)]
-q = [TII() for _ in range(Q)]
+A,B = TII()
 
-g = defaultdict(list)
-for a,b in ab:
-    a -= 1
-    b -= 1
-    g[a].append(b)
-    g[b].append(a)
 
-t = [0]*N
-visited = [False]*N
-def dfs(s,c):
-    visited[s] = True
-    t[s] = c
-    for next in g[s]:
-        if visited[next]:
-            continue
-        dfs(next, not c)
-    
-dfs(0,True)
-
-for c,d in q:
-    if t[c-1] == t[d-1]:
-        print("Town")
-    else:
-        print("Road")
+ans = max(0,B-A+1)
+print(ans)
