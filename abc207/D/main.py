@@ -1,69 +1,153 @@
-import sys, re
-from math import ceil, floor, sqrt, pi, factorial, gcd,sin,cos,tan,asin,acos,atan2,exp,log,log10
-from collections import deque, Counter, defaultdict
-from itertools import product, accumulate
-from functools import reduce,lru_cache
-from bisect import bisect
-from heapq import heapify, heappop, heappush
+from io import BytesIO, IOBase
+
+import sys
+import os
+
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
+from bisect import bisect, bisect_left, bisect_right
+from collections import Counter, defaultdict, deque
+from copy import deepcopy
+from functools import cmp_to_key, lru_cache, reduce, cache
+from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
+from itertools import product, accumulate,permutations,combinations, count
+from operator import add, iand, ior, itemgetter, mul, xor
+from string import ascii_lowercase, ascii_uppercase, ascii_letters
+from typing import *
+from sortedcontainers import SortedSet, SortedList, SortedDict
+
+BUFSIZE = 4096
+
+class FastIO(IOBase):
+    newlines = 0
+
+    def __init__(self, file):
+        self._fd = file.fileno()
+        self.buffer = BytesIO()
+        self.writable = "x" in file.mode or "r" not in file.mode
+        self.write = self.buffer.write if self.writable else None
+
+    def read(self):
+        while True:
+            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
+            if not b:
+                break
+            ptr = self.buffer.tell()
+            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
+        self.newlines = 0
+        return self.buffer.read()
+
+    def readline(self):
+        while self.newlines == 0:
+            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
+            self.newlines = b.count(b"\n") + (not b)
+            ptr = self.buffer.tell()
+            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
+        self.newlines -= 1
+        return self.buffer.readline()
+
+    def flush(self):
+        if self.writable:
+            os.write(self._fd, self.buffer.getvalue())
+            self.buffer.truncate(0), self.buffer.seek(0)
+
+class IOWrapper(IOBase):
+    def __init__(self, file):
+        self.buffer = FastIO(file)
+        self.flush = self.buffer.flush
+        self.writable = self.buffer.writable
+        self.write = lambda s: self.buffer.write(s.encode("ascii"))
+        self.read = lambda: self.buffer.read().decode("ascii")
+        self.readline = lambda: self.buffer.readline().decode("ascii")
+
+sys.stdin = IOWrapper(sys.stdin)
+sys.stdout = IOWrapper(sys.stdout)
+input = lambda: sys.stdin.readline().rstrip("\r\n")
+
+if True:
+    def I():
+        return input()
+
+    def II():
+        return int(input())
+
+    def MII():
+        return map(int, input().split())
+
+    def LI():
+        return list(input().split())
+
+    def LII():
+        return list(map(int, input().split()))
+
+    def TII():
+        return tuple(map(int, input().split()))
+
+    def GMI():
+        return map(lambda x: int(x) - 1, input().split())
+
+    def LGMI():
+        return list(map(lambda x: int(x) - 1, input().split()))
+
 sys.setrecursionlimit(5 * 10 ** 5)
 try:
     from pypyjit import set_param
     set_param('max_unroll_recursion=-1')
 except ModuleNotFoundError:
     pass
-input = lambda: sys.stdin.readline().rstrip()
-ii = lambda: int(input())
-mi = lambda: map(int, input().split())
-li = lambda: list(mi())
-inf = 2 ** 63 - 1
-tokens = (i for line in iter(input, "") for i in line.split())
 
+dxdy1 = ((0, 1), (0, -1), (1, 0), (-1, 0))  # 上下左右
+dxdy2 = ((0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, -1), (1, -1), (-1, 1))  # 8方向すべて
+dxdy3 = ((0, 1), (1, 0))  # 右 or 下
+dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
+
+inf = 1<<60
 YES = "Yes"
 NO = "No"
 
-def solve(N,ab,cd):
-    if N == 1:
-        print(YES)
-        return
-    def create_set(ab,i0,i1,ab_x1,ab_y1):
-        # ab[i0]を原点、ab[i1]を基本ベクトルとした座標系でのab[i]の座標の集合を返す
-        ret = set()
-        x0,y0 = ab[i0]
-        x1,y1 = ab[i1][0]-x0,ab[i1][1]-y0
-        if x1**2 + y1**2 != ab_x1**2 + ab_y1**2:
-            return False
-        x2,y2 = y1,-x1        
-        for i in range(N):
-            if i == i0 or i == i1:
-                continue
-            x,y = ab[i][0]-x0,ab[i][1]-y0
-            ret.add((x*x1+y*y1,x*x2+y*y2))
-        return ret
-    
-    def check(ab,cd):
-        # ab[0]を原点、ab[1]を基本ベクトルとした座標系でのab[i]の座標の集合を返す
-        x0,y0 = ab[0]
-        x1,y1 = ab[1][0]-x0,ab[1][1]-y0
-        s_ab = create_set(ab,0,1,x1,y1)
-        for i in range(N):
-            for j in range(N):
-                if i == j:
-                    continue
-                s_cd = create_set(cd,i,j,x1,y1)
-                if s_ab == s_cd:
-                    return True
-        return False
-    
-    if check(ab,cd):
-        print(YES)
-    else:
-        print(NO)
-    
-def main():
-    N = int(next(tokens))  # type: int
-    ab = [li() for _ in range(N)]  # type: "List[List[int]]"
-    cd = [li() for _ in range(N)]  # type: "List[List[int]]"
-    solve(N,ab,cd)
-    return
+N = II()
+ab = [TII() for _ in range(N)]
+cd = [TII() for _ in range(N)]
 
-main()
+def f(a,b):
+    if a == 0:
+        return (0,1)
+    elif b == 0:
+        return (1,0)
+    gcdab = gcd(a,b)
+    a //= gcdab
+    b //= gcdab
+    if a < 0:
+        a,b = -a,-b
+    return (a,b)
+
+def create_set(a,b,ab):
+    x1,y1 = ab[a]
+    x2,y2 = ab[b]
+    dx,dy = x1-x2,y1-y2
+    ret = set()
+    for i,(x,y) in enumerate(ab):
+        if i in (a,b):
+            continue
+        dx1,dy1 = x-x2,y-y2
+        x = (dx*dx1+dy*dy1, dy*dx1-dx*dy1) 
+        ret.add(x)
+    return ret
+
+def dist(x1,y1,x2,y2):
+    return (x1-x2)**2+(y1-y2)**2
+
+if N == 1:
+    ans = YES
+else:
+    dist_01 = dist(*ab[0],*ab[1])
+    target = create_set(0,1,ab)
+    ans = NO
+    for i,j in permutations(range(N),2):
+        if dist_01 != dist(*cd[i],*cd[j]):
+            continue
+        result = create_set(i,j,cd)
+        # print(i,j,result)
+        if target == result:
+            ans = YES
+            break
+print(ans)
