@@ -101,13 +101,34 @@ dxdy3 = ((0, 1), (1, 0))  # 右 or 下
 dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
-{% if mod %}
-MOD = {{ mod }}
-{% endif %}
-{% if yes_str %}
-YES = "{{ yes_str }}"
-{% endif %}
-{% if no_str %}
-NO = "{{ no_str }}"
-{% endif %}
 
+N,M = TII()
+A = TII()
+B = TII()
+
+from atcoder.lazysegtree import LazySegTree
+
+id_ = 0
+e = 0
+st = LazySegTree(max, e, lambda x,y: x+y, lambda x,y: x+y, id_, A)
+
+for b in B:
+    n = st.get(b)
+    st.set(b,0)
+    base,r = divmod(n,N)
+    if base >0:
+        st.apply(0,N,base)
+    s1 = (b+1)%N
+    t1 = min(s1+r,N)
+    st.apply(s1,t1,1)
+    s2,t2 = -1,-1
+    if s1+r > N:
+        s2 = 0
+        t2 = (s1+r)-N
+        st.apply(s2,t2,1)
+    # print(b,n,s1,t1,s2,t2)
+    # print(*[st.get(i) for i in range(N)])
+ans = []
+for i in range(N):
+    ans.append(st.get(i))
+print(*ans)
