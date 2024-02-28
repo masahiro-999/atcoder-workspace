@@ -88,7 +88,7 @@ if True:
     def LGMI():
         return list(map(lambda x: int(x) - 1, input().split()))
 
-sys.setrecursionlimit(5 * 10 ** 5)
+sys.setrecursionlimit(2 * 10 ** 5)
 # try:
 #     from pypyjit import set_param
 #     set_param('max_unroll_recursion=-1')
@@ -118,41 +118,69 @@ def find_s():
 si,sj = find_s()
 # print(si,sj)
 
-# def paint(i,j, c):
-#     P[i][j] = c
-#     for di,dj in ((0, 1), (0, -1), (1, 0), (-1, 0)):
-#         ni = i + di
-#         nj = j + dj
-#         if 0<=ni<H and 0<=nj<W and C[ni][nj]==".":
-#             if P[ni][nj]==c:
-#                 continue
-#             if P[ni][nj] == 0:
-#                 paint(ni,nj,c)
-#             else:
-#                 print(YES)
-#                 exit()
+visited = [[False]*W for _ in range(H)]
 
-def paint(i,j,c):
-    visited = [[False]*W for _ in range(H)]
-    q = deque()
-    q.append((i,j))
-    while q:
-        i,j = q.popleft()
-        if visited[i][j]:
-            continue
-        visited[i][j] = True
-        P[i][j] = c
-        for di,dj in ((0, 1), (0, -1), (1, 0), (-1, 0)):
-            ni = i + di
-            nj = j + dj
-            if 0<=ni<H and 0<=nj<W and C[ni][nj]==".":
-                if P[ni][nj]==c:
-                    continue
-                if P[ni][nj] == 0:
-                    q.append((ni,nj))
+## PYRIVAL BOOTSTRAP
+# https://github.com/cheran-senthil/PyRival/blob/master/pyrival/misc/bootstrap.py
+# This decorator allows for recursion without actually doing recursion
+## @bootstrap, yield when getting and returning value in recursive functions, end of functions
+from types import GeneratorType
+
+def bootstrap(f, stack=[]):
+    def wrappedfunc(*args, **kwargs):
+        if stack:
+            return f(*args, **kwargs)
+        else:
+            to = f(*args, **kwargs)
+            while True:
+                if type(to) is GeneratorType:
+                    stack.append(to)
+                    to = next(to)
                 else:
-                    print(YES)
-                    exit()
+                    stack.pop()
+                    if not stack:
+                        break
+                    to = stack[-1].send(to)
+            return to
+    return wrappedfunc
+
+@bootstrap
+def paint(i,j, c):
+    P[i][j] = c
+    for di,dj in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+        ni = i + di
+        nj = j + dj
+        if 0<=ni<H and 0<=nj<W and C[ni][nj]==".":
+            if P[ni][nj]==c:
+                continue
+            if P[ni][nj] == 0:
+                yield paint(ni,nj,c)
+            else:
+                print(YES)
+                exit()
+    yield
+    
+# def paint(i,j,c):
+#     visited = [[False]*W for _ in range(H)]
+#     q = deque()
+#     q.append((i,j))
+#     while q:
+#         i,j = q.popleft()
+#         if visited[i][j]:
+#             continue
+#         visited[i][j] = True
+#         P[i][j] = c
+#         for di,dj in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+#             ni = i + di
+#             nj = j + dj
+#             if 0<=ni<H and 0<=nj<W and C[ni][nj]==".":
+#                 if P[ni][nj]==c:
+#                     continue
+#                 if P[ni][nj] == 0:
+#                     q.append((ni,nj))
+#                 else:
+#                     print(YES)
+#                     exit()
 
 
 # print(P)
