@@ -107,17 +107,10 @@ A = LII()
 Q = II()
 q_list = [TII() for _ in range(Q)]
 
-table = []
-table = [-1,-2]
-back_table = {}
-back_table[-1] = 0
-back_table[-2] = 1
-next = [0] * (200000*2+2+1)
-prev = [0] * (200000*2+2+1)
-next[0] = 1
-prev[1] = 0
-next[1] = None
-prev[0] = None
+next = {}
+prev = {}
+next[-1] = -2
+prev[-2] = -1
 
 q_prev = []
 p = -1
@@ -128,28 +121,21 @@ for i,a in enumerate(A):
 for q in q_prev + q_list:
     if q[0] == 1:
         x,y = q[1], q[2]
-        table.append(y)
-        index_y = len(table)-1
-        back_table[y] = index_y
-        index_x = back_table[x]
-        tmp = next[index_x]
-        next[index_x] = index_y
-        next[index_y] = tmp
-        prev[tmp] = index_y
-        prev[index_y] = index_x
+
+        next[x], next[y] = y, next[x]
+        prev[next[y]] = y
+        prev[y] = x 
 
     elif q[0] == 2:
         x = q[1]
         # delete x
-        index_x = back_table[x]
-        prev[next[index_x]] = prev[index_x]
-        next[prev[index_x]] = next[index_x]
+        prev[next[x]] = prev[x]
+        next[prev[x]] = next[x]
 
 ans = []
-p = 0
-while table[next[p]] != -2:
-    ans.append(table[next[p]])
-    p = next[p]
+p = -1
+while (p:=next[p]) != -2:
+    ans.append(p)
 
 print(*ans)
 
