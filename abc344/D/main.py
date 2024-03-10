@@ -118,17 +118,17 @@ for i in range(N):
     S[i] = x[1:]
 
 # dp[i][j] iまでみて、Tのj番目まで確定した時の金額
-dp = [[inf]*(NT+1) for _ in range(N+1)]
-dp[0][0] = 0
+dp = [inf]*(NT+1)
+dp[0] = 0
 
 for i in range(N):
-    for j in range(NT+1):
-        dp[i+1][j] = min(dp[i+1][j], dp[i][j]) 
+    # jはlen(S[i][k])先を更新している。大きいものから順にすれば、2重に処理する事を防げる
+    for j in range(NT)[::-1]:
         for k in range(A[i]):
             if T[j:j+len(S[i][k])] == S[i][k]:
-                dp[i+1][j+len(S[i][k])] = min(dp[i+1][j+len(S[i][k])], dp[i][j]+1)
+                dp[j+len(S[i][k])] = min(dp[j+len(S[i][k])], dp[j]+1)
 
-ans = dp[N][NT]
+ans = dp[NT]
 if ans >= inf:
     ans = -1
 
