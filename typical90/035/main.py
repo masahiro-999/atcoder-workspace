@@ -127,12 +127,11 @@ def dfs(s,d):
             par[0][next] = s
             dfs(next,d+1)
 dfs(0,0)
-# print(g)
-# print(dist)
+
+# ダブリング
 for k in range(1,K):
     for i in range(N):
         par[k][i] = par[k-1][par[k-1][i]]
-# print(par)
 
 order_rev = [0]*N
 for i in range(N):
@@ -146,30 +145,33 @@ def get_up_n(s,n):
             s = par[i][s]
     return s
 
-def dist_two_point(v0,u0):
-    v1,u1 = v0,u0
-    if dist[v1] < dist[u1]:
-        v1,u1 = u1,v1
-    d = dist[v1]-dist[u1]
-    n = dist[u1]
-    v1 = get_up_n(v1,d)
-    if v1 != u1:
+# LCA 最近共通祖先
+def lca(v,u):
+    if dist[v] < dist[u]:
+        v,u = u,v
+    d = dist[v]-dist[u]
+    v = get_up_n(v,d)
+    if v == u:
+        return v
+    else:
         for i in range(K-1,-1,-1):
-            v2 = par[i][v1]
-            u2 = par[i][u1]
+            v2 = par[i][v]
+            u2 = par[i][u]
             if v2 !=u2:
-                v1,u1=v2,u2
-                n -= 1<<i
-        d = dist[v0]+dist[u0] - (n-1)*2     
-    return d
+                v,u=v2,u2
+        return get_up_n(v, 1)
+
+def dist_two_point(u,v):
+    x = lca(u,v)
+    return dist[u]+dist[v] - dist[x]*2    
 
 for x in kv:        
     k = x[0]
     v = [xx -1 for xx in x[1:]]
     v.sort(key=lambda x: order_rev[x])
-    VN = len(v)
+    len_v = len(v)
     d = 0
-    for i in range(VN):
-        d += dist_two_point(v[i],v[(i+1)%VN])
+    for i in range(len_v):
+        d += dist_two_point(v[i],v[(i+1)%len_v])
     d //=2
     print(d)
