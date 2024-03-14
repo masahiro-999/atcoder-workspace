@@ -115,18 +115,61 @@ for a,b in ab:
     g[b].append(a)
 
 dist = [-1]* N
-
-K = len(bin(100000))-2
-par = [[0]*K for _ in range(N)]
+order = []
+K = len(bin(100000))-2+1
+par = [[0]*N for _ in range(K)]
 
 def dfs(s,d):
     dist[s] = d
+    order.append(s)
     for next in g[s]:
-        if dist[next] != -1:
+        if dist[next] == -1:
             par[0][next] = s
             dfs(next,d+1)
 dfs(0,0)
-
+# print(g)
+# print(dist)
 for k in range(1,K):
     for i in range(N):
         par[k][i] = par[k-1][par[k-1][i]]
+# print(par)
+
+order_rev = [0]*N
+for i in range(N):
+    order_rev[order[i]]=i
+
+def get_up_n(s,n):
+    bin_n = bin(n)[2:]
+    n2 = len(bin_n)-1
+    for i in range(n2,-1,-1):
+        if bin_n[-(i+1)]=="1":
+            s = par[i][s]
+    return s
+
+def dist_two_point(v0,u0):
+    v1,u1 = v0,u0
+    if dist[v1] < dist[u1]:
+        v1,u1 = u1,v1
+    d = dist[v1]-dist[u1]
+    n = dist[u1]
+    v1 = get_up_n(v1,d)
+    if v1 != u1:
+        for i in range(K-1,-1,-1):
+            v2 = par[i][v1]
+            u2 = par[i][u1]
+            if v2 !=u2:
+                v1,u1=v2,u2
+                n -= 1<<i
+        d = dist[v0]+dist[u0] - (n-1)*2     
+    return d
+
+for x in kv:        
+    k = x[0]
+    v = [xx -1 for xx in x[1:]]
+    v.sort(key=lambda x: order_rev[x])
+    VN = len(v)
+    d = 0
+    for i in range(VN):
+        d += dist_two_point(v[i],v[(i+1)%VN])
+    d //=2
+    print(d)
