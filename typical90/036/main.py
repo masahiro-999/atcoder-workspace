@@ -102,3 +102,19 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N,Q = TII()
+xy = [TII() for _ in range(N)]
+q = [II() for _ in range(Q)]
+
+
+XY = [(x-y,x+y) for x,y in xy]
+maxX = max([x for x,_ in XY])
+minX = min([x for x,_ in XY])
+
+maxY = max([y for _,y in XY])
+minY = min([y for _,y in XY])
+
+for p in q:
+    x,y = XY[p-1]
+    ans = max(abs(x-maxX), abs(x-minX), abs(y-maxY), abs(y-minY))
+    print(ans)
