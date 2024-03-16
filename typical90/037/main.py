@@ -102,3 +102,20 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+W,N=TII()
+LRV = [TII() for _ in range(N)]
+
+from atcoder.segtree import SegTree
+st = SegTree(max, -1, W+1)
+st.set(0,0)
+
+for i,(l,r,v) in enumerate(LRV, start=1):
+    for j in range(W+1)[::-1]:
+        mx = st.prod(max(0,j-r),max(0,j-l+1))
+        # print(i,l,r,v,j,mx)
+        if mx >= 0:
+            st.set(j,max(st.get(j), mx+v))
+
+ans = st.get(W)
+
+print(ans)
