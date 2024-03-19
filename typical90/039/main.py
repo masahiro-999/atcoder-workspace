@@ -102,3 +102,28 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N = II()
+ab = [LII() for _ in range(N-1)]
+
+g = defaultdict(list)
+
+for a,b in ab:
+    a -= 1
+    b -= 1
+    g[a].append(b)
+    g[b].append(a)
+
+ans = 0
+def dfs(s,prev):
+    global ans
+    ret = 1
+    for next_s in g[s]:
+        if next_s == prev:
+            continue
+        ret += dfs(next_s, s)
+    ans += ret * (N-ret)
+    return ret
+
+for j in g[0]:
+    dfs(j,0)
+print(ans)
