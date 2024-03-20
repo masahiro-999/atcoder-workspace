@@ -102,3 +102,70 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N = II()
+xy = [TII() for _ in range(N)]
+
+def convex_hull(points):
+    """Computes the convex hull of a set of 2D points.
+
+    Input: an iterable sequence of (x, y) pairs representing the points.
+    Output: a list of vertices of the convex hull in counter-clockwise order,
+      starting from the vertex with the lexicographically smallest coordinates.
+    Implements Andrew's monotone chain algorithm. O(n log n) complexity.
+    """
+
+    # Sort the points lexicographically (tuples are compared lexicographically).
+    # Remove duplicates to detect the case we have just one unique point.
+    points = sorted(set(points))
+
+    # Boring case: no points or a single point, possibly repeated multiple times.
+    if len(points) <= 1:
+        return points
+
+    # 2D cross product of OA and OB vectors, i.e. z-component of their 3D cross product.
+    # Returns a positive value, if OAB makes a counter-clockwise turn,
+    # negative for clockwise turn, and zero if the points are collinear.
+    def cross(o, a, b):
+        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+    # Build lower hull 
+    lower = []
+    for p in points:
+        while len(lower) >= 2 and cross(lower[-2], lower[-1], p) <= 0:
+            lower.pop()
+        lower.append(p)
+
+    # Build upper hull
+    upper = []
+    for p in reversed(points):
+        while len(upper) >= 2 and cross(upper[-2], upper[-1], p) <= 0:
+            upper.pop()
+        upper.append(p)
+
+    # Concatenation of the lower and upper hulls gives the convex hull.
+    # Last point of each list is omitted because it is repeated at the beginning of the other list. 
+    return lower[:-1] + upper[:-1]
+
+convex_hull_points = convex_hull(xy)
+
+S = 0
+b = 0
+for i in range(len(convex_hull_points)):
+    x1,y1 = convex_hull_points[i]
+    x2,y2 = convex_hull_points[(i+1)%len(convex_hull_points)]
+    b += gcd(abs(x1-x2), abs(y1-y2))
+    S += (x1-x2)*(y1+y2)
+S //= 2
+# def triangle_area(p1, p2, p3):
+#     return abs((p1[0]*(p2[1]-p3[1]) + p2[0]*(p3[1]-p1[1]) + p3[0]*(p1[1]-p2[1])) // 2)
+
+# S = 0
+# for i in range(len(convex_hull_points)-2):
+#     S += triangle_area(convex_hull_points[i],convex_hull_points[i+1],convex_hull_points[i+2])
+
+ans = S-b//2+1 +b-N
+# print(S,b,convex_hull_points)
+# print(triangle_area((1, 4), (6, 1), (5, 8)))
+# print(triangle_area((5, 8), (1, 4), (6, 1)))
+# print(triangle_area((0,0), (2,0), (2, 2)))
+print(ans)
