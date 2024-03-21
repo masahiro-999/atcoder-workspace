@@ -103,3 +103,18 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 inf = 1<<60
 MOD = 1000000007
 
+K =II()
+
+dp = [0]*(K+1)
+dp[0] = 1
+
+for i in range(1,K+1):
+    for j in range(1,min(i,9)+1):
+        dp[i] += dp[i-j]
+        dp[i] %= MOD
+
+if K % 9 == 0:
+    ans = dp[K]
+else:
+    ans = 0
+print(ans)
