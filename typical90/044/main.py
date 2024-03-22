@@ -102,3 +102,21 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N,Q = TII()
+A = LII()
+txy = [TII() for _ in range(Q)]
+
+A = A[::-1]
+
+top = 0
+
+for t,x,y in txy:
+    if t == 1:
+        A[top+N-x],A[top+N-y] = A[top+N-y],A[top+N-x]
+    elif t == 2:
+        A.append(A[top])
+        top += 1
+    else:
+        print(A[top+N-x])
+
+
