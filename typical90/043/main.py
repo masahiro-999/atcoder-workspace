@@ -102,3 +102,39 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+H,W = TII()
+start = TII()
+end = TII()
+S = [I() for _ in range(H)]
+
+def bfs(i,j,i1,j1):
+    dist = [[inf]*W for _ in range(H)]
+    visited = [[False]*W for _ in range(H)]
+    dist[i][j] = -1
+    
+    q = deque()
+    q.append(((i,j),0))
+    while q:
+        (pi,pj),dir = q.popleft()
+        if visited[pi][pj]:
+            continue
+        visited[pi][pj] = True
+        for dx,dy in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+            if dir == 1 and dx == 0:
+                continue
+            if dir == 2 and dy == 0:
+                continue
+            for i in range(1,inf):
+                ii,jj = pi+dx*i, pj+dy*i
+                if ii<0 or H<=ii or jj<0 or W<=jj or S[ii][jj] == "#":
+                    break
+                if dist[ii][jj] == inf:
+                    dist[ii][jj] = dist[pi][pj]+1
+                    if (ii,jj) == (i1,j1):
+                        return dist
+                    q.append(((ii, jj), 1 if dx==0 else 2))
+    return dist
+
+dist = bfs(start[0]-1, start[1]-1,end[0]-1, end[1]-1)
+ans = dist[end[0]-1][end[1]-1]
+print(ans)
