@@ -102,3 +102,26 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N = II()
+A = LII()
+B = LII()
+C = LII()
+
+MOD = 46
+A = [a%MOD for a in A]
+B = [a%MOD for a in B]
+C = [a%MOD for a in C]
+
+cntA = Counter(A)
+cntB = Counter(B)
+cntC = Counter(C)
+
+ans = 0
+for i in range(MOD):
+    for j in range(MOD):
+        k = (MOD -i-j)%MOD
+        if k <0:
+            continue
+        ans += cntA[i]*cntB[j]*cntC[k]
+
+print(ans)
