@@ -102,3 +102,47 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N,K = TII()
+xy = [TII() for _ in range(N)]
+
+N2=1<<N
+
+d_table = [0]*N2
+
+for i in range(N):
+    for j in range(N):
+        if i==j:
+            continue
+        d_table[1<<j|1<<i] = (xy[i][0]-xy[j][0])**2+(xy[i][1]-xy[j][1])**2
+
+for i in range(N2):
+    mx = 0
+    for j in range(N):
+        if i>>j&1==0:
+            continue
+        remove_j = i ^(1<<j)
+        mx = max(mx,d_table[remove_j])
+    d_table[i] = max(mx,d_table[i])
+
+# print(xy)
+# print(d_table)
+
+# dp[i][j] i:選択した点、j:グループの数
+dp = [[inf]*(K+1) for _ in range(N2)]
+
+for i in range(N2):
+    dp[i][1]=d_table[i]
+    for j in range(2, K+1):
+        mi = inf
+        one_list = [1<<x for x in range(N) if i>>x&1]
+        k = i
+        while k > 0:
+            # kより小さいiの部分集合で最大のものをkに更新する
+            k = (k-1)&i
+            not_k = i- k
+            dd = max(dp[not_k][j-1], d_table[k])
+            mi = min(mi, dd)
+        dp[i][j] = min(dp[i][j], mi)
+
+ans = dp[N2-1][K]
+print(ans)
