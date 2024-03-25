@@ -102,24 +102,5 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
-N = II()
-S = [int(s) for s in I()]
-C = TII()
-
-
-c01 = [C[i] if i%2!=s else 0 for i,s in enumerate(S)]
-c10 = [C[i] if i%2==s else 0 for i,s in enumerate(S)]
-
-acc_c01 = list(accumulate(c01, initial=0))
-acc_c10 = list(accumulate(c10, initial=0))
-
-ans = inf
-for i in range(1,N):
-    x = acc_c01[i] + acc_c10[N]-acc_c10[i]
-    ans = min(ans,x)
-    x = acc_c10[i] + acc_c01[N]-acc_c01[i]
-    ans = min(ans,x)
-print(ans)
-
-
-
+a = TII()
+print(21-sum(a))
