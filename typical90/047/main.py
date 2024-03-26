@@ -102,3 +102,71 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+table0 ={"R":1, "G":2, "B": 3}
+table_list =[{"R":1, "G":3, "B": 2},{"R":3, "G":2, "B": 1},{"R":2, "G":1, "B": 3}]
+N = II()
+S_in = I()
+T_in = I()
+
+b = 1000000007
+p = 998244353
+# b = 10
+
+# h(n) = X[0]*b**(n-1) + X[1]*b**(n-2)+ ... +X[n-1]*b**(0) 
+def create_hash(X):
+    hash = [0]*(len(X)+1)
+    hash[0] = 0
+    for i in range(len(X)):
+        hash[i+1] = (hash[i]*b+X[i])%p
+    return hash
+
+pow_b = []
+x = 1
+for i in range(N+1):
+    pow_b.append(x)
+    x*=b
+    x%=p
+
+@cache
+def pow_cache(x,y,z):
+    return pow(x,y,z)
+
+def hash(h,s,t):
+    # いずれの方法もTLEになった。定数倍で引っかかった
+    # return (h[t+1]-h[s]*pow(b,t+1-s,p))%p 
+    # return (h[t+1]-h[s]*pow_cache(b,t+1-s,p))%p 
+    return (h[t+1]-h[s]*pow_b[t+1-s])%p 
+
+ans = 0
+
+for table in table_list:
+    S = [table0[x] for x in S_in]
+    T = [table[x] for x in T_in]
+
+    hash_s = create_hash(S)
+    hash_t = create_hash(T)
+
+    if hash(hash_s,0,N-1) == hash(hash_t,0,N-1):
+        ans += 1
+    for k in range(1,N):
+        if hash(hash_s,k,N-1) == hash(hash_t,0,N-k-1):
+            ans += 1
+        if hash(hash_t,k,N-1) == hash(hash_s,0,N-k-1):
+            ans += 1
+
+    # if S == T:
+    #     ans += 1
+    # for k in range(1,N):
+    #     if S[k:N] == T[0:N-k]:
+    #         ans += 1
+    #     if T[k:N] == S[0:N-k]:
+    #         ans += 1
+
+print(ans)
+
+# h = create_hash([1,2,3])
+# h2 = create_hash([2,1,1,2,3])
+# print(h)
+# print(h2)
+# print(hash(h,0,2))
+# print(hash(h2,2,4))
