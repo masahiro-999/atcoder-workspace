@@ -102,3 +102,14 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N,K = TII()
+ab = [TII() for _ in range(N)]
+A = [a for a,b in ab]
+B = [b for a,b in ab]
+AB = [a-b for a,b in zip(A,B)]
+
+C = B+AB
+C.sort(reverse=True)
+ans = sum(C[:K])
+
+print(ans)
