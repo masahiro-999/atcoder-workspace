@@ -102,3 +102,25 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+from atcoder.dsu import DSU
+N,M = TII()
+clr = [LII() for _ in range(M)]
+
+clr.sort()
+g = defaultdict(list)
+
+dsu = DSU(N+1)
+ans = 0
+n = N+1
+for c,l,r in clr:
+    if dsu.same(l-1,r):
+        continue
+    dsu.merge(l-1,r)
+    ans += c
+    n -= 1
+
+if n > 1:
+    ans = -1
+
+print(ans)
+
