@@ -103,3 +103,17 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 inf = 1<<60
 MOD = 1000000007
 
+N,L = TII()
+
+dp =[0]*(N+1)
+dp[0]=1
+
+for i in range(N+1):
+    if i-1>=0:
+        dp[i] += dp[i-1]
+    if i-L>=0:
+        dp[i] += dp[i-L]
+    dp[i] %= MOD
+
+ans = dp[N]
+print(ans)
