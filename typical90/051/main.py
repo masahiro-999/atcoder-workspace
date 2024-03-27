@@ -102,3 +102,35 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N,K,P = TII()
+A = LII()
+
+def solv(A):
+    ret = [[0]]
+    N = len(A)
+    for i in range(1,K+1):
+        x = []
+        for P in combinations(range(N),i):
+            x.append(sum([A[p] for p in P]))
+        x.sort()
+        ret.append(x)
+    return ret
+
+n = (N+1)//2
+A1=A[:n]
+A2=A[n:]
+ret1 = solv(A1)
+ret2 = solv(A2)
+# print(ret1)
+# print(ret2)
+ans = 0
+for i in range(len(ret1)):
+    j = K - i
+    if not 0<=j<len(ret2):
+        continue
+    for p1 in ret1[i]:
+        p2 = P - p1
+        n2 = bisect_right(ret2[j], p2)
+        ans += n2
+
+print(ans)
