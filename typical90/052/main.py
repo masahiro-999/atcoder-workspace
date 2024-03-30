@@ -103,3 +103,12 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 inf = 1<<60
 MOD = 1000000007
 
+N = II()
+A = [sum(LII()) for _ in range(N)]
+
+ans = 1
+for a in A:
+    ans *= a
+    ans %= MOD
+
+print(ans)
