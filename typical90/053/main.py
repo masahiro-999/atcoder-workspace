@@ -102,3 +102,50 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+@cache
+def fibo(n):
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+    return fibo(n-2)+fibo(n-1)
+
+# for i in range(18):
+#     print(fibo(i))
+
+T = II()
+
+A=[]
+
+def query(i):
+    if A[i] !=-1:
+        return A[i]
+    print(f"? {i}", flush=True)
+    ret = II()
+    A[i] = ret
+    return ret
+
+def send_ans(a):
+    print(f"! {a}", flush=True)
+
+for _ in range(T):
+    N = II()
+    A =[-1]*(N+1)
+    A[0] = 0
+    if N == 1:
+        query(1)
+        send_ans(A[1])
+        continue
+
+    i = 18
+    l, r = 0, fibo(i)-1
+    while r-l > 1:
+        m1 = l + fibo(i-2)
+        m2 = l + fibo(i-1)
+        i -= 1
+        if m2 > N or query(m1) > query(m2):
+            r = m2
+        else:
+            l = m1
+        # print(l,r)
+    send_ans(A[l])
