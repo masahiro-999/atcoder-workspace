@@ -102,3 +102,35 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N,M = TII()
+K = []
+R = []
+for i in range(M):
+    K.append(II())
+    R.append(LII())
+
+num_to_m = defaultdict(list)
+ans = [-1]*(N+1)
+ans[1] = 0 
+for i in range(M):
+    for n in R[i]:
+        num_to_m[n].append(i)
+
+q = deque()
+q.append(1)
+visited = [False]*M
+while q:
+    p = q.popleft()
+    current_n = ans[p]
+    m_list = num_to_m[p]
+    for m in m_list:
+        if visited[m]:
+            continue
+        visited[m] = True
+        for x in R[m]:
+            if ans[x] == -1:
+                ans[x] = current_n+1
+                q.append(x)
+
+for i in range(1,N+1):
+    print(ans[i])
