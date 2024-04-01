@@ -103,3 +103,20 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 inf = 1<<60
 MOD = 7
 
+N,P,Q = TII()
+A = LII()
+
+A = [a%P for a in A]
+
+
+cnt = 0
+
+for i0 in range(N):
+    for i1 in range(i0):
+        for i2 in range(i1):
+            for i3 in range(i2):
+                for i4 in range(i3):
+                    if (((((A[i0]*A[i1])%P)*A[i2])%P*A[i3])%P)*A[i4]%P==Q:
+                        cnt += 1
+
+print(cnt)    
