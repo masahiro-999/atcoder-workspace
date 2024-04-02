@@ -103,3 +103,36 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 inf = 1<<60
 NO = "Impossible"
 
+N,S = LII()
+ab = [LII() for _ in range(N)]
+
+dp = [[False]*(S+1) for _ in range(N+1)]
+dp[0][0] = True
+
+for i in range(N):
+    a,b = ab[i]
+    for j in range(S):
+        if dp[i][j]:
+            if j+a <=S:
+                dp[i+1][j+a] = True
+            if j+b <=S:
+                dp[i+1][j+b] = True
+
+# print(dp)
+
+if dp[N][S]:
+    ans = ""
+    s = S
+    for i in range(N)[::-1]:
+        a,b = ab[i]
+        if s-a >=0 and dp[i][s-a]:
+            ans +="A"
+            s -= a
+        else:
+            ans +="B"
+            s -= b
+        # print(ans, s)
+    ans = ans[::-1]
+    print(ans)
+else:
+    print("Impossible")
