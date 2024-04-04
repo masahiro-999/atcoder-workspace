@@ -103,3 +103,41 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 inf = 1<<60
 MOD = 998244353
 
+N,M = TII()
+
+t = [[0]*M for _ in range(N)]
+T = []
+A = []
+for i in range(N):
+    _ = II()
+    for a in LII():
+        t[i][a-1] = 1
+S = LII()
+# print(t)
+pos = 0
+for i in range(M):
+    try:
+        first_one = [x[i] for x in t[pos:]].index(1)+pos
+    except ValueError:
+        continue
+    t[pos],t[first_one] = t[first_one],t[pos]
+    for j in range(N):
+        if pos == j:
+            continue
+        if t[j][i]==0:
+            continue
+        for k in range(M):
+            t[j][k] ^= t[pos][k]
+    if S[i] == 1:
+        for j in range(M):
+            S[j] ^= t[pos][j]
+    pos += 1
+
+if S == [0]*M:
+    ans = pow(2,N-pos,MOD)
+else:
+    ans = 0
+
+# print(t)
+# print(P,S)
+print(ans)
