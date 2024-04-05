@@ -103,3 +103,21 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 inf = 1<<60
 MOD = 10
 
+N,K =TII()
+
+NK = 60
+M = 100000
+t = [[0]*M for _ in range(NK)]
+
+for i in range(M):
+    t[0][i]= (sum([int(x) for x in str(i)])+i) % M
+
+for i in range(NK-1):
+    for j in range(M):
+        t[i+1][j] = t[i][t[i][j]]
+
+for i in range(NK):
+    if K>>i&1:
+        N = t[i][N]
+
+print(N)
