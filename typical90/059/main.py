@@ -104,3 +104,27 @@ inf = 1<<60
 YES = "Yes"
 NO = "No"
 
+N,M,Q = TII()
+xy = [LII() for _ in range(M)]
+
+ab = [LII() for _ in range(Q)]
+
+g = defaultdict(list)
+
+for x,y in xy:
+    x -= 1
+    y -= 1
+    g[y].append(x)
+K=10000
+for ab64 in [ab[i:i+K] for i in range(0,len(ab),K)]:
+    dp = [0]*N
+    for i,(a,_b) in enumerate(ab64):
+        a-=1
+        dp[a] |= 1<<i
+
+    for i in range(N):
+        for j in g[i]:
+            dp[i] |= dp[j]
+    for i,(_a,b) in enumerate(ab64):
+        b-=1
+        print(YES if dp[b] &1<<i else NO)
