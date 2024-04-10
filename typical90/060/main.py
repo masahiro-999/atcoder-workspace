@@ -102,3 +102,27 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N = II()
+A = LII()
+
+
+def lis(A):
+    B = [inf]*N
+    P = [0]*N
+    for i,a in enumerate(A):
+        pos = bisect_left(B,a)
+        B[pos] = min(B[pos],a)
+        P[i] = pos+1
+    return P
+
+P = lis(A)
+Q = lis(A[::-1])[::-1]
+
+# print(A)
+# print(P)
+# print(Q)
+mx = 0
+for k in range(N):
+    mx = max(mx, P[k]+Q[k]-1)
+
+print(mx)
