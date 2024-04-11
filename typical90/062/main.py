@@ -102,3 +102,31 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N = II()
+
+ab=[LII() for _ in range(N)]
+
+visited = [False]*N
+q = deque()
+t = defaultdict(set)
+for i,(a,b) in enumerate(ab, start=1):
+    if i == a or i == b:
+        q.append(i)
+        visited[i-1]=True
+    t[a].add(i)
+    t[b].add(i)
+
+ans = []
+while q:
+    p = q.popleft()
+    ans.append(p)
+    for next in t[p]:
+        if visited[next-1]:
+            continue
+        visited[next-1] = True
+        q.append(next)
+
+if len(ans)!=N:
+    print(-1)
+else:
+    print(*ans[::-1], sep="\n")
