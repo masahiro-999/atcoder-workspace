@@ -102,3 +102,19 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+Q = II()
+tx = [LII() for _ in range(Q)]
+
+up = []
+bottom = []
+for t,x in tx:
+    if t==1:
+        up.append(x)
+    elif t == 2:
+        bottom.append(x)
+    else:
+        if x <= len(up):
+            print(up[-x])
+        else:
+            x -= len(up)
+            print(bottom[x-1])
