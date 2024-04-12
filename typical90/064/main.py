@@ -102,3 +102,28 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N,Q = LII()
+A = LII()
+lrv = [LII() for _ in range(Q)]
+B=[]
+
+fuben = 0
+for a1,a2 in zip(A, A[1:]):
+    B.append(a1-a2)
+
+
+fuben = sum((abs(x) for x in B))
+
+offset = 0
+for l,r,v in lrv:
+    l -= 1
+    r -= 1
+    if l > 0:
+        fuben -= abs(B[l-1])
+        B[l-1] -= v
+        fuben += abs(B[l-1])
+    if r+1 <N:
+        fuben -= abs(B[r])
+        B[r] += v
+        fuben += abs(B[r])
+    print(fuben)
