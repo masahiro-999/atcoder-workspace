@@ -102,3 +102,28 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+H,W = LII()
+P = [LII() for _ in range(H)]
+
+t = defaultdict(list)
+for i in range(H):
+    for j in range(W):
+        t[P[i][j]].append((i,j))
+# print(t)
+ans = 0
+for k in t.keys():
+    h = [0]*H
+    for i,j in t[k]:
+        h[i] |= 1<<j
+  
+    # for x in h:
+        # print('h=', bin(x))
+    for i in range(1<<H):
+        and_h = (1<<W)-1
+        for b in range(H):
+            if i>>b&1:
+                and_h &=h[b]
+            # print(k,i,b,bin(and_h))
+        size = and_h.bit_count()*i.bit_count()
+        ans = max(ans, size)
+print(ans)
