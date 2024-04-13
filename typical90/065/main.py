@@ -102,6 +102,26 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 MOD = 998244353
+mod = MOD
+sum_e = (911660635, 509520358, 369330050, 332049552, 983190778, 123842337, 238493703, 975955924, 603855026, 856644456, 131300601, 842657263, 730768835, 942482514, 806263778, 151565301, 510815449, 503497456, 743006876, 741047443, 56250497)
+sum_ie = (86583718, 372528824, 373294451, 645684063, 112220581, 692852209, 155456985, 797128860, 90816748, 860285882, 927414960, 354738543, 109331171, 293255632, 535113200, 308540755, 121186627, 608385704, 438932459, 359477183, 824071951)
+
+def inv_mod(a):
+    a %= mod
+    if a == 0:
+        return 0
+    s, t = mod, a
+    m0, m1 = 0, 1
+    while t:
+        u = s // t
+        s -= t * u
+        m0 -= m1 * u
+        s, t = t, s
+        m0, m1 = m1, m0
+    if m0 < 0:
+        m0 += mod // s
+    return m0
+
 
 def prepare(n, MOD):
     f = 1
@@ -129,6 +149,73 @@ def comb(n,a):
         return 0
     return (factorials[n] * (invs[n-a] * invs[a])) % MOD
 
+def butterfly(A):
+    n = len(A)
+    h = (n - 1).bit_length()
+    for ph in range(1, h + 1):
+        w = 1 << (ph - 1)
+        p = 1 << (h - ph)
+        now = 1
+        for s in range(w):
+            offset = s << (h - ph + 1)
+            for i in range(p):
+                l = A[i + offset]
+                r = A[i + offset + p] * now
+                A[i + offset] = (l + r) % mod
+                A[i + offset + p] = (l - r) % mod
+            now *= sum_e[(~s & -~s).bit_length() - 1]
+            now %= mod
+    
+def butterfly_inv(A):
+    n = len(A)
+    h = (n - 1).bit_length()
+    for ph in range(h, 0, -1):
+        w = 1 << (ph - 1)
+        p = 1 << (h - ph)
+        inow = 1
+        for s in range(w):
+            offset = s << (h - ph + 1)
+            for i in range(p):
+                l = A[i + offset]
+                r = A[i + offset + p]
+                A[i + offset] = (l + r) % mod
+                A[i + offset + p] = (mod + l - r) * inow % mod
+            inow *= sum_ie[(~s & -~s).bit_length() - 1]
+            inow %= mod
+    iz = inv_mod(n)
+    for i in range(n):
+        A[i] *= iz
+        A[i] %= mod
+    
+def convolution(_A, _B):
+    A = _A.copy()
+    B = _B.copy()
+    n = len(A)
+    m = len(B)
+    if not n or not m:
+        return []
+    if min(n, m) <= 60:
+        if n < m:
+            n, m = m, n
+            A, B = B, A
+        res = [0] * (n + m - 1)
+        for i in range(n):
+            for j in range(m):
+                res[i + j] += A[i] * B[j]
+                res[i + j] %= mod
+        return res
+    z = 1 << (n + m - 2).bit_length()
+    A += [0] * (z - n)
+    B += [0] * (z - m)
+    butterfly(A)
+    butterfly(B)
+    for i in range(z):
+        A[i] *= B[i]
+        A[i] %= mod
+    butterfly_inv(A)
+    return A[:n + m - 1]
+
+
 R,G,B,K = LII()
 X,Y,Z = LII()
 
@@ -139,8 +226,8 @@ min_g = K-Z
 comb_r = [comb(R,r) % MOD if r >= min_r else 0 for r in range(R+1)]
 comb_g = [comb(G,g) % MOD if g >= min_g else 0 for g in range(G+1)]
 comb_b = [comb(B,b) % MOD if b >= min_b else 0 for b in range(B+1)]
-from atcoder.convolution import convolution
-c = convolution(MOD, comb_r, comb_g)
-ans = convolution(MOD, c, comb_b)[K]%MOD
+
+c = convolution(comb_r, comb_g)
+ans = convolution(c, comb_b)[K]%MOD
 
 print(ans)
