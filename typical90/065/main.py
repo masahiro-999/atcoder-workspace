@@ -103,3 +103,44 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 inf = 1<<60
 MOD = 998244353
 
+def prepare(n, MOD):
+    f = 1
+    factorials = [1]
+    for m in range(1, n + 1):
+        f *= m
+        f %= MOD
+        factorials.append(f)
+    inv = pow(f, MOD - 2, MOD)
+    invs = [1] * (n + 1)
+    invs[n] = inv
+    for m in range(n, 1, -1):
+        inv *= m
+        inv %= MOD
+        invs[m - 1] = inv
+ 
+    return factorials, invs
+
+factorials, invs = prepare(200000,MOD)
+
+def comb(n,a):
+    if a == 0:
+        return 1
+    if n<a or a <0:
+        return 0
+    return (factorials[n] * (invs[n-a] * invs[a])) % MOD
+
+R,G,B,K = LII()
+X,Y,Z = LII()
+
+min_b = K-X
+min_r = K-Y
+min_g = K-Z
+
+comb_r = [comb(R,r) % MOD if r >= min_r else 0 for r in range(R+1)]
+comb_g = [comb(G,g) % MOD if g >= min_g else 0 for g in range(G+1)]
+comb_b = [comb(B,b) % MOD if b >= min_b else 0 for b in range(B+1)]
+from atcoder.convolution import convolution
+c = convolution(MOD, comb_r, comb_g)
+ans = convolution(MOD, c, comb_b)[K]%MOD
+
+print(ans)
