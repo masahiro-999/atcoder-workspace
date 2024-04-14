@@ -102,3 +102,20 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+strN,K =LI()
+K = int(K)
+
+for _ in range(K):
+    N = int(strN,8)
+    str9=[]
+    while N>0:
+        str9.append(str(N%9))
+        N //=9
+    str9 = str9[::-1]
+    if not str9:
+        str9="0"
+    strN = "".join(["5" if s=="8" else s for s in str9])
+
+print(strN)
+
+
