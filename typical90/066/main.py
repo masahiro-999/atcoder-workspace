@@ -102,3 +102,20 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N = II()
+lr=[LII() for _ in range(N)]
+
+ans = 0
+for i in range(N-1):
+    i_l, i_r = lr[i]
+    for j in range(i+1,N):
+        a = 0
+        b = 0
+        j_l, j_r = lr[j]
+        for k in range(i_l, i_r+1):
+            for l in range(j_l, j_r+1):
+                if k > l:
+                    a+= 1
+                b+= 1
+        ans += a/b
+print(ans)
