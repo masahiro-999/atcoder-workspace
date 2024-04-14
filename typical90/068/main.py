@@ -102,3 +102,35 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+from atcoder.fenwicktree import FenwickTree
+from atcoder.dsu import DSU
+
+N = II()
+Q = II()
+txyv = [LII() for _ in range(Q)]
+dsu = DSU(N)
+V=[None]*N
+A=[0]*N
+
+for t,x,y,v in txyv:
+    x-=1
+    y-=1
+    if t == 0:
+        V[x] = v
+for i,v in enumerate(V):
+    if v is not None:
+        A[i+1] = v-A[i]
+
+for t,x,y,v in txyv:
+    x -= 1
+    y -= 1
+    if t == 0:
+        dsu.merge(x,y)
+    else:
+        if dsu.same(x,y):
+            sign = 1 if x%2 == y%2 else -1
+            d = v-A[x]
+            ans = A[y]+d*sign
+            print(ans)
+        else:
+            print("Ambiguous")
