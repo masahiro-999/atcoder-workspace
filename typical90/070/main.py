@@ -102,3 +102,18 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N = II()
+xy = [LII() for _ in range(N)]
+
+X = [x for x,_ in xy]
+Y = [y for _,y in xy]
+
+X.sort()
+Y.sort()
+
+x = X[N//2]
+y = Y[N//2]
+
+ans = sum([abs(i-x) for i in X])+sum([abs(i-y) for i in Y])
+
+print(ans)
