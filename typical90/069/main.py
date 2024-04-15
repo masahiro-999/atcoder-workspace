@@ -103,3 +103,16 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 inf = 1<<60
 MOD = 1000000007
 
+N,K = LII()
+
+if N == 1:
+    ans = K%MOD
+elif N == 2:
+    ans = K*(K-1)*pow(K-1,N-2,MOD) %MOD
+else:
+    if K <3:
+        ans = 0
+    else:
+        ans = K*(K-1)*pow(K-2,N-2,MOD) %MOD
+
+print(ans)
