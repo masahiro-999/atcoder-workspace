@@ -102,3 +102,118 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N,M,K = LII()
+ab = [LII() for _ in range(M)]
+
+g_out = defaultdict(set)
+in_count = Counter()
+
+for a,b in ab:
+    g_out[a].add(b)
+    in_count[b] += 1
+
+# q = set()
+# for i in range(1,N+1):
+#     if in_count[i]==0:
+#         q.add(i)
+
+q = [False]*N
+cnt_q = 0
+for i in range(1,N+1):
+    if in_count[i]==0:
+        q[i-1] = True
+        cnt_q += 1
+ans = []
+p_list = []
+
+from types import GeneratorType
+
+def bootstrap(f, stack=[]):
+    def wrappedfunc(*args, **kwargs):
+        if stack:
+            return f(*args, **kwargs)
+        else:
+            to = f(*args, **kwargs)
+            while True:
+                if type(to) is GeneratorType:
+                    stack.append(to)
+                    to = next(to)
+                else:
+                    stack.pop()
+                    if not stack:
+                        break
+                    to = stack[-1].send(to)
+            return to
+    return wrappedfunc
+
+@bootstrap
+def p():
+    global cnt_q, q, p_list
+    if cnt_q == 0:
+        if len(p_list)==N:
+            ans.append(p_list[:])
+            if len(ans)==K:
+                for a in ans:
+                    print(*a)
+                exit()
+        else:
+            print(-1)
+            exit()
+    for i in range(1,N+1):
+        if q[i-1] == False:
+            continue
+        q[i-1] = False
+        cnt_q -= 1
+        p_list.append(i)
+        for next in g_out[i]:
+            in_count[next] -= 1
+            if in_count[next] == 0:
+                q[next-1] = True
+                cnt_q += 1
+        yield p()
+        for next in g_out[i]:
+            if in_count[next] == 0:
+                q[next-1] = False
+                cnt_q -= 1
+            in_count[next] += 1
+        p_list.pop()
+        q[i-1] = True
+        cnt_q += 1
+    yield
+
+p()
+print(-1)    
+
+
+# ans = []
+# def p(not_used,result):
+#     print(not_used, result)
+#     if not not_used:
+#         ans.append(result[:])
+#         if len(ans)==K:
+#             for a in ans:
+#                 print(*a)
+#             exit()
+#         return
+#     for i in list(not_used):
+#         not_used.remove(i)
+#         result.append(i)
+#         if i in atob:
+#             b = atob[i]
+#             depend[b] -= 1
+#             if depend[b]==0:
+#                 not_used.add(b)
+#                 p(not_used,result)
+#                 not_used.remove(b)
+#             depend[b] += 1
+#         else:
+#             p(not_used,result)
+#         result.pop()
+#         not_used.add(i)
+
+# not_used = set(range(1,N+1))
+# for b in set_b:
+#     not_used.remove(b)
+
+# p(not_used,[])
+# print(-1)
