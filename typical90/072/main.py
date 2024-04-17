@@ -102,3 +102,34 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+H,W = LII()
+C = [I() for _ in range(H)]
+
+
+visited = [[0]*W for _ in range(H)]
+
+ans = 0
+def dfs(si,sj,i,j,d):
+    global ans
+    visited[i][j]=d
+    for dx,dy in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+        ni = i+dx
+        nj = j+dy
+        if ni == si and nj == sj:
+            # if ans < d:
+            #     print(d)
+            #     print(visited)
+            ans = max(ans,d)            
+        if (not (0<=ni<H and 0<=nj<W)) or visited[ni][nj]!=0 or C[ni][nj]=="#":
+            continue
+        dfs(si,sj,ni,nj,d+1)
+    visited[i][j]=0
+
+for i in range(H):
+    for j in range(W):
+        if C[i][j]==".":
+            dfs(i,j,i,j,1)
+
+if ans <3:
+    ans = -1
+print(ans)
