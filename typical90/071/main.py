@@ -9,7 +9,7 @@ from collections import Counter, defaultdict, deque
 from copy import deepcopy
 from functools import cmp_to_key, lru_cache, reduce, cache
 from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
-from itertools import product, accumulate,permutations,combinations, count
+from itertools import product, accumulate,permutations,combinations, count, islice
 from operator import add, iand, ior, itemgetter, mul, xor
 from string import ascii_lowercase, ascii_uppercase, ascii_letters
 from typing import *
@@ -102,3 +102,103 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N,M,K = LII()
+ab = [LII() for _ in range(M)]
+
+g_out = defaultdict(set)
+in_count = Counter()
+
+for a,b in ab:
+    g_out[a].add(b)
+    in_count[b] += 1
+
+q = set()
+for i in range(1,N+1):
+    if in_count[i]==0:
+        q.add(i)
+
+ans = []
+from types import GeneratorType
+
+def bootstrap(f, stack=[]):
+    def wrappedfunc(*args, **kwargs):
+        if stack:
+            return f(*args, **kwargs)
+        else:
+            to = f(*args, **kwargs)
+            while True:
+                if type(to) is GeneratorType:
+                    stack.append(to)
+                    to = next(to)
+                else:
+                    stack.pop()
+                    if not stack:
+                        break
+                    to = stack[-1].send(to)
+            return to
+    return wrappedfunc
+
+@bootstrap
+def p(q,p_list):
+    if not q:
+        if len(p_list)==N:
+            ans.append(p_list[:])
+            if len(ans)==K:
+                for a in ans:
+                    print(*a)
+                exit()
+        else:
+            print(-1)
+            exit()
+    for i in list(islice(q,K)):
+        q.remove(i)
+        p_list.append(i)
+        for next in g_out[i]:
+            in_count[next] -= 1
+            if in_count[next] == 0:
+                q.add(next)
+        yield p(q, p_list)
+        for next in g_out[i]:
+            if in_count[next] == 0:
+                q.remove(next)
+            in_count[next] += 1
+        p_list.pop()
+        q.add(i)
+    yield
+
+p(q,[])
+print(-1)    
+
+
+# ans = []
+# def p(not_used,result):
+#     print(not_used, result)
+#     if not not_used:
+#         ans.append(result[:])
+#         if len(ans)==K:
+#             for a in ans:
+#                 print(*a)
+#             exit()
+#         return
+#     for i in list(not_used):
+#         not_used.remove(i)
+#         result.append(i)
+#         if i in atob:
+#             b = atob[i]
+#             depend[b] -= 1
+#             if depend[b]==0:
+#                 not_used.add(b)
+#                 p(not_used,result)
+#                 not_used.remove(b)
+#             depend[b] += 1
+#         else:
+#             p(not_used,result)
+#         result.pop()
+#         not_used.add(i)
+
+# not_used = set(range(1,N+1))
+# for b in set_b:
+#     not_used.remove(b)
+
+# p(not_used,[])
+# print(-1)
