@@ -9,7 +9,7 @@ from collections import Counter, defaultdict, deque
 from copy import deepcopy
 from functools import cmp_to_key, lru_cache, reduce, cache
 from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
-from itertools import product, accumulate,permutations,combinations, count
+from itertools import product, accumulate,permutations,combinations, count, islice
 from operator import add, iand, ior, itemgetter, mul, xor
 from string import ascii_lowercase, ascii_uppercase, ascii_letters
 from typing import *
@@ -150,7 +150,7 @@ def p(q,p_list):
         else:
             print(-1)
             exit()
-    for i in list(q)[:K]:
+    for i in list(islice(q,K)):
         q.remove(i)
         p_list.append(i)
         for next in g_out[i]:
