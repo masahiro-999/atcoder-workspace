@@ -112,20 +112,12 @@ for a,b in ab:
     g_out[a].add(b)
     in_count[b] += 1
 
-# q = set()
-# for i in range(1,N+1):
-#     if in_count[i]==0:
-#         q.add(i)
-
-q = [False]*N
-cnt_q = 0
+q = set()
 for i in range(1,N+1):
     if in_count[i]==0:
-        q[i-1] = True
-        cnt_q += 1
-ans = []
-p_list = []
+        q.add(i)
 
+ans = []
 from types import GeneratorType
 
 def bootstrap(f, stack=[]):
@@ -147,9 +139,8 @@ def bootstrap(f, stack=[]):
     return wrappedfunc
 
 @bootstrap
-def p():
-    global cnt_q, q, p_list
-    if cnt_q == 0:
+def p(q,p_list):
+    if not q:
         if len(p_list)==N:
             ans.append(p_list[:])
             if len(ans)==K:
@@ -159,29 +150,23 @@ def p():
         else:
             print(-1)
             exit()
-    for i in range(1,N+1):
-        if q[i-1] == False:
-            continue
-        q[i-1] = False
-        cnt_q -= 1
+    for i in list(q)[:K]:
+        q.remove(i)
         p_list.append(i)
         for next in g_out[i]:
             in_count[next] -= 1
             if in_count[next] == 0:
-                q[next-1] = True
-                cnt_q += 1
-        yield p()
+                q.add(next)
+        yield p(q, p_list)
         for next in g_out[i]:
             if in_count[next] == 0:
-                q[next-1] = False
-                cnt_q -= 1
+                q.remove(next)
             in_count[next] += 1
         p_list.pop()
-        q[i-1] = True
-        cnt_q += 1
+        q.add(i)
     yield
 
-p()
+p(q,[])
 print(-1)    
 
 
