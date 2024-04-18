@@ -102,3 +102,40 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N =II()
+
+# def get_prime_list(num_max):
+#     prime_table=[1]*(num_max+1)
+#     prime_table[0] = 0
+#     prime_table[1] = 0
+#     for i in range(2, num_max+1):
+#         k = i*2
+#         while k <= num_max:
+#             prime_table[k] = 0
+#             k += i
+#     return [i for i in range(2,num_max+1) if prime_table[i]]
+
+# prime_list = get_prime_list(1000000)
+
+cnt = 0
+p = 2
+while N > 1:
+    if N%p==0:
+        while N%p==0:
+            N//=p
+            cnt += 1
+    p+=1
+    if p > 1000000:
+        break
+
+if N >1:
+    cnt += 1
+
+# print(cnt.bit_length())
+ans = 0            
+if cnt == 1<<(cnt.bit_length()-1):
+    ans = cnt.bit_length()-1
+else:
+    ans = cnt.bit_length()
+
+print(ans)
