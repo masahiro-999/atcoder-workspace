@@ -104,3 +104,27 @@ inf = 1<<60
 YES = "Yes"
 NO = "No"
 
+N = II()
+A = LII()
+
+sm = sum(A)
+if sm%10!=0:
+    ans = NO
+else:
+    AA = A+A
+    ans = NO
+    sm10 = sm//10
+    sm_st = 0
+    s = 0
+    t = 0
+    while s < N:
+        while sm_st<sm10:
+            sm_st += AA[t]
+            t +=1
+        if sm_st == sm10:
+            ans = YES
+            break
+        while sm_st > sm10:
+            sm_st -= AA[s]
+            s += 1
+print(ans)
