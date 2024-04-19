@@ -102,3 +102,11 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N = II()
+S = I()
+ans = 0
+t={"a":0, "b":1, "c":2 }
+for i,s in zip(count(),S):
+    ans +=t[s]*(1<<i)
+
+print(ans)
