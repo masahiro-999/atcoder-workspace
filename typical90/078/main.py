@@ -102,3 +102,21 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N,M = LII()
+ab = [LII() for _ in range(M)]
+
+g = defaultdict(list)
+for a,b in ab:
+    g[a].append(b)
+    g[b].append(a)
+
+for k in g.keys():
+    g[k].sort()
+
+ans = 0
+for i in range(1,N+1):
+    n_list = g[i]
+    if len(n_list)>0 and n_list[0] < i and (len(n_list)==1 or i < n_list[1]):
+        ans += 1
+
+print(ans)
