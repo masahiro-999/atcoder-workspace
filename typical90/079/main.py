@@ -104,3 +104,21 @@ inf = 1<<60
 YES = "Yes"
 NO = "No"
 
+H,W = LII()
+a = [LII() for _ in range(H)]
+b = [LII() for _ in range(H)]
+
+n = 0
+for i in range(H-1):
+    for j in range(W-1):
+        d = a[i][j] - b[i][j]
+        a[i][j] -= d
+        a[i+1][j] -= d
+        a[i][j+1] -= d
+        a[i+1][j+1] -= d
+        n += abs(d)
+if a == b:
+    print(YES)
+    print(n)
+else:
+    print(NO)
