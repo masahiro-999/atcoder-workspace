@@ -102,3 +102,17 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N,D = LII()
+A = LII()
+
+cnt = 1<<D
+for i in range(1,1<<N):
+    a = 0
+    for j in range(N):
+        if i>>j&1:
+            a |= A[j]
+    sign = -1 if i.bit_count()%2==1 else 1
+    e = D-a.bit_count()
+    cnt += sign*(1<<e)
+
+print(cnt)
