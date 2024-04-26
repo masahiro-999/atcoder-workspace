@@ -101,4 +101,40 @@ dxdy3 = ((0, 1), (1, 0))  # 右 or 下
 dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
+N,K = LII()
+ab = [LII() for _ in range(N)]
 
+max_a=max((a for a,_ in ab))
+max_b=max((b for _,b in ab))
+
+t = [[0]*max_b for _ in range(max_a)]
+
+for a,b in ab:
+    t[a-1][b-1]+= 1
+
+acc_t =[list(accumulate(x, initial=0)) for x in t]
+# acc_t_tr = list(zip(*acc_t))
+# acc_t_2d =list(zip(*[accumulate(x, initial=0) for x in acc_t_tr]))
+
+acc_t_2d =[[0]*(max_b+1) for _ in range(max_a+1)]
+for b in range(1,max_b+1):
+    for a in range(1,max_a+1):
+        acc_t_2d[a][b] = acc_t_2d[a-1][b]+acc_t[a-1][b]
+
+# for x in t:
+#     print(x)
+# print(acc_t)
+# for x in acc_t_2d:
+#     print(x)
+K= K+1
+
+ans = 0
+for a in range(min(K,max_a),max_a+1):
+    ka = max(0,a - K)
+    for b in range(min(K,max_b),max_b+1):
+        kb = max(0,b - K)
+        ans = max(ans,
+            acc_t_2d[a][b] - acc_t_2d[a][kb] - acc_t_2d[ka][b] + acc_t_2d[ka][kb]      
+            )
+
+print(ans)    
