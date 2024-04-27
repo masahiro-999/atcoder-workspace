@@ -102,3 +102,39 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N = II()
+A = LII()
+
+from atcoder.fenwicktree import FenwickTree
+
+ans = 0
+
+def create_multi(A):
+    # 自分よりも前に自分より値が小さい値が何個あるか
+    ft = FenwickTree(100000000+1)
+    multi = [0]*N
+    for i, a in enumerate(A):
+        multi[i] = ft.sum(0,a)
+        ft.add(a,1)
+    return multi
+
+def create_multi2(A):
+    # 自分よりも前に自分より値が大きい値が何個あるか
+    ft = FenwickTree(100000000+1)
+    multi = [0]*N
+    for i, a in enumerate(A):
+        multi[i] = i-ft.sum(0,a+1)
+        ft.add(a,1)
+    return multi
+
+m = create_multi(A)
+m2 = create_multi2(A[::-1])[::-1]
+# print(m2)
+# m2 = [i-x for i,x in enumerate(m2)][::-1]
+
+# print(m)
+# print(m2)
+for i in range(N):
+    ans += (m[i]-m2[i])*A[i]
+
+print(ans)
