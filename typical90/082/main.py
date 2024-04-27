@@ -103,3 +103,32 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 inf = 1<<60
 MOD = 1000000007
 
+L,R = LII()
+
+inv_2 = pow(2,-1,MOD) 
+def f(n):
+    if n ==0:
+        return 0
+    keta = len(str(n))
+    r = n - 10**(keta-1)+1
+    assert r >= 0
+    num = ((n+pow(10,(keta-1),MOD))*r*inv_2) %MOD
+    return (num*(keta)+f(10**(keta-1)-1))%MOD
+
+# print(f(2))
+# print(f(5))
+
+# def g(n):
+#     a = 0
+#     for i in range(n+1):
+#         a+= len(str(i))*i
+#         a %= MOD
+#     return a
+
+# import random
+# for n in range(10000):
+#     assert f(n) == g(n)
+
+ans = f(R)-f(L-1)
+ans %= MOD
+print(ans)
