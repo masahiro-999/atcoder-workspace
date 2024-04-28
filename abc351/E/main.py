@@ -119,13 +119,12 @@ st2 = sorted(t2.items(), key=lambda x:x[0])
 ans = 0
 for st in [st1,st2]:
     for i in range(2):
-        prev_k = None
-        sum_v = 0
-        for k,v in [x for x in st if x[0]%2==i]:
-            if prev_k is not None:
-                n = (k-prev_k)//2 * sum_v * v
-                ans += n
-            prev_k = k
-            sum_v += v
+        t = [x for x in st if x[0]%2==i]
+        n = -sum([v for _k,v in t])
+        for i,(k,v) in enumerate(t):
+            n += v
+            k//=2
+            ans += k*v*n
+            n += v
 
 print(ans)
