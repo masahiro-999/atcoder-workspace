@@ -102,3 +102,30 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N = II()
+xy = [TII() for _ in range(N)]
+t1 = Counter()
+t2 = Counter()
+
+for x,y in xy:
+    t1[x+y] += 1
+    t2[x-y] += 1
+
+st1 = sorted(t1.items(), key=lambda x:x[0])
+st2 = sorted(t2.items(), key=lambda x:x[0])
+# print(st1)
+# print(st2)
+
+ans = 0
+for st in [st1,st2]:
+    for i in range(2):
+        prev_k = None
+        sum_v = 0
+        for k,v in [x for x in st if x[0]%2==i]:
+            if prev_k is not None:
+                n = (k-prev_k)//2 * sum_v * v
+                ans += n
+            prev_k = k
+            sum_v += v
+
+print(ans)
