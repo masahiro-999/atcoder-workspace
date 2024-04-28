@@ -104,27 +104,24 @@ inf = 1<<60
 
 N = II()
 xy = [TII() for _ in range(N)]
-t1 = Counter()
-t2 = Counter()
+t1 = [[] for _ in range(2)]
+t2 = [[] for _ in range(2)]
 
 for x,y in xy:
-    t1[x+y] += 1
-    t2[x-y] += 1
+    t1[(x+y)%2].append(x+y)
+    t2[(x-y)%2].append(x-y)
 
-st1 = sorted(t1.items(), key=lambda x:x[0])
-st2 = sorted(t2.items(), key=lambda x:x[0])
-# print(st1)
-# print(st2)
+for i in range(2):
+    t1[i].sort()
+    t2[i].sort()
 
 ans = 0
-for st in [st1,st2]:
-    for i in range(2):
-        t = [x for x in st if x[0]%2==i]
-        n = -sum([v for _k,v in t])
-        for i,(k,v) in enumerate(t):
-            n += v
+for st in [t1,t2]:
+    for t in st:
+        n = -(len(t)-1)
+        for k in t:
             k//=2
-            ans += k*v*n
-            n += v
+            ans += k*n
+            n += 2
 
 print(ans)
