@@ -102,3 +102,28 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N = II()
+S = I()
+
+o_pos = [0]*N
+x_pos = [0]*N
+
+o=N
+x=N
+for i in range(N)[::-1]:
+    if S[i] == "x":
+        x = i
+    if S[i] == "o":
+        o = i
+
+    x_pos[i]=x
+    o_pos[i]=o
+
+ans = 0
+for i in range(N):
+    if S[i] == "x":
+        ans += N - o_pos[i]
+    else:
+        ans += N - x_pos[i]
+
+print(ans)
