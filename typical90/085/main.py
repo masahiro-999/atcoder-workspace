@@ -3,7 +3,7 @@ from io import BytesIO, IOBase
 import sys
 import os
 
-from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10, isqrt
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
@@ -102,3 +102,15 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+K = II()
+
+ans = 0
+for a in range(1,isqrt(K)+1):
+    if K % a !=0:
+        continue
+    k = K//a
+    for b in range(a, isqrt(k)+1):
+        if k % b ==0 and b <= k//b:
+            ans += 1
+
+print(ans)
