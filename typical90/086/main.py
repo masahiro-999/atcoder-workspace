@@ -103,3 +103,22 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 inf = 1<<60
 MOD = 1000000007
 
+N,Q = LII()
+xyzw = [LII() for _ in range(Q)]
+
+ans = 1
+for b in range(60):
+    cnt = 0
+    for i in range(1<<N):
+        for x,y,z,w in xyzw:
+            x-=1
+            y-=1
+            z-=1
+            if i>>x&1 | i>>y&1 | i>>z&1 != w>>b&1:
+                break
+        else:
+            cnt += 1
+    ans *= cnt
+    ans %= MOD
+
+print(ans)
