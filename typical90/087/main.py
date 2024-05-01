@@ -102,3 +102,65 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N,P,K = LII()
+
+A = [LII() for _ in range(N)]
+
+def num_less_or_eq_P(x):
+    d = floyd_warshall(A,x)
+    return  count_d(d)
+
+def count_d(d):
+    ret = 0
+    for i in range(N-1):
+        for j in range(i+1,N):
+            if d[i][j]<=P:
+                ret += 1
+    return ret
+           
+def floyd_warshall(A,X):
+    d = [x[:] for x in A]
+    for i in range(N):
+        for j in range(N):
+            if d[i][j] == -1:
+                d[i][j]=X
+    for k in range(N):
+        for i in range(N):
+            for j in range(N):
+                d[i][j] = min(d[i][j], d[i][k] + d[k][j])
+    return d
+
+num_x = None
+l = 0
+r = P+1
+if num_less_or_eq_P(l) <K or num_less_or_eq_P(r) >K:
+    print(0)
+    exit()
+
+if num_less_or_eq_P(r) ==K:
+    print("Infinity")
+    exit()
+
+while r-l>1:
+    # print("1",l,r)
+    mid = (l+r)//2
+    if num_less_or_eq_P(mid)>K:
+        l = mid
+    else:
+        r = mid
+
+x_low = r
+
+
+
+l = 0
+r = P+1
+while r-l>1:
+    # print("2",l,r)
+    mid = (l+r)//2
+    if num_less_or_eq_P(mid)>=K:
+        l = mid
+    else:
+        r = mid
+x_upper = r
+print(x_upper-x_low)
