@@ -102,3 +102,36 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 
+N,Q = LII()
+A = LII()
+xy = [LII() for _ in range(Q)]
+
+ng = defaultdict(set)
+for x,y in xy:
+    x -= 1
+    y -= 1
+    ng[x].add(y)
+    ng[y].add(x)
+
+def f():
+    # 合計がkになる組み合わせが、２通りあるか見つける
+    # dp[j] 合計がjになるAの集合
+    d = {}
+    d[0] = set()
+    for i,a in enumerate(A):
+        for k,v in list(d.items()):
+            # print(v, ng[i])
+            if v & ng[i]:
+                continue
+            if k+a not in d:
+                d[k+a] = v|set([i])
+            else:
+                return d[k+a],v|set([i])
+                
+
+ans = f()
+for a in ans:
+    print(len(a))
+    a = [x+1 for x in a]
+    a.sort()
+    print(*a)
