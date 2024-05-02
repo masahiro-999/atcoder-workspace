@@ -103,3 +103,55 @@ dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 inf = 1<<60
 MOD = 1000000007
 
+N,K = LII()
+A = LII()
+
+B = {v: i for i, v in enumerate(sorted(set(A)))}
+C = [B[v] for v in A]
+
+# print(C)
+# 転倒数がK以下の範囲[l,r] cl[r]=lを求める
+cl=[-9]*N
+from atcoder.fenwicktree import FenwickTree
+
+ft = FenwickTree(N)
+
+r = N-1
+l = N-1
+ft.add(C[r],1)
+tr = 0
+while l>0:
+    # l を追加するといくつ増えるか
+    l-=1
+    ft.add(C[l],1)
+    tr += ft.sum(0,C[l])
+    if tr <= K:
+        continue
+    while r >= 0 and tr >K:
+        cl[r] = l+1
+        ft.add(C[r],-1)
+        tr -= ft.sum(C[r]+1,N)
+        r -= 1
+while r >=0:
+    cl[r] = 0
+    r -= 1
+# print(cl)
+
+dp = [0]*(N+1)
+acc_dp = [0]*(N+1)
+dp[0] = 1
+dp[1] = 1
+acc_dp[0] = 1
+acc_dp[1] = 2
+for i in range(2,N+1):
+    if cl[i-1]-1 == -1:
+        d = 0
+    else:
+        d = acc_dp[cl[i-1]-1]
+    dp[i]= acc_dp[i-1] - d
+    dp[i]%=MOD
+    acc_dp[i] =acc_dp[i-1]+dp[i]
+    acc_dp[i]%=MOD
+
+# print(dp[1:])
+print(dp[N])
