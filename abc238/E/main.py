@@ -7,7 +7,7 @@ from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos
 from bisect import bisect, bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
-from functools import cmp_to_key, lru_cache, reduce
+from functools import cmp_to_key, lru_cache, reduce, cache
 from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
 from itertools import product, accumulate,permutations,combinations, count
 from operator import add, iand, ior, itemgetter, mul, xor
@@ -89,44 +89,68 @@ if True:
         return list(map(lambda x: int(x) - 1, input().split()))
 
 sys.setrecursionlimit(5 * 10 ** 5)
-try:
-    from pypyjit import set_param
-    set_param('max_unroll_recursion=-1')
-except ModuleNotFoundError:
-    pass
+# try:
+#     from pypyjit import set_param
+#     set_param('max_unroll_recursion=-1')
+# except ModuleNotFoundError:
+#     pass
+
+dxdy1 = ((0, 1), (0, -1), (1, 0), (-1, 0))  # 上下左右
+dxdy2 = ((0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, -1), (1, -1), (-1, 1))  # 8方向すべて
+dxdy3 = ((0, 1), (1, 0))  # 右 or 下
+dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
 YES = "Yes"
 NO = "No"
 
-N,Q = TII()
-lr = [TII() for _ in range(Q)]
+N,Q = LII()
+
+lr = [LII() for _ in range(Q)]
 
 g = defaultdict(list)
 
-visited = [False]*(N+1)
-
 for l,r in lr:
     l -= 1
-    r -= 1
-    g[l].append(r+1)
-    g[r+1].append(l)
+    g[l].append(r)
+    g[r].append(l)
 
-# print(g)
-def bfs():
-    q = deque()
-    q.append(0)
-    visited[0] = True
-    while q:
-        i = q.popleft()
-        for next in g[i]:
-            if visited[next] == False:
-                q.append(next)
-                visited[next]=True
+visited = [False]*(N+1)
 
-bfs()
-# print(visited)
-if visited[N]:
+from types import GeneratorType
+
+def bootstrap(f, stack=[]):
+    def wrappedfunc(*args, **kwargs):
+        if stack:
+            return f(*args, **kwargs)
+        else:
+            to = f(*args, **kwargs)
+            while True:
+                if type(to) is GeneratorType:
+                    stack.append(to)
+                    to = next(to)
+                else:
+                    stack.pop()
+                    if not stack:
+                        break
+                    to = stack[-1].send(to)
+            return to
+    return wrappedfunc
+
+@bootstrap
+def dfs(s):
+    visited[s] = True
+    if s == N:
+        yield True
+    for n in g[s]:
+        if visited[n]:
+            continue
+        ret = yield dfs(n)
+        if ret:
+            yield True
+    yield False
+
+if dfs(0):
     print(YES)
 else:
     print(NO)
