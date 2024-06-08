@@ -101,13 +101,4 @@ dxdy3 = ((0, 1), (1, 0))  # 右 or 下
 dxdy4 = ((1, 1), (1, -1), (-1, 1), (-1, -1))  # 斜め
 
 inf = 1<<60
-{% if mod %}
-MOD = {{ mod }}
-{% endif %}
-{% if yes_str %}
-YES = "{{ yes_str }}"
-{% endif %}
-{% if no_str %}
-NO = "{{ no_str }}"
-{% endif %}
 
