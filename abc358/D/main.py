@@ -24,3 +24,22 @@ if debug:
     def dprint(*arg): print(*arg, file=sys.stderr)
 else:
     def dprint(*arg): pass
+
+N,M = LII()
+A = LII()
+B = LII()
+
+A.sort()
+B.sort()
+
+a = 0
+ans = 0
+for b in B:
+    while a < N and A[a] < b:
+        a += 1
+    if a == N:
+        ans = -1
+        break
+    ans += A[a]
+    a += 1
+print(ans)

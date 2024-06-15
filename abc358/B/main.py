@@ -24,3 +24,13 @@ if debug:
     def dprint(*arg): print(*arg, file=sys.stderr)
 else:
     def dprint(*arg): pass
+
+N,A = LII()
+T = LII()
+
+prev = 0
+for t in T:
+    t = max(t,prev)
+    t += A
+    print(t)
+    prev = t

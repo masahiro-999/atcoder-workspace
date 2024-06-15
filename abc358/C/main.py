@@ -24,3 +24,21 @@ if debug:
     def dprint(*arg): print(*arg, file=sys.stderr)
 else:
     def dprint(*arg): pass
+
+N,M = LII()
+S = [I() for _ in range(N)]
+
+ans = inf
+for i in range(1<<N):
+    x = 0
+    for j in range(N):
+        if (i>>j)&1:
+            s = S[j]
+            for k in range(M):
+                if s[k] == "o":
+                    x |= 1<<k
+    if x == (1<<M)-1:
+        a = i.bit_count()
+        ans = min(ans,a)
+        # print(bin(i),a)
+print(ans)
