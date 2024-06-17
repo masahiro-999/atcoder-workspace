@@ -61,25 +61,17 @@ if K == 1:
     print(0)
     exit()
 
-K2 = K -2
-X = []
-x = 0
-for i in range(N):
-    x = choose(i,K2)
-    X.append(x)
-accX = list(accumulate(X))
-
 ans = 0
 for i in range(N):
     if i-1 < 0:
         continue
-    ans += A[i]*accX[i-1]
+    ans += A[i]*choose(i,K-1)
     ans %= MOD
 
 for i in range(N):
     if N-2-i <0:
         continue
-    ans -= A[i]*accX[N-2-i]
+    ans -= A[i]*choose(N-1-i,K-1)
     ans %= MOD
 
 print(ans)
