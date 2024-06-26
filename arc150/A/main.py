@@ -25,17 +25,33 @@ if debug:
 else:
     def dprint(*arg): pass
 
-N,M = LII()
 
-S = LI()
-T = LI()
+T = II()
 
-a = set()
-for t in T:
-    a.add(t)
+for _ in range(T):
+    N,K = LII()
+    S = I()
+    c0 = 0
+    c1 = 0
+    M = sum([1 for x in S if x == "1"])
+    c0 = sum([1 for x in S[:K] if x == "0"])
+    c1 = sum([1 for x in S[:K] if x == "1"])
+    cnt = 0
+    for i in range(N-K+1):
+        if c0 == 0 and c1 == M:
+            cnt+= 1
+        if i == N-K:
+            continue
+        if S[i]=="0":
+            c0 -= 1
+        if S[i]=="1":
+            c1 -= 1
+        if S[i+K]=="0":
+            c0 += 1
+        if S[i+K]=="1":
+            c1 += 1
 
-for s in S:
-    if s in a:
+    if cnt == 1:
         print("Yes")
     else:
-        print("No") 
+        print("No")

@@ -25,17 +25,10 @@ if debug:
 else:
     def dprint(*arg): pass
 
-N,M = LII()
+N, R = LII()
+if N>=10:
+    ans = R
+else:
+    ans = R+100*(10-N)
 
-S = LI()
-T = LI()
-
-a = set()
-for t in T:
-    a.add(t)
-
-for s in S:
-    if s in a:
-        print("Yes")
-    else:
-        print("No") 
+print(ans)

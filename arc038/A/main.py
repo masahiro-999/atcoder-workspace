@@ -25,17 +25,14 @@ if debug:
 else:
     def dprint(*arg): pass
 
-N,M = LII()
+N = II()
+A = LII()
+A.sort(reverse=True)
 
-S = LI()
-T = LI()
+ans = 0
+for i,a in enumerate(A):
+    if i%2 ==0:
+        ans+= a
+    
 
-a = set()
-for t in T:
-    a.add(t)
-
-for s in S:
-    if s in a:
-        print("Yes")
-    else:
-        print("No") 
+print(ans)
