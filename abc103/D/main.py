@@ -28,22 +28,14 @@ else:
 N,M = LII()
 ab = [LII() for _ in range(M)]
 
-X = defaultdict(set)
-Y = defaultdict(set)
-for a,b in ab:
-    X[a].add(b)
-    Y[b].add(a)
+ab.sort(key=lambda x:x[1])
 
 ans = 0
-for x in sorted(X.keys(),reverse=True):
-    if x not in X:
+prev = -1
+for a,b in ab:
+    if a < prev:
         continue
-    if not X[x]:
-        continue
-    ans += 1
-    for y in range(x+1,N+1):
-        for xx in list(Y[y]):
-            X[xx].discard(y)
-            Y[y].discard(xx)
+    prev = b
+    ans +=1
 
 print(ans)
