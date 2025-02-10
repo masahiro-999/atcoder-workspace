@@ -28,5 +28,33 @@ else:
 N = II()
 P = LII()
 
-s = SortedSet()
+BASE = 500000
 
+from atcoder.fenwicktree import FenwickTree
+
+ft = FenwickTree(N)
+
+def find_nth(n):
+    ok = N
+    ng = -1
+    while ok-ng > 1:
+        mid = (ok+ng)//2
+        if mid - ft.sum(0,mid+1) >=n:
+            ok = mid
+        else:
+            ng = mid
+    return ok
+
+# ft.add(0,1)
+# print(find_nth(0))
+# print(find_nth(1))
+# print(find_nth(2))
+# exit()
+ans = [0]*N
+for i in range(N)[::-1]:
+    p = P[i]-1
+    x = find_nth(p)
+    ans[x] = i+1
+    ft.add(x,1)
+    # print(i,p,x,ans)
+print(*ans)
