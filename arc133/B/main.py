@@ -42,41 +42,23 @@ for i in range(1,N+1):
         multiple_table[n].append(i)
         n += i
 
-from atcoder.lazysegtree import LazySegTree
-
-INF = 1 << 63
-ID = INF
-
-
-def op(ele1, ele2):
-    return max(ele1, ele2)
-
-
-def mapping(func, ele):
-    if func == ID:
-        return ele
-    else:
-        return func
-
-
-def composition(func_upper, func_lower):
-    if func_upper == ID:
-        return func_lower
-    else:
-        return func_upper
-
-# TODO (初期リストlst)
-seg = LazySegTree(op, 0, mapping, composition, INF, N)
-
+ij = []
 for i in range(N):
     q = Q[i]
     update = []
     for x in multiple_table[q]:
         index = back_p[x]
-        current = seg.get(index)
-        update.append((index, max(current, seg.prod(0,index)+1)))
-    for i,v in update:
-        seg.set(i, v)
-    # print([seg.get(i) for i in range(N)])
-ans = seg.prod(0,N)
+        ij.append((index, -i))
+
+ij.sort()
+j_list = [-j for _,j in ij]
+
+lis = [inf]*N
+for j in j_list:
+    i = bisect_left(lis,j)
+    lis[i] = j
+
+# print(*lis)
+ans = sum([1 for x in lis if x!= inf])
+
 print(ans)
