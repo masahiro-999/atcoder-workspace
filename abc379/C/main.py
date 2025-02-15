@@ -28,29 +28,21 @@ N,M = LII()
 X = LII()
 A = LII()
 
-if sum(A) != N:
-    print(-1)
-    exit()
+ax = [(x-1,a) for a,x in zip(A,X)]
+ax.append((N,0))
+ax.sort()
 
-XA = [(x,a) for a,x in zip(A,X)]
-XA.sort(reverse=True)
-
-e = N
-i = 0
 ans = 0
-while e > 0 and i < M:
-    x,a = XA[i]
-    n0 = e - x
-    n = min(n0, a)
-    n1 = n0 - n 
-
-    ans += n*(n+1)//2+(n0-n)*n
-    e -= n
-    if a > n:
-        e -= 1
-    i += 1
-    # print(a,n,e,ans)
-if e > 0:
+sm = 0
+for (x0,a0),(x1,a1) in zip(ax,ax[1:]):
+    n = x1 - x0
+    sm += a0-n
+    if sm <0:
+        ans = -1
+        break
+    ans += n*sm+(n*(n-1)//2)
+if sm != 0:
     ans = -1
 
 print(ans)
+    
