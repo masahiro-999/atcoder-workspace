@@ -17,7 +17,7 @@ II = lambda: int(I())
 LI = lambda: list(input().split())
 LII = lambda: list(map(int, input().split()))
 sys.setrecursionlimit(10000000)
-inf = 100100100100
+inf = 100100100100100100100
 debug = False
 # debug = True
 if debug:
