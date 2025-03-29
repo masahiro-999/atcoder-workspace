@@ -25,14 +25,7 @@ if debug:
 else:
     def dprint(*arg): pass
 
-X = I()
+X = II()
 
-S = []
-
-for x in X:
-    if len(S)>0 and S[-1]=="S" and x == "T":
-        S.pop()
-    else:
-        S.append(x)
-
-print(len(S))
+x = (X-400)//200
+print(8-x)

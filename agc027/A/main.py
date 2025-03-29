@@ -25,14 +25,22 @@ if debug:
 else:
     def dprint(*arg): pass
 
-X = I()
+N,x = LII()
+A = LII()
 
-S = []
+A.sort()
 
-for x in X:
-    if len(S)>0 and S[-1]=="S" and x == "T":
-        S.pop()
-    else:
-        S.append(x)
+ans = 0
+sm = x
+for i,a in enumerate(A):
+    sm -= a
+    if sm < 0:
+        break
+    ans += 1
+    # print(i,a,sm)
 
-print(len(S))
+
+if sm >0:
+    ans -=1
+
+print(ans)

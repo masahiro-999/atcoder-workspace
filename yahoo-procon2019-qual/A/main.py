@@ -24,15 +24,10 @@ if debug:
     def dprint(*arg): print(*arg, file=sys.stderr)
 else:
     def dprint(*arg): pass
+N,K = LII()
 
-X = I()
 
-S = []
-
-for x in X:
-    if len(S)>0 and S[-1]=="S" and x == "T":
-        S.pop()
-    else:
-        S.append(x)
-
-print(len(S))
+if ((N+1)//2)>=K:
+    print("YES")
+else:
+    print("NO")
