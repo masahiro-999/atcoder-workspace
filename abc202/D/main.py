@@ -1,68 +1,51 @@
-import sys, re
-from math import ceil, floor, sqrt, pi, factorial, gcd,sin,cos,tan,asin,acos,atan2,exp,log,log10
-from collections import deque, Counter, defaultdict
-from itertools import product, accumulate
-from functools import reduce,lru_cache
-from bisect import bisect
-from heapq import heapify, heappop, heappush
-sys.setrecursionlimit(5 * 10 ** 5)
-try:
-    from pypyjit import set_param
-    set_param('max_unroll_recursion=-1')
-except ModuleNotFoundError:
-    pass
-input = lambda: sys.stdin.readline().rstrip()
-ii = lambda: int(input())
-mi = lambda: map(int, input().split())
-li = lambda: list(mi())
-inf = 2 ** 63 - 1
-tokens = (i for line in iter(input, "") for i in line.split())
+import sys
+import os
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10, isqrt, comb
+from collections import Counter, defaultdict, deque
+from copy import deepcopy
+from functools import cmp_to_key, lru_cache, reduce, cache
+from operator import add, iand, ior, itemgetter, mul, xor
+from string import ascii_lowercase, ascii_uppercase, ascii_letters
+from typing import *
+from bisect import bisect, bisect_left, bisect_right
+from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
+from sortedcontainers import SortedSet, SortedList, SortedDict
+from itertools import product, accumulate,permutations,combinations, count
+input = lambda: sys.stdin.readline().rstrip("\r\n")
+I = input
+II = lambda: int(I())
+LI = lambda: list(input().split())
+LII = lambda: list(map(int, input().split()))
+sys.setrecursionlimit(10000000)
+inf = 100100100100100100100
+debug = False
+# debug = True
+if debug:
+    def dprint(*arg): print(*arg, file=sys.stderr)
+else:
+    def dprint(*arg): pass
 
-# @lru_cache(maxsize=None)
-# def f(a,b):
-#     elif a == 0:
-#         return 1
-#     elif b == 0:
-#         return 1
-#     else:
-#         return f(a-1,b) + f(a,b-1) +1
+A,B,K = LII()
+N = A+B
 
-def solve(A: int, B: int, K: int):
-    f_table = [[0]*(B+1) for _ in range(A+1)]
-    for i in range(A+1):
-        for j in range(B+1):
-            if i == 0:
-                f_table[i][j] = 1
-            elif j == 0:
-                f_table[i][j] = 1
-            else:
-                f_table[i][j] = f_table[i-1][j] + f_table[i][j-1]
-    k = K-1
-    a = A
-    b = B
-    ans = []
-    while True:
-        if k >= f_table[a-1][b]:
-            ans.append("b")
-            k -= f_table[a-1][b]
-            b -= 1
+ans = [0]*N
+for i in range(N):
+    if A > 0 and B > 0:
+        n = comb(A+B-1,B)
+        if K > n:
+            ans[i] = "b"
+            K -= n
+            B -= 1
         else:
-            ans.append("a")
-            a -= 1
-        if a == 0:
-            ans += ["b"]*b
-            break
-        if b == 0:
-            ans += ["a"]*a
-            break
-    print("".join(ans))
+            ans[i] = "a"
+            A -= 1
+    else:
+        if A>0:
+            remain = "a"
+            A -= 1
+        else:
+            remain = "b"
+            B -= 1
+        ans[i] = remain
 
-
-def main():
-    A = int(next(tokens))  # type: int
-    B = int(next(tokens))  # type: int
-    K = int(next(tokens))  # type: int
-    solve(A, B, K)
-    return
-
-main()
+print("".join(ans))
