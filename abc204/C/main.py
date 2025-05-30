@@ -1,52 +1,56 @@
-import sys, re
-from math import ceil, floor, sqrt, pi, factorial, gcd,sin,cos,tan,asin,acos,atan2,exp,log,log10
-from collections import deque, Counter, defaultdict
-from itertools import product, accumulate
-from functools import reduce,lru_cache
-from bisect import bisect
-from heapq import heapify, heappop, heappush
-sys.setrecursionlimit(5 * 10 ** 5)
-try:
-    from pypyjit import set_param
-    set_param('max_unroll_recursion=-1')
-except ModuleNotFoundError:
-    pass
-input = lambda: sys.stdin.readline().rstrip()
-ii = lambda: int(input())
-mi = lambda: map(int, input().split())
-li = lambda: list(mi())
-inf = 2 ** 63 - 1
-tokens = (i for line in iter(input, "") for i in line.split())
+import sys
+import os
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10, isqrt
+from collections import Counter, defaultdict, deque
+from copy import deepcopy
+from functools import cmp_to_key, lru_cache, reduce, cache
+from operator import add, iand, ior, itemgetter, mul, xor
+from string import ascii_lowercase, ascii_uppercase, ascii_letters
+from typing import *
+from bisect import bisect, bisect_left, bisect_right
+from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
+from sortedcontainers import SortedSet, SortedList, SortedDict
+from itertools import product, accumulate,permutations,combinations, count
+input = lambda: sys.stdin.readline().rstrip("\r\n")
+I = input
+II = lambda: int(I())
+LI = lambda: list(input().split())
+LII = lambda: list(map(int, input().split()))
+sys.setrecursionlimit(10000000)
+inf = 100100100100100100100
+debug = False
+# debug = True
+if debug:
+    def dprint(*arg): print(*arg, file=sys.stderr)
+else:
+    def dprint(*arg): pass
 
+N,M = LII()
+ab = [LII() for _ in range(M)]
 
-def solve(N: int, M: int, A: "List[int]", B: "List[int]"):
-    g = defaultdict(list)
-    for a, b in zip(A, B):
-        g[a].append(b)
-    ans = 0
-    for i in range(1, N + 1):
-        visited = [False] * (N + 1)
-        visited[i] = True
-        q = deque([i])
-        while q:
-            v = q.popleft()
-            for u in g[v]:
-                if not visited[u]:
-                    visited[u] = True
-                    q.append(u)
-        ans += sum(visited)
-    print(ans)
-    return
+g = defaultdict(list)
+for a,b in ab:
+    a -= 1
+    b -= 1
+    g[a].append(b)
 
-def main():
-    N = int(next(tokens))  # type: int
-    M = int(next(tokens))  # type: int
-    A = [int()] * (M)  # type: "List[int]"
-    B = [int()] * (M)  # type: "List[int]"
-    for i in range(M):
-        A[i] = int(next(tokens))
-        B[i] = int(next(tokens))
-    solve(N, M, A, B)
-    return
+cnt = 0
 
-main()
+def dfs(x,visited):
+    # print(x)
+    global cnt
+    cnt += 1
+    visited[x] = 1
+    for n in g[x]:
+        if not visited[n]:
+            dfs(n,visited)
+
+ans = 0
+for i in range(N):
+    visited = [0]*N
+    cnt = 0
+    # print(i,"start")
+    dfs(i,visited)
+    ans += cnt
+
+print(ans)
