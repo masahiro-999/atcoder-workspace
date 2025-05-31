@@ -1,44 +1,52 @@
-import sys, re
-from math import ceil, floor, sqrt, pi, factorial, gcd,sin,cos,tan,asin,acos,atan2,exp,log,log10
-from collections import deque, Counter, defaultdict
-from itertools import product, accumulate
-from functools import reduce,lru_cache
-from bisect import bisect_right, bisect_left
-from heapq import heapify, heappop, heappush
-sys.setrecursionlimit(5 * 10 ** 5)
-try:
-    from pypyjit import set_param
-    set_param('max_unroll_recursion=-1')
-except ModuleNotFoundError:
-    pass
-input = lambda: sys.stdin.readline().rstrip()
-ii = lambda: int(input())
-mi = lambda: map(int, input().split())
-li = lambda: list(mi())
-inf = 2 ** 63 - 1
-tokens = (i for line in iter(input, "") for i in line.split())
+import sys
+import os
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10, isqrt
+from collections import Counter, defaultdict, deque
+from copy import deepcopy
+from functools import cmp_to_key, lru_cache, reduce, cache
+from operator import add, iand, ior, itemgetter, mul, xor
+from string import ascii_lowercase, ascii_uppercase, ascii_letters
+from typing import *
+from bisect import bisect, bisect_left, bisect_right
+from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
+from sortedcontainers import SortedSet, SortedList, SortedDict
+from itertools import product, accumulate,permutations,combinations, count
+input = lambda: sys.stdin.readline().rstrip("\r\n")
+I = input
+II = lambda: int(I())
+LI = lambda: list(input().split())
+LII = lambda: list(map(int, input().split()))
+sys.setrecursionlimit(10000000)
+inf = 100100100100100100100
+debug = False
+# debug = True
+if debug:
+    def dprint(*arg): print(*arg, file=sys.stderr)
+else:
+    def dprint(*arg): pass
 
+N,Q = LII()
+A = LII()
+A.append(10**18+N+1)
+B=[]
+C=[]
+prev_now = 0
+x = 1
+for i,now in enumerate(A,start=1):
+    can_use = now - prev_now -1
+    if can_use > 0:
+        B.append(x)
+        C.append(prev_now+1)
+        x += can_use
+    prev_now = now
+# print(B)
 
-def solve(N: int, Q: int, A: "List[int]", K: "List[int]"):
-    # a = 3 5 6 7
-    # c = 2 3 3 3
-    A = [0]+A
-    A.sort()
-    c = []
-    
-    for i,a in enumerate(A):
-        c.append(a-i)
-
-    for k in K:
-        i = bisect_left(c, k)
-        print(A[i-1]+(k-c[i-1]))
-
-def main():
-    N = int(next(tokens))  # type: int
-    Q = int(next(tokens))  # type: int
-    A = [int(next(tokens)) for _ in range(N)]  # type: "List[int]"
-    K = [int(next(tokens)) for _ in range(Q)]  # type: "List[int]"
-    solve(N, Q, A, K)
-    return
-
-main()
+for _ in range(Q):
+    K = II()
+    i = bisect_right(B,K)
+    if i == 0:
+        x,y = 1,1
+    else:
+        x,y = B[i-1],C[i-1]
+    ans = y+(K-x)
+    print(ans)
