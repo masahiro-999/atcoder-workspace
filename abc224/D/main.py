@@ -1,146 +1,91 @@
-from io import BytesIO, IOBase
-
 import sys
 import os
-
-from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
-from bisect import bisect, bisect_left, bisect_right
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10, isqrt, comb
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
-from functools import cmp_to_key, lru_cache, reduce
-from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
-from itertools import product, accumulate,permutations,combinations, count
+from functools import cmp_to_key, lru_cache, reduce, cache
 from operator import add, iand, ior, itemgetter, mul, xor
 from string import ascii_lowercase, ascii_uppercase, ascii_letters
 from typing import *
+from bisect import bisect, bisect_left, bisect_right
+from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
 from sortedcontainers import SortedSet, SortedList, SortedDict
-
-BUFSIZE = 4096
-
-class FastIO(IOBase):
-    newlines = 0
-
-    def __init__(self, file):
-        self._fd = file.fileno()
-        self.buffer = BytesIO()
-        self.writable = "x" in file.mode or "r" not in file.mode
-        self.write = self.buffer.write if self.writable else None
-
-    def read(self):
-        while True:
-            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
-            if not b:
-                break
-            ptr = self.buffer.tell()
-            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
-        self.newlines = 0
-        return self.buffer.read()
-
-    def readline(self):
-        while self.newlines == 0:
-            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
-            self.newlines = b.count(b"\n") + (not b)
-            ptr = self.buffer.tell()
-            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
-        self.newlines -= 1
-        return self.buffer.readline()
-
-    def flush(self):
-        if self.writable:
-            os.write(self._fd, self.buffer.getvalue())
-            self.buffer.truncate(0), self.buffer.seek(0)
-
-class IOWrapper(IOBase):
-    def __init__(self, file):
-        self.buffer = FastIO(file)
-        self.flush = self.buffer.flush
-        self.writable = self.buffer.writable
-        self.write = lambda s: self.buffer.write(s.encode("ascii"))
-        self.read = lambda: self.buffer.read().decode("ascii")
-        self.readline = lambda: self.buffer.readline().decode("ascii")
-
-sys.stdin = IOWrapper(sys.stdin)
-sys.stdout = IOWrapper(sys.stdout)
+from itertools import product, accumulate,permutations,combinations, count, groupby
 input = lambda: sys.stdin.readline().rstrip("\r\n")
+I = input
+II = lambda: int(I())
+LI = lambda: list(input().split())
+LII = lambda: list(map(int, input().split()))
+sys.setrecursionlimit(10000000)
+inf = float('inf')
 
-if True:
-    def I():
-        return input()
+from types import GeneratorType
 
-    def II():
-        return int(input())
-
-    def MII():
-        return map(int, input().split())
-
-    def LI():
-        return list(input().split())
-
-    def LII():
-        return list(map(int, input().split()))
-
-    def TII():
-        return tuple(map(int, input().split()))
-
-    def GMI():
-        return map(lambda x: int(x) - 1, input().split())
-
-    def LGMI():
-        return list(map(lambda x: int(x) - 1, input().split()))
-
-sys.setrecursionlimit(5 * 10 ** 5)
-try:
-    from pypyjit import set_param
-    set_param('max_unroll_recursion=-1')
-except ModuleNotFoundError:
-    pass
-
-inf = 1<<60
+def bootstrap(f, stack=[]):
+    def wrappedfunc(*args, **kwargs):
+        if stack:
+            return f(*args, **kwargs)
+        else:
+            to = f(*args, **kwargs)
+            while True:
+                if type(to) is GeneratorType:
+                    stack.append(to)
+                    to = next(to)
+                else:
+                    stack.pop()
+                    if not stack:
+                        break
+                    to = stack[-1].send(to)
+            return to
+    return wrappedfunc
 
 M = II()
-
-g = defaultdict(list)
+N = 9
 uv = [LII() for _ in range(M)]
 P = LII()
-P = [p-1 for p in P]
+
+p = tuple([x-1 for x in P])
+
+
+def find_free_i(p):
+    free = [1]*N
+    for i in p:
+        free[i]=0
+    for i in range(N):
+        if free[i]==1:
+            return i
+
+g = [set() for _ in range(N)]
 
 for u,v in uv:
     u -= 1
     v -= 1
-    g[u].append(v)
-    g[v].append(u)
+    g[u].add(v)
+    g[v].add(u)
 
-set_p = set(P)
-for i in range(9):
-    if i not in set_p:
-        break
-free = i
+visited = set()
 
-visited=set()
-finish=(0,1,2,3,4,5,6,7)
-def bfs(s):
-    t = tuple(P)
-    visited.add(t)
-    if t == finish:
-        return 0
+gole = tuple(range(8))
+
+def bfs(p):
     q = deque()
-    q.append((s,tuple(P),1))
+    free_i = find_free_i(p)
+    q.append((p,free_i,0))
+    visited.add(p)
     while q:
-        s,p,d = q.popleft()
-        # print(s,p,d)
-        for next_s in g[s]:
-            next_p = list(p)
-            i = next_p.index(next_s)
-            next_p[i] = s
-            t = tuple(next_p)
-            if t in visited:
-                continue
-            if t == finish:
-                return d             
-            visited.add(t)
-            q.append((next_s,t,d+1))
+        p,free_i,cnt = q.popleft()
+        if p == gole:
+            return cnt
+        for i,v in enumerate(p):
+            if free_i in g[v]:
+                np = list(p)
+                np[i] = free_i
+                tuple_np = tuple(np)
+                if tuple_np in visited:
+                    continue
+                visited.add(tuple_np)
+                q.append((tuple_np,v,cnt+1))
     return -1
 
-ans = bfs(free)
-
+ans = bfs(p)
 print(ans)
