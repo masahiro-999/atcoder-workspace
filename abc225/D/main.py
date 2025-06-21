@@ -1,130 +1,67 @@
-from io import BytesIO, IOBase
-
 import sys
 import os
-
-from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10
-from bisect import bisect, bisect_left, bisect_right
+from math import ceil, floor, sqrt, pi, factorial, gcd,lcm,sin,cos,tan,asin,acos,atan2,exp,log,log10, isqrt, comb
 from collections import Counter, defaultdict, deque
 from copy import deepcopy
-from functools import cmp_to_key, lru_cache, reduce
-from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
-from itertools import product, accumulate,permutations,combinations, count
+from functools import cmp_to_key, lru_cache, reduce, cache
 from operator import add, iand, ior, itemgetter, mul, xor
 from string import ascii_lowercase, ascii_uppercase, ascii_letters
 from typing import *
+from bisect import bisect, bisect_left, bisect_right
+from heapq import heapify, heappop, heappush, heappushpop, nlargest, nsmallest
 from sortedcontainers import SortedSet, SortedList, SortedDict
-
-BUFSIZE = 4096
-
-class FastIO(IOBase):
-    newlines = 0
-
-    def __init__(self, file):
-        self._fd = file.fileno()
-        self.buffer = BytesIO()
-        self.writable = "x" in file.mode or "r" not in file.mode
-        self.write = self.buffer.write if self.writable else None
-
-    def read(self):
-        while True:
-            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
-            if not b:
-                break
-            ptr = self.buffer.tell()
-            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
-        self.newlines = 0
-        return self.buffer.read()
-
-    def readline(self):
-        while self.newlines == 0:
-            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
-            self.newlines = b.count(b"\n") + (not b)
-            ptr = self.buffer.tell()
-            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
-        self.newlines -= 1
-        return self.buffer.readline()
-
-    def flush(self):
-        if self.writable:
-            os.write(self._fd, self.buffer.getvalue())
-            self.buffer.truncate(0), self.buffer.seek(0)
-
-class IOWrapper(IOBase):
-    def __init__(self, file):
-        self.buffer = FastIO(file)
-        self.flush = self.buffer.flush
-        self.writable = self.buffer.writable
-        self.write = lambda s: self.buffer.write(s.encode("ascii"))
-        self.read = lambda: self.buffer.read().decode("ascii")
-        self.readline = lambda: self.buffer.readline().decode("ascii")
-
-sys.stdin = IOWrapper(sys.stdin)
-sys.stdout = IOWrapper(sys.stdout)
+from itertools import product, accumulate,permutations,combinations, count, groupby
 input = lambda: sys.stdin.readline().rstrip("\r\n")
+I = input
+II = lambda: int(I())
+LI = lambda: list(input().split())
+LII = lambda: list(map(int, input().split()))
+sys.setrecursionlimit(10000000)
+inf = float('inf')
 
-if True:
-    def I():
-        return input()
+N,Q = LII()
 
-    def II():
-        return int(input())
+fw = [None]*N
+ba = [None]*N
 
-    def MII():
-        return map(int, input().split())
 
-    def LI():
-        return list(input().split())
-
-    def LII():
-        return list(map(int, input().split()))
-
-    def TII():
-        return tuple(map(int, input().split()))
-
-    def GMI():
-        return map(lambda x: int(x) - 1, input().split())
-
-    def LGMI():
-        return list(map(lambda x: int(x) - 1, input().split()))
-
-sys.setrecursionlimit(5 * 10 ** 5)
-try:
-    from pypyjit import set_param
-    set_param('max_unroll_recursion=-1')
-except ModuleNotFoundError:
-    pass
-
-inf = 1<<60
-
-N,Q = TII()
-
-Q = [TII() for _ in range(Q)]
-
-forward = defaultdict(lambda: -1)
-backward = defaultdict(lambda: -1)
-
-for q in Q:
-    if q[0] ==3:
-        x = q[1]
-        p = x
-        ret = [p]
-        while (next :=backward[p]) != -1:
-            ret.append(next)
-            p = next
-        ret = ret[::-1]
-        p = x
-        while (next :=forward[p]) != -1:
-            ret.append(next)
-            p = next
-        print(len(ret), *ret)
-        continue
-    cmd,x,y = q
-    if cmd == 1:
-        forward[x] = y
-        backward[y] = x
+for _ in range(Q):
+    q = LII()
+    if q[0]==1:
+        x,y = q[1:]
+        x -=1
+        y -=1
+        assert fw[x] is None
+        assert ba[y] is None
+        fw[x]=y
+        ba[y]=x
+    elif q[0]==2:
+        x,y = q[1:]
+        x -=1
+        y -=1
+        assert fw[x]==y
+        assert ba[y]==x
+        fw[x]=None
+        ba[y]=None
     else:
-        del forward[x]
-        del backward[y]
-
-
+        x = q[1]
+        x -=1
+        ans1 = []
+        p = x
+        while True:
+            p = ba[p]
+            if p is None:
+                break
+            # print(f"b {p=}")
+            ans1.append(p+1)
+        ans2 = []
+        p = x
+        while True:
+            p = fw[p]
+            if p is None:
+                break
+            # print(f"f {p=}")
+            ans2.append(p+1)
+        M = len(ans1)+len(ans2)+1
+        # print(fw)
+        print(M,*ans1[::-1],x+1,*ans2)
